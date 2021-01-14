@@ -19,17 +19,28 @@ public class Artifact {
 	}
 	
 	public void addGroup(int group) {
-		groups.add(group);
+		this.groups.add(group);
 	}
 	
 	public void addTech(int tech) {
-		techs.add(tech);
+		this.techs.add(tech);
 	}
 	
 	public void retouch() {
-		stage += 1;
+		this.stage += 1;
 	}
 	
+	public int getStage() {
+		return this.stage;
+	}
+	
+	public int getFirstTech() {
+		return this.techs.get(0);
+	}
+	
+	public int getLastTech() {
+		return this.techs.get(this.techs.size()-1);
+	}
 	
 	public void print() {
 		System.out.println("artifact: stage(" + stage + ")");

@@ -4,10 +4,10 @@ import java.util.*;
 
 public class Square {
 	
-	List<Layer> yearsBP;
+	ArrayList<Layer> yearsBP;
 	
 	public Square(int startYear) {
-		yearsBP = new Vector<Layer>();
+		yearsBP = new ArrayList<Layer>();
 		yearsBP.add(new Layer(startYear));
 	}
 	
@@ -33,8 +33,12 @@ public class Square {
 		yearsBP.get((yearsBP.size()-1)).depositArtifacts(newArtifacts);
 	}
 	
-	public int getTopLayer() {
-		return yearsBP.get(yearsBP.size()-1).getYear();
+	public Layer getTopLayer() {
+		return yearsBP.get(yearsBP.size()-1);
+	}
+	
+	public ArrayList<Layer> getLayers() {
+		return yearsBP;
 	}
 	
 	public void print() {

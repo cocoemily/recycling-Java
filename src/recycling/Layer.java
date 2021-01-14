@@ -35,6 +35,10 @@ public class Layer {
 		
 	}
 	
+	public void removeArtifact(Artifact a) {
+		artifactlist.remove(a);
+	}
+	
 	
 	public void print() {
 		System.out.println("Age: " + date + " , Artifacts:");
