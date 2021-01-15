@@ -43,7 +43,12 @@ public class Artifact {
 	}
 	
 	public void print() {
-		System.out.println("artifact: stage(" + stage + ")");
+		System.out.print("artifact: stage(" + stage + ")");
+		System.out.print(" blank tech (" + this.getFirstTech() + ")");
+		if(this.stage > 0) {
+			System.out.print(" retouch tech (" + this.getLastTech() + ")");
+		}
+		System.out.print("\n");
 	}
 	
 }

@@ -161,9 +161,10 @@ public class Model {
 			if(artifacts.size() != 0) {
 				double minStage = Double.MAX_VALUE; //picking lowest stage artifacts first
 				for(int j=0; j < artifacts.size(); j++) {
-					if(artifacts.get(j).getStage() < minStage) {
-						minStage = artifacts.get(j).getStage();
-						choice = artifacts.get(j);
+					int index = (int) (Math.random() * artifacts.size());
+					if(artifacts.get(index).getStage() < minStage) {
+						minStage = artifacts.get(index).getStage();
+						choice = artifacts.get(index);
 					}
 				}
 				agent.collectArtifact(choice); //add artifact to agent's artifact list
