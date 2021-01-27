@@ -33,6 +33,14 @@ public class Square {
 		yearsBP.get((yearsBP.size()-1)).depositArtifacts(newArtifacts);
 	}
 	
+	public void addNodules(ArrayList<Nodule> newNodules) {
+		yearsBP.get((yearsBP.size()-1)).depositNodules(newNodules);
+	}
+	
+	public void addFlakes(ArrayList<Nodule> newFlakes) {
+		yearsBP.get((yearsBP.size()-1)).depositFlakes(newFlakes);
+	}
+	
 	public Layer getTopLayer() {
 		return yearsBP.get(yearsBP.size()-1);
 	}

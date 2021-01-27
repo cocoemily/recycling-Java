@@ -9,23 +9,24 @@ public class RunOriginalModel {
 
 	public static void main(String[] args) {
 
-		if(args.length != 10) {
+		if(args.length != 11) {
 			System.out.println("Missing arguments");
 
 		} else {
-			String modelName = (String) args[0];
-			int size = Integer.parseInt(args[1]);
-			int startYear = Integer.parseInt(args[2]);
-			int timestep = Integer.parseInt(args[3]);
-			int maxUI = Integer.parseInt(args[4]);
-			int maxAC = Integer.parseInt(args[5]);
-			int numAg = Integer.parseInt(args[6]);
-			double ed = Double.parseDouble(args[7]);
-			int gf = Integer.parseInt(args[8]);
-			double overlap = Double.parseDouble(args[9]);
+			String folderName = (String) args[0];
+			String modelName = (String) args[1];
+			int size = Integer.parseInt(args[2]);
+			int startYear = Integer.parseInt(args[3]);
+			int timestep = Integer.parseInt(args[4]);
+			int maxUI = Integer.parseInt(args[5]);
+			int maxAC = Integer.parseInt(args[6]);
+			int numAg = Integer.parseInt(args[7]);
+			double ed = Double.parseDouble(args[8]);
+			int gf = Integer.parseInt(args[9]);
+			double overlap = Double.parseDouble(args[10]);
 
 			int totalSteps = 2000; //original model number is 2000
-			Model model = new Model(modelName, size, startYear, timestep, maxUI, maxAC, numAg, ed, gf, overlap);
+			OriginalModel model = new OriginalModel(folderName, modelName, size, startYear, timestep, maxUI, maxAC, numAg, ed, gf, overlap);
 			model.print();
 
 			model.createRandomSources(0.25, maxUI, 1);
@@ -94,7 +95,7 @@ public class RunOriginalModel {
 
 	}
 
-	public static void modelAnalysis(Model m) {
+	public static void modelAnalysis(OriginalModel m) {
 		for(int i=0; i < m.landscape.getNumRows(); i++) {
 			for(int j=0; j < m.landscape.getNumCols(); j ++) {
 				ArrayList<String> data = new ArrayList<String>();
@@ -162,10 +163,10 @@ public class RunOriginalModel {
 							retouch21;
 					data.add(datastring);
 				}
-				String path = "/Users/emilycoco/eclipse-workspace/recycling-Java/output/" + m.name;
+				String path = System.getProperty("user.dir") + "/output/" + m.outputFile;
 				File file = new File(path);
 				file.mkdir();
-				createFile(m.name + "/" + m.name + "_" + i + "_" + j, data);
+				createFile(m.outputFile + "/" + m.name + "_" + i + "_" + j, data);
 			}
 		}
 
@@ -176,7 +177,7 @@ public class RunOriginalModel {
 
 	public static void createFile(String filename, ArrayList<String> data) {
 		try {
-			FileWriter fw = new FileWriter("/Users/emilycoco/eclipse-workspace/recycling-Java/output/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}

@@ -9,10 +9,10 @@ public class TestModel {
 
 	public static void main(String[] args) {
 		
-		//need to figure out how to do arguments
+		System.out.println(System.getProperty("user.dir"));
 		
 		int totalSteps = 6; //original model number is 2000
-		Model model = new Model("test", 1, 250000, 100, 2, 1, 1, 0.5, 2, 0);
+		OriginalModel model = new OriginalModel("run_1", "test", 1, 250000, 100, 2, 1, 1, 0.5, 2, 0);
 		model.print();
 		
 		model.createRandomSources(1, 5, 1);
@@ -110,7 +110,7 @@ public class TestModel {
 		
 	}
 	
-	public static void modelAnalysis(Model m) {
+	public static void modelAnalysis(OriginalModel m) {
 		for(int i=0; i < m.landscape.getNumRows(); i++) {
 			for(int j=0; j < m.landscape.getNumCols(); j ++) {
 				ArrayList<String> data = new ArrayList<String>();

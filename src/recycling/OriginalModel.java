@@ -3,8 +3,9 @@ package recycling;
 import java.util.*;
 
 
-public class Model {
+public class OriginalModel {
 	
+	public String outputFile;
 	public String name;
 	
 	public int size;
@@ -30,8 +31,10 @@ public class Model {
 	public double EDratio;
 	public int geoFreq;
 	
+	public double mu;
 	
-	public Model(String name, int size, int startYear, int timestep, int maxUI, int maxAC, int numAgents, double ED, int GF, double overlap) {
+	public OriginalModel(String of, String name, int size, int startYear, int timestep, int maxUI, int maxAC, int numAgents, double ED, int GF, double overlap) {
+		this.outputFile = of;
 		this.name = name;
 		
 		this.nextId = 1;
@@ -56,6 +59,8 @@ public class Model {
 		this.landscape = new Grid(size, startYear);
 		this.EDratio = ED;
 		this.geoFreq = GF;
+		
+		this.mu = 1; //need to turn this into a parameter
 	
 	}
 	
@@ -121,7 +126,9 @@ public class Model {
 			if(randomMove) {
 				agents.get(i).randomMove(this.landscape.getNumRows(), this.landscape.getNumCols());
 			} else {
-				agents.get(i).randomWalk();
+				agents.get(i).randomWalk(this.mu);
+				//add in functionality to set inWindow parameter for agent
+				
 			}
 			
 			
@@ -207,7 +214,7 @@ public class Model {
 	}
 
 	public void print() {
-		System.out.println("Model parameters:");
+		System.out.println(this.outputFile + " " + this.name + " parameters:");
 		System.out.println("\t squares: " + this.size*this.size);
 		System.out.println("\t agents: " + this.totalAgents);
 		System.out.println("\t geo frequency: " + this.geoFreq);

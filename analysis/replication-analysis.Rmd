@@ -1,0 +1,170 @@
+---
+title: "Original Recycling Model Replication Analysis"
+author: "Emily Coco"
+date: "1/19/2021"
+output: html_document
+---
+
+```{r setup, echo=F, include=F}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(stringr)
+theme_set(theme_bw())
+```
+
+## Introduction
+
+*note changes to model here
+
+```{r cars, echo = F}
+setwd("/Users/emilycoco/eclipse-workspace/recycling-Java/analysis")
+load("site-types.RData")
+st = site.types
+
+#calculation of important variables
+st$length = nchar(st$sitecode)
+st$A = str_detect(st$sitecode, pattern = "1")
+st$B = str_detect(st$sitecode, pattern = "2")
+st$AB = str_detect(st$sitecode, pattern = "3")
+st$M1 = str_detect(st$sitecode, pattern = "4")
+st$M2 = str_detect(st$sitecode, pattern = "5")
+st$fulltrans = str_detect(st$sitecode, pattern = "2+4+1+")
+st$trans.UP = str_detect(st$sitecode, pattern = "2+4+")
+st$MP.trans = str_detect(st$sitecode, pattern = "4+1+")
+st$notrans = !st$M1 & !st$M2
+st$allmix = !str_detect(st$sitecode, pattern = "1") &
+  !str_detect(st$sitecode, pattern = "2") & 
+  !str_detect(st$sitecode, pattern = "3")
+st$trans.MP = str_detect(st$sitecode, pattern = "1+4+") |
+  str_detect(st$sitecode, pattern = "1+5+") #this is important
+st$UP.trans = str_detect(st$sitecode, pattern = "4+2+") |
+  str_detect(st$sitecode, pattern = "5+2+")
+st$back.trans = str_detect(st$sitecode, pattern = "1+4+2+")
+
+randomED = st %>% filter(ed == 0.5)
+EDdif = st %>% filter(ed == 0.25 | ed == 0.75)
+
+props = randomED %>% group_by(overlap, total.groups, ed.freq) %>%
+  summarize(A = sum(A, na.rm = TRUE)/n(),
+            B = sum(B, na.rm = TRUE)/n(),
+            AB = sum(AB, na.rm = TRUE)/n(),
+            M1 = sum(M1, na.rm = TRUE)/n(), 
+            M2 = sum(M2, na.rm = TRUE)/n(), 
+            ft = sum(fulltrans, na.rm = TRUE)/n(), 
+            tU = sum(trans.UP, na.rm = TRUE)/n(), 
+            Mt = sum(MP.trans, na.rm = TRUE)/n(), 
+            nt = sum(notrans, na.rm = TRUE)/n(), 
+            allmix = sum(allmix, na.rm = TRUE)/n(), 
+            tM = sum(trans.MP, na.rm = TRUE)/n(), 
+            Ut = sum(UP.trans, na.rm = TRUE)/n(), 
+            bt = sum(back.trans, na.rm = TRUE)/n())
+
+props$overlap = factor(props$overlap, levels = c("1", "0.5", "0"))
+props$total.groups = factor(props$total.groups, levels = c("10", "18", "36"))
+props$ed.freq = factor(props$ed.freq, levels = c("2", "10", "20"))
+
+st2 = site.types
+st2$A = str_count(st2$sitecode, pattern = "1")
+st2$B = str_count(st2$sitecode, pattern = "2")
+st2$AB = str_count(st2$sitecode, pattern = "3")
+st2$M1 = str_count(st2$sitecode, pattern = "4")
+st2$M2 = str_count(st2$sitecode, pattern = "5")
+
+randomED2 = st2 %>% filter(ed == 0.5)
+EDdif2 = st2 %>% filter(ed == 0.25 | ed == 0.75)
+
+counts = randomED2 %>% group_by(overlap, total.groups, ed.freq) %>%
+  summarize(A = sum(A, na.rm = TRUE),
+            B = sum(B, na.rm = TRUE),
+            AB = sum(AB, na.rm = TRUE),
+            M1 = sum(M1, na.rm = TRUE), 
+            M2 = sum(M2, na.rm = TRUE))
+
+counts$overlap = factor(counts$overlap, levels = c("1", "0.5", "0"))
+counts$total.groups = factor(counts$total.groups, levels = c("10", "18", "36"))
+counts$ed.freq = factor(counts$ed.freq, levels = c("2", "10", "20"))
+
+
+```
+
+## Relational Alignment Analysis
+
+Proportions of sites with particular types of assemblages by parameters:
+
+```{r counts} 
+##not exactly like Fig 2 in the paper -- will need to count assemblages for that
+atypes = counts %>% select(overlap, total.groups, ed.freq, A, B, AB, M1, M2) %>% 
+  pivot_longer(c(A, B, AB, M1, M2), names_to = "type", values_to = "proportion") %>% filter(proportion != 0)
+
+atypes$type = factor(atypes$type, levels = c("M2", "M1", "AB", "B", "A"))
+
+ggplot(atypes, aes(x = as.factor(ed.freq), y = as.factor(type), color = as.factor(type))) +
+  geom_point(aes(size = proportion)) +
+  facet_grid(total.groups ~ overlap, labeller = label_both) +
+  scale_color_colorblind() +
+  guides(color = "none", size = "none")
+```
+
+
+Proportions of sites with at least one M1 assemblage by parameters:
+
+```{r M1-assemblages}
+#summary(counts$M1)
+
+ggplot(data = props, aes(x = as.factor(ed.freq), y = as.numeric(M1), group = as.factor(ed.freq))) +
+  geom_boxplot() +
+  facet_grid(total.groups ~ overlap, labeller = label_both)
+  
+
+```
+
+
+Proportions of sites with at least one M2 assemblage by parameters:
+
+```{r M2-assemblages}
+#summary(counts$M1)
+
+ggplot(data = props, aes(x = as.factor(ed.freq), y = as.numeric(M2), group = as.factor(ed.freq))) +
+  geom_boxplot() +
+  facet_grid(total.groups ~ overlap, labeller = label_both)
+  
+
+```
+
+
+Proportions of sites with at least one type of transitional assemblage by parameters:
+
+```{r forward-transitions}
+ttypes = props %>% select(overlap, total.groups, ed.freq, ft, tU, Mt) %>% 
+  pivot_longer(c(ft, tU, Mt), names_to = "type", values_to = "proportion")
+ttypes$type = factor(ttypes$type, levels = c("Mt", "ft", "tU"))
+
+ggplot(ttypes, aes(x = as.factor(ed.freq), y = as.numeric(proportion), color = type)) +
+  geom_boxplot() +
+  facet_grid(total.groups ~ overlap, labeller = label_both) +
+  scale_color_colorblind()
+  
+
+```
+
+
+Proportions of sites with at least one type of reverse transitional assemblage by parameters:
+
+```{r reverse-transitions}
+btypes = props %>% select(overlap, total.groups, ed.freq, Ut, tM) %>% 
+  pivot_longer(c(Ut, tM), names_to = "type", values_to = "proportion")
+btypes$type = factor(btypes$type, levels = c("Ut", "tM"))
+
+ggplot(btypes, aes(x = as.factor(ed.freq), y = as.numeric(proportion), color = type)) +
+  geom_boxplot() +
+  facet_grid(total.groups ~ overlap, labeller = label_both) +
+  scale_color_colorblind()
+  
+
+```
+
+
+Patterns are the same!
