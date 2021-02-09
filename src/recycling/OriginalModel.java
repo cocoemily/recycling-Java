@@ -67,7 +67,9 @@ public class OriginalModel {
 	public void createAgents(int techNum, int numAgents) {
 		int counter = nextId;
 		for(int i=0; i < numAgents; i++) {
-			agents.add(new Agent(counter, techNum, this.interactionRadius));
+			Agent a = new Agent(counter, techNum);
+			a.setInteractionRadius(interactionRadius);
+			agents.add(a);
 			counter++;
 			this.nextId = counter;
 		}

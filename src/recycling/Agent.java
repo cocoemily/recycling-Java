@@ -14,10 +14,10 @@ public class Agent {
 	private ArrayList<Flake> flakes;
 	private int interactionRadius;
 	
-	public Agent(int group, int tech, int iR) {
+	public Agent(int group, int tech) {
 		this.group = group;
 		this.tech = tech;
-		interactionRadius = iR;
+		this.interactionRadius = 0;
 		
 		artifacts = new ArrayList<Artifact>();
 		nodules = new ArrayList<Nodule>();
@@ -106,10 +106,6 @@ public class Agent {
 		return this.group;
 	}
 	
-	public int getInteractionRadius() {
-		return this.interactionRadius;
-	}
-	
 	public ArrayList<Artifact> getAgentArtifacts() {
 		return this.artifacts;
 	}
@@ -126,8 +122,20 @@ public class Agent {
 		this.artifacts.add(a);
 	}
 	
+	public void collectNodule(Nodule n) {
+		this.nodules.add(n);
+	}
+	
 	public void collectFlake(Flake f) {
 		this.flakes.add(f);
+	}
+	
+	public void setInteractionRadius(int i) {
+		this.interactionRadius = i;
+	}
+	
+	public int getInteractionRadius() {
+		return this.interactionRadius;
 	}
 	
 	public void print() {
@@ -137,6 +145,19 @@ public class Agent {
 	public void printArtifactList() {
 		for(int i=0; i < this.artifacts.size(); i++) {
 			artifacts.get(i).print();
+		}
+	}
+	
+	public void printAllObjects() {
+		if(this.nodules.size() > 0) {
+			for(int i=0; i < this.nodules.size(); i++) {
+				nodules.get(i).print();
+			}
+		}
+		if(this.flakes.size() > 0) {
+			for(int i=0; i < this.flakes.size(); i++) {
+				flakes.get(i).print();
+			}
 		}
 	}
 	

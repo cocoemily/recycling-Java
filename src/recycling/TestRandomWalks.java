@@ -7,7 +7,7 @@ public class TestRandomWalks {
 		int rows = 10;
 		int cols = 10;
 		
-		Agent a = new Agent(1, 1, 1);
+		Agent a = new Agent(1, 1);
 		a.print();
 		
 		a.randomMove(rows, cols); //send to a random location in the world to start

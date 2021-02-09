@@ -37,7 +37,7 @@ public class Square {
 		yearsBP.get((yearsBP.size()-1)).depositNodules(newNodules);
 	}
 	
-	public void addFlakes(ArrayList<Nodule> newFlakes) {
+	public void addFlakes(ArrayList<Flake> newFlakes) {
 		yearsBP.get((yearsBP.size()-1)).depositFlakes(newFlakes);
 	}
 	

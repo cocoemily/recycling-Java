@@ -13,6 +13,8 @@ public class Layer {
 	private ArrayList<Artifact> artifactlist;
 	private ArrayList<Nodule> nodulelist;
 	private ArrayList<Flake> flakelist;
+	
+	private int numOccupations; //need to record how many times a particular layer/assemblage has been revisited
 
 	public Layer(int d) {
 		artifacts = false;
@@ -60,9 +62,9 @@ public class Layer {
 		nodules = true;
 	}
 
-	public void depositFlakes(ArrayList<Nodule> newFlakes) {
-		for(int i=0; i < newFlakes.size(); i++) {
-			nodulelist.add(newFlakes.get(i));
+	public void depositFlakes(ArrayList<Flake> dropF) {
+		for(int i=0; i < dropF.size(); i++) {
+			flakelist.add(dropF.get(i));
 		}
 		flakes = true;
 	}
@@ -75,11 +77,11 @@ public class Layer {
 		nodulelist.remove(n);
 	}
 
-	public void removeFlake(Artifact f) {
+	public void removeFlake(Flake f) {
 		flakelist.remove(f);
 	}
 	
-	public double calculateCortexRatio(double noduleV, double noduleSA) {
+	public double calculateCortexRatio(double noduleV, double noduleSA, double avgFlakesPerNodule) {
 		//flake volume
 		double flakeV = 0;
 		for(int i=0; i < this.flakelist.size(); i ++) {
@@ -112,8 +114,7 @@ public class Layer {
 			totalFlakeSize += flakelist.get(i).getSize();
 		}
 		
-		double averageFlakesPerNodule = 20.0; //need to figure out a way to update this
-		oSA = (totalFlakeSize / averageFlakesPerNodule) * noduleSA;
+		oSA = (totalFlakeSize / avgFlakesPerNodule) * noduleSA;
 		
 		
 		return (oSA / eSA);

@@ -56,13 +56,12 @@ public class RunOriginalModel {
 						//model.printAgents();
 					}
 				}
+				
+				model.currentYear = model.startYear + (i*model.timestep); //update current year of model
 
 				if(i % model.geoFreq == 0) {
 					model.geologicalEvents();
 				}
-
-				//model.landscape.printGrid();
-				model.currentYear = model.startYear + (i*model.timestep); //update current year of model
 
 				//agent activities
 				for(int j=0; j < model.agents.size(); j++) {
