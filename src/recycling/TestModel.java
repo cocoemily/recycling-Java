@@ -14,9 +14,9 @@ public class TestModel {
 		int totalSteps = 6; //original model number is 2000
 		
 		ExtendedModel model = new ExtendedModel("run_1", "test", 10, 250000, 100, 
-				30, 10, 1, 20, 0.5, 0.5, 10,
+				30, 10, 1, 20, 0.5, 0.5, 0.5, 10,
 				0.5, //this is overlap parameter
-				1.0, true, true, 10, 1, false, 0.5, 2);
+				1.0, true, true, 10, 1, false, 0.5, 2, 1000);
 		//model.print();
 		
 		if(model.overlap == 1) {

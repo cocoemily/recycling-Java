@@ -14,7 +14,11 @@ public class Layer {
 	private ArrayList<Nodule> nodulelist;
 	private ArrayList<Flake> flakelist;
 	
-	private int numOccupations; //need to record how many times a particular layer/assemblage has been revisited
+	private int numEncounters; //need to record how many times a particular layer/assemblage has been revisited
+	private int numDiscard; //need to record how many discard events into a particular layer/assemblage
+	private int exposureTime; //need to record how long a layer/assemblage is on the surface
+	private int manufactureEvents;
+	private int retouchEvents;
 
 	public Layer(int d) {
 		artifacts = false;
@@ -25,10 +29,24 @@ public class Layer {
 
 		nodulelist = new ArrayList<Nodule>();
 		flakelist = new ArrayList<Flake>();
+		
+		numEncounters = 0;
+		numDiscard = 0;
+		exposureTime = 0;
+		manufactureEvents = 0;
+		retouchEvents = 0;
 	}
 
 	public boolean hasArtifacts() {
 		return artifacts;
+	}
+	
+	public boolean hasFlakes() {
+		return flakes;
+	}
+	
+	public boolean hasNodules() {
+		return nodules;
 	}
 
 	public ArrayList<Artifact> getArtifacts() {
@@ -79,6 +97,47 @@ public class Layer {
 
 	public void removeFlake(Flake f) {
 		flakelist.remove(f);
+	}
+	
+	
+	public void discards(int num) {
+		numDiscard += num;
+	}
+	
+	public int getDiscardEvents() {
+		return numDiscard;
+	}
+	
+	public void exposed() {
+		exposureTime++;
+	}
+	
+	public int getExposureTime() {
+		return exposureTime;
+	}
+	
+	public void encounter() {
+		numEncounters++;
+	}
+	
+	public int getEncounters() {
+		return numEncounters;
+	}
+	
+	public void manufactured() {
+		manufactureEvents++;
+	}
+	
+	public int getManufactureEvents() {
+		return manufactureEvents;
+	}
+	
+	public void retouched() {
+		retouchEvents++;
+	}
+	
+	public int getRetouchEvents() {
+		return retouchEvents;
 	}
 	
 	public double calculateCortexRatio(double noduleV, double noduleSA, double avgFlakesPerNodule) {
@@ -159,8 +218,6 @@ public class Layer {
 			System.out.println("\t No artifacts");
 		}
 	}
-
-	//add in function to calculate Cortex Ratio per layer assemblage
 
 
 }

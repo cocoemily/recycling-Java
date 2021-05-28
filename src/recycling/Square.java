@@ -6,9 +6,15 @@ public class Square {
 	
 	ArrayList<Layer> yearsBP;
 	
+	private int numOccupations; 
+	private int numDiscard;
+	
 	public Square(int startYear) {
 		yearsBP = new ArrayList<Layer>();
 		yearsBP.add(new Layer(startYear));
+		
+		numOccupations = 0;
+		numDiscard = 0;
 	}
 	
 	public void erode() {
@@ -47,6 +53,22 @@ public class Square {
 	
 	public ArrayList<Layer> getLayers() {
 		return yearsBP;
+	}
+	
+	public void occupied() {
+		numOccupations++;
+	}
+	
+	public int getOccupationEvents() {
+		return numOccupations;
+	}
+	
+	public void discards(int num) {
+		numDiscard += num;
+	}
+	
+	public int getDiscardEvents() {
+		return numDiscard;
 	}
 	
 	public void print() {

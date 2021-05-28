@@ -72,7 +72,7 @@ public class Nodule {
 	}
 	
 	public Flake removeFlake(Agent a) {
-		int index = (int) (Math.random() * this.flakes.size()); //need to make this random
+		int index = (int) (Math.random() * this.flakes.size());
 		Flake f = this.flakes.remove(index);
 		this.volume -= (this.volume * f.getVolume());
 		this.addGroup(a.getGroup());

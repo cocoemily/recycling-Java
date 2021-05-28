@@ -1,5 +1,6 @@
 package recycling;
 
+import java.io.File;
 import java.util.*;
 
 public class ExtendedModel {
@@ -27,6 +28,7 @@ public class ExtendedModel {
 
 	public double blankProb;
 	public double discardProb;
+	public double scavengeProb;
 
 	public Grid landscape;
 	public double EDratio;
@@ -43,12 +45,20 @@ public class ExtendedModel {
 	public int minAcceptableNoduleSize;
 	public boolean flakePref;
 	public boolean strictSelect; //determine whether or not random collection after things meeting selection criteria are selected
+	
+	public int numberScavengingEvents; //need to write methods for this
+		//will need to be zeroed out each timestep
+	
+	//output data 
+	ArrayList<String> layerdata;
+	ArrayList<String> modeldata;
+	ArrayList<String> artifactdata;
 
 
 	public ExtendedModel(
 			String of, String name, int size, int startYear, int timestep, //run parameters
 			int maxUI, int maxAC, int maxFS, int maxNS, 
-			double bProb, double dProb, //action probability parameters
+			double bProb, double dProb, double sProb, //action probability parameters
 			int numAgents, double overlap, double mu, //agent creation and movement parameters
 			boolean sizePref, boolean flakePref, int minFS, int minNS, boolean strict, //selection parameters
 			double ED, int GF, //geology parameters
@@ -83,6 +93,7 @@ public class ExtendedModel {
 
 		this.discardProb = dProb;
 		this.blankProb = bProb;
+		this.scavengeProb = sProb;
 
 		this.overlap = overlap;
 		this.mu = mu;
@@ -98,6 +109,12 @@ public class ExtendedModel {
 		this.geoFreq = GF;
 		
 		this.totalSteps = totalSteps;
+		
+		this.numberScavengingEvents = 0;
+		
+		this.layerdata = new ArrayList<String>();
+		this.modeldata = new ArrayList<String>();
+		this.artifactdata = new ArrayList<String>();
 
 	}
 
@@ -212,10 +229,12 @@ public class ExtendedModel {
 				if(choice instanceof Nodule) {
 					agent.collectNodule((Nodule) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) choice);
+					this.numberScavengingEvents++;
 
 				} else if(choice instanceof Flake) {
 					agent.collectFlake((Flake) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) choice);
+					this.numberScavengingEvents++;
 				}
 			}
 		}
@@ -321,29 +340,67 @@ public class ExtendedModel {
 			if(selection.get(i) instanceof Nodule) {
 				agent.collectNodule((Nodule) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) selection.get(i));
+				this.numberScavengingEvents++;
 			} else if(selection.get(i) instanceof Flake) {
 				agent.collectFlake((Flake) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) selection.get(i));
+				this.numberScavengingEvents++;
 			}
 		}
 
 	}
-
-	public void produceBlanks(Agent agent) { //create new flakes 
-		int index = (int) (Math.random() * agent.getAgentNodules().size());
-		for(int i=0; i < this.maxUseIntensity; i++) {
-			Flake f = agent.getAgentNodules().get(index).removeFlake(agent);
-			agent.collectFlake(f);
-		}
+	
+	public void resetScavengeEventCounter() {
+		this.numberScavengingEvents = 0;
 	}
 
-	public void retouchFlakes(Agent agent) {
-		//retouch (use retouch method from Artifact class) artifacts up to maxUI from agent's artifact list
-		for(int i=0; i < agent.getAgentFlakes().size(); i++) {
-			agent.getAgentFlakes().get(i).retouch();
-			agent.getAgentFlakes().get(i).addGroup(agent.getGroup());
-			agent.getAgentFlakes().get(i).addTech(agent.getTech());
+	public void produceBlank(Agent agent) { //create new flake 
+		int index = (int) (Math.random() * agent.getAgentNodules().size());
+		Flake f = agent.getAgentNodules().get(index).removeFlake(agent);
+		agent.collectFlake(f);
+	}
+
+	public void retouchFlake(Agent agent) {
+		int index = (int) (Math.random() * agent.getAgentFlakes().size());
+		agent.getAgentFlakes().get(index).retouch();
+		agent.getAgentFlakes().get(index).addGroup(agent.getGroup());
+		agent.getAgentFlakes().get(index).addTech(agent.getTech());
+	}
+	
+	public void dropExhaustedArifacts(Agent agent) {
+		ArrayList<Object> all = new ArrayList<Object>();
+		all.addAll(agent.getAgentNodules());
+		all.addAll(agent.getAgentFlakes());
+		
+		ArrayList<Nodule> dropN = new ArrayList<Nodule>();
+		ArrayList<Flake> dropF = new ArrayList<Flake>();
+		
+		for(int i=0; i < all.size(); i++) {
+			if(all.get(i) instanceof Nodule) {
+				if(((Nodule) all.get(i)).getFlakes().size() == 0) {
+					dropN.add((Nodule) all.get(i));
+					agent.getAgentNodules().remove((Nodule) all.get(i));
+				}
+			} else if(all.get(i) instanceof Flake) {
+				if(!((Flake) all.get(i)).checkFlakeUsable()) {
+					dropF.add((Flake) all.get(i));
+					agent.getAgentFlakes().remove((Flake) all.get(i));
+				}
+			}
 		}
+		
+		if(dropN.size() != 0) {
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
+		}
+		if(dropF.size() != 0) {
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
+			
+		}
+
+		this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
+		this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositNodules(dropN);
 	}
 
 	public void dropArtifacts(Agent agent) { 
@@ -374,6 +431,16 @@ public class ExtendedModel {
 
 				}
 			}
+		}
+		
+		if(dropN.size() != 0) {
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
+		}
+		if(dropF.size() != 0) {
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
+			
 		}
 
 		this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
@@ -413,10 +480,13 @@ public class ExtendedModel {
 		return RI;
 	}
 
-	public ArrayList<String> gridToSpatial() {
+	/*
+	 * Function for outputting artifact information for each layer 
+	 */
+	public void getArtifactData() {
 		ArrayList<String> data = new ArrayList<String>();
 		//create row names
-		data.add("row,col,layer_year,obj_type,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled"); 
+		data.add("row,col,,model_year,layer_year,obj_type,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled"); 
 
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
 			for(int j=0; j < this.landscape.getNumCols(); j++) {
@@ -425,13 +495,13 @@ public class ExtendedModel {
 					//create entry for each nodule
 					ArrayList<Nodule> nods = layers.get(l).getNodules();
 					for(int n=0; n<nods.size(); n++) {
-						int nsize = nods.get(n).getSize();
+						//int nsize = nods.get(n).getSize();
 						int fleft = 0;
 						for(int y=0; y<nods.get(n).getFlakes().size(); y++) {
 							fleft += nods.get(n).getFlakes().get(y).getSize();
 						}
 
-						data.add(i + "," + j + "," + layers.get(l).getYear() + ","	//row,col,layer_year
+						data.add(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
 								+ "nodule" + ","  									//obj_type
 								+ nods.get(n).getSize() + "," 						//size
 								+ nods.get(n).getVolume() + ","						//volume
@@ -440,14 +510,14 @@ public class ExtendedModel {
 								+ nods.get(n).getGroups().size() + ","				//numgroups
 								+ nods.get(n).getFirstTech() + ","					//first_tech
 								+ nods.get(n).getLastTech() + "," 					//last_tech
-								+ "NA" + ","										//recycled
+								+ "NA" + ","										//recycled -- should this be somethign we can measure? probably
 								);
 
 					}
 					//create entry for each flake
 					ArrayList<Flake> flakes = layers.get(l).getFlakes();
 					for(int f=0; f<flakes.size(); f++) {
-						data.add(i + "," + j + "," + layers.get(l).getYear() + ","	//row,col,layer_year
+						data.add(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
 								+ "flake" + ","  									//obj_type
 								+ flakes.get(f).getSize() + "," 					//size
 								+ flakes.get(f).getVolume() + ","					//volume
@@ -462,7 +532,99 @@ public class ExtendedModel {
 				}
 			}
 		}
-		return data;
+		this.artifactdata.addAll(data);
+	}
+	
+	/*
+	 * Function for outputting information for each layer 
+	 */
+	public void getLayerData() {
+		ArrayList<String> data = new ArrayList<String>();
+		ArrayList<String> params = this.getParameterData();
+		String cols = params.get(0) + "row,col,model_year,year,nodule.count,flake.count,cortex.ratio,"
+				+ "recycling.intensity,num.discards,num.encounters,num.manufacture,num.retouch,num.occupation";
+		data.add(cols);
+		
+		for(int i=0; i < this.landscape.getNumRows(); i++) {
+			for(int j=0; j < this.landscape.getNumCols(); j++) {
+				for(int l=0; l < this.landscape.getElement(i, j).getLayers().size(); l++) {
+					String datastring = params.get(1);
+					Square square = this.landscape.getElement(i, j);
+					Layer layer = this.landscape.getElement(i, j).getLayers().get(l);
+					datastring += i + "," + j + "," + this.currentYear + ",";
+					datastring += layer.getYear() + ",";
+					//nodule count
+					datastring += layer.getNodules().size() + ",";
+					//flake count
+					datastring += layer.getFlakes().size() + ",";
+					//cortex ratio
+					datastring += layer.calculateCortexRatio(this.noduleV, this.noduleSA, this.avgFlakesOnNodule) + ",";
+					// recycling intensity
+					datastring += layer.calculateRecyclingIntensity() + ",";
+					// discard count
+					datastring += layer.getDiscardEvents() + ",";
+					//encounter count
+					datastring += layer.getEncounters() + ",";
+					//manufacture event count
+					datastring += layer.getManufactureEvents() + ",";
+					//retouch event count
+					datastring += layer.getRetouchEvents() + ",";
+					//occupation event count
+					datastring += square.getOccupationEvents();
+					
+					data.add(datastring);
+				}
+			}
+		}
+		this.layerdata.addAll(data);
+	}
+	
+	/*
+	 * Function for outputting model data at necessary intervals
+	 */
+	public void getModelData() {
+		ArrayList<String> data = new ArrayList<String>();
+		ArrayList<String> params = this.getParameterData();
+		String cols = params.get(0) + ",model_year,num.scav.events,total.recycled,num.deposits,total.encounters,total.discards,total.manu.events,total.retouches"; //are there other variables?
+		data.add(cols);
+		
+		String datastring = params.get(1);
+		datastring += this.currentYear + "," + this.numberScavengingEvents + "," ;
+		
+		int totalRecycledItems = 0;
+		int numDeposits = 0;
+		int totalEncounters = 0;
+		int totalDiscards = 0;
+		int totalManufactures = 0;
+		int totalRetouches = 0;
+		for(int i=0; i < this.landscape.getNumRows(); i++) {
+			for(int j=0; j < this.landscape.getNumCols(); j++) {
+				for(int l=0; l < this.landscape.getElement(i, j).getLayers().size(); l++) {
+					Layer layer = this.landscape.getElement(i, j).getLayers().get(l);
+					
+					//counter for recycled flakes
+					ArrayList<Flake> flakes = layer.getFlakes();
+					for(int f=0; f<flakes.size(); f++) {
+						if(flakes.get(f).checkWasRecycled()) {
+							totalRecycledItems++;
+						}
+					}
+					//add in counter for recycled nodules
+					
+					
+					if(layer.hasFlakes() || layer.hasNodules()) {
+						numDeposits++;
+					}
+					totalEncounters += layer.getEncounters();
+					totalDiscards += layer.getDiscardEvents();
+					totalManufactures += layer.getManufactureEvents();
+					totalRetouches += layer.getRetouchEvents();
+				}
+			}
+		}
+		datastring += totalRecycledItems + "," + numDeposits + "," + totalEncounters + "," + totalDiscards + "," + totalManufactures + "," + totalRetouches;
+		data.add(datastring);
+		this.modeldata.addAll(data);
 	}
 
 	public ArrayList<String> getParameterData() {
@@ -513,14 +675,18 @@ public class ExtendedModel {
 		return data;
 	}
 	
-	public ArrayList<String> getModelData() {
-		ArrayList<String> data = new ArrayList<String>();
-		
-		//need to write function like modelAnalysis function in RunOriginalModel script
-		
-		
-		return data;
+	public ArrayList<String> modelOutput() {
+		return this.modeldata;
 	}
+	
+	public ArrayList<String> layersOutput() {
+		return this.layerdata;
+	}
+	
+	public ArrayList<String> artifactsOutput() {
+		return this.artifactdata;
+	}
+	
 
 	public void print() { //need to update as deciding what factors we are most interested in 
 		System.out.println(this.outputFile + " " + this.name + " parameters:");

@@ -4,7 +4,8 @@ public class Grid {
 	
 	Square[][] grid;
 	private int rows;
-	private int columns;
+	private int columns; 
+
 	
 	public Grid(int n, int year) {
 		grid = new Square[n][n];
