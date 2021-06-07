@@ -68,6 +68,7 @@ public class Agent {
 	public void randomMove(int rows, int cols) {
 		this.setLocation((int) (Math.random()* rows), (int) (Math.random()* cols));
 		this.locationList.add(new Point(this.curX, this.curY));
+		this.setInWindow(true);
 
 	}
 

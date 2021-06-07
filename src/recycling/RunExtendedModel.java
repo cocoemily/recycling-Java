@@ -2,8 +2,6 @@ package recycling;
 
 import java.util.*;
 
-import javax.swing.event.TableColumnModelListener;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.FileWriter;
@@ -12,34 +10,34 @@ public class RunExtendedModel {
 
 	public static void main(String[] args) {
 		//arguments
-		if(args.length != 23) {
+		if(args.length != 22) {
 			System.out.println("Missing arguments");
 
 
 		} else {
 			ExtendedModel model = new ExtendedModel(
-					(String) args[0], (String) args[1], 
-					Integer.parseInt(args[2]), 
-					Integer.parseInt(args[3]), 
-					Integer.parseInt(args[4]),
-					Integer.parseInt(args[5]), 
-					Integer.parseInt(args[6]), 
-					Integer.parseInt(args[7]), 
-					Integer.parseInt(args[8]), 
-					Double.parseDouble(args[9]), 
-					Double.parseDouble(args[10]),
-					Double.parseDouble(args[11]),
-					Integer.parseInt(args[12]), 
+					(String) args[0], 				//outputFile
+					(String) args[1], 				//name
+					Integer.parseInt(args[2]), 		//size 
+					Integer.parseInt(args[3]), 		//startYear
+					Integer.parseInt(args[4]), 		//timestep
+					Integer.parseInt(args[5]), 		//maxUI
+					Integer.parseInt(args[6]), 		//maxAC
+					Integer.parseInt(args[7]), 		//maxFS
+					Integer.parseInt(args[8]), 		//maxNS
+					Double.parseDouble(args[9]),	//bProb
+					Double.parseDouble(args[10]),	//sProb
+					Integer.parseInt(args[11]), 	//numAgents
+					Double.parseDouble(args[12]), 	//overlap
 					Double.parseDouble(args[13]), 
-					Double.parseDouble(args[14]), 
+					Boolean.parseBoolean(args[14]), 
 					Boolean.parseBoolean(args[15]), 
-					Boolean.parseBoolean(args[16]), 
+					Integer.parseInt(args[16]), 
 					Integer.parseInt(args[17]), 
-					Integer.parseInt(args[18]), 
-					Boolean.parseBoolean(args[19]), 
-					Double.parseDouble(args[20]), 
-					Integer.parseInt(args[21]), 
-					Integer.parseInt(args[22])
+					Boolean.parseBoolean(args[18]), 
+					Double.parseDouble(args[19]), 
+					Integer.parseInt(args[20]), 
+					Integer.parseInt(args[21])
 					);
 
 
@@ -150,8 +148,10 @@ public class RunExtendedModel {
 					model.moveAgent(model.agents.get(whichAgent), false);
 
 				} else {
-					whichAgent++;
-					model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
+					if(whichAgent < model.agents.size()-1) {
+						whichAgent++;
+						model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
+					}
 				}
 				
 				model.getArtifactData();

@@ -53,11 +53,19 @@ public class Flake {
 	}
 	
 	public int getFirstTech() {
-		return this.techs.get(0);
+		if(this.techs.size() == 0 ) {
+			return 0;
+		} else {
+			return this.techs.get(0);
+		}
 	}
 	
 	public int getLastTech() {
-		return this.techs.get(this.techs.size()-1);
+		if(this.techs.size() == 0 ) {
+			return 0;
+		} else {
+			return this.techs.get(this.techs.size()-1);
+		}
 	}
 	
 	public boolean checkFlakeUsable() {

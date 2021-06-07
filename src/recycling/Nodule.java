@@ -64,16 +64,26 @@ public class Nodule {
 	}
 	
 	public int getFirstTech() {
-		return this.techs.get(0);
+		if(this.techs.size() == 0 ) {
+			return 0;
+		} else {
+			return this.techs.get(0);
+		}
 	}
 	
 	public int getLastTech() {
-		return this.techs.get(this.techs.size()-1);
+		if(this.techs.size() == 0 ) {
+			return 0;
+		} else {
+			return this.techs.get(this.techs.size()-1);
+		}
 	}
 	
 	public Flake removeFlake(Agent a) {
 		int index = (int) (Math.random() * this.flakes.size());
 		Flake f = this.flakes.remove(index);
+		f.addGroup(a.getGroup());
+		f.addTech(a.getTech());
 		this.volume -= (this.volume * f.getVolume());
 		this.addGroup(a.getGroup());
 		this.addTech(a.getTech());
