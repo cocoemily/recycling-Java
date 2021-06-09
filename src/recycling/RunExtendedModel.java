@@ -29,17 +29,18 @@ public class RunExtendedModel {
 					Double.parseDouble(args[10]),	//sProb
 					Integer.parseInt(args[11]), 	//numAgents
 					Double.parseDouble(args[12]), 	//overlap
-					Double.parseDouble(args[13]), 
-					Boolean.parseBoolean(args[14]), 
-					Boolean.parseBoolean(args[15]), 
-					Integer.parseInt(args[16]), 
-					Integer.parseInt(args[17]), 
-					Boolean.parseBoolean(args[18]), 
-					Double.parseDouble(args[19]), 
-					Integer.parseInt(args[20]), 
-					Integer.parseInt(args[21])
+					Double.parseDouble(args[13]),  	//mu
+					Boolean.parseBoolean(args[14]), //sizePref
+					Boolean.parseBoolean(args[15]), //flakePref
+					Integer.parseInt(args[16]), 	//minFS
+					Integer.parseInt(args[17]), 	//minNS
+					Boolean.parseBoolean(args[18]), //strict
+					Double.parseDouble(args[19]), 	//ED
+					Integer.parseInt(args[20]), 	//GF
+					Integer.parseInt(args[21])		//totalSteps
 					);
-
+			model.print();
+			System.out.println("model created.");
 
 			//create agents per overlap parameter
 			if(model.overlap == 1) {
@@ -88,6 +89,9 @@ public class RunExtendedModel {
 					tech++;
 				}
 			}
+			model.printAgents();
+			System.out.println("agents created.");
+			
 
 			int whichAgent = 0;
 			model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
@@ -95,6 +99,7 @@ public class RunExtendedModel {
 			for(int i=0; i < model.totalSteps; i++) {
 
 				model.currentYear = model.startYear + (i*model.timestep); //update current year of model
+				System.out.println("current year: " + model.currentYear);
 
 				//geological events
 				//				if(i % model.geoFreq == 0) {
@@ -114,12 +119,14 @@ public class RunExtendedModel {
 					if(l.hasFlakes() || l.hasNodules()) { //if there are objects at the current layer, collect with certain probability
 						if(Math.random() < model.scavengeProb) {
 							model.collectSelectedArtifacts(a);
+							System.out.println("\t agent collected artifacts");
 						}
 					}
 					
 					if(a.hasObjects()) {
 						if(Math.random() < model.blankProb) {
 							if(a.getAgentNodules().size() != 0 ) {
+								System.out.println("\t agent produced blanks");
 								for(int ui=0; ui < model.maxUseIntensity; ui++) {
 									model.produceBlank(a);
 									l.manufactured();
@@ -127,6 +134,7 @@ public class RunExtendedModel {
 							}
 						} else {
 							if(a.getAgentFlakes().size() != 0) {
+								System.out.println("\t agent retouched flakes");
 								for(int ui=0; ui < model.maxUseIntensity; ui++) {
 									model.retouchFlake(a);
 									l.manufactured();
@@ -136,7 +144,8 @@ public class RunExtendedModel {
 						}
 
 					} else {
-						model.findNodules(a, model.maxArtifactCarry - a.numberCurrentObjects()); //find nodules until toolkit is full?
+						model.findNodules(a, model.maxArtifactCarry - a.numberCurrentObjects());
+						System.out.println("\t agent found new nodules");
 					}
 
 					//drop all exhausted objects

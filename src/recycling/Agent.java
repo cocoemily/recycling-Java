@@ -76,11 +76,11 @@ public class Agent {
 		int[] pHeadings = new int[]{ 0, 45, 90, 135, 180, 225, 270, 315, 360 };
 		int index = (int) (Math.random() * pHeadings.length);
 		int heading = pHeadings[index];
-		System.out.println("Heading: " + heading);
+		//System.out.println("Heading: " + heading);
 
 		double steplength = Math.pow(Math.random(), (-1/mu));
 		int sl = (int) steplength;
-		System.out.println("Step length: " + steplength + " -> " + sl);
+		//System.out.println("Step length: " + steplength + " -> " + sl);
 
 		int newX = 0;
 		int newY = 0;

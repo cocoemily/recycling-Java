@@ -89,14 +89,23 @@ public class Layer {
 
 	public void removeArtifact(Artifact a) {
 		artifactlist.remove(a);
+		if(artifactlist.size() == 0) {
+			artifacts = false;
+		}
 	}
 
 	public void removeNodule(Nodule n) {
 		nodulelist.remove(n);
+		if(nodulelist.size() == 0) {
+			nodules = false;
+		}
 	}
 
 	public void removeFlake(Flake f) {
 		flakelist.remove(f);
+		if(flakelist.size() == 0) {
+			flakes = false;
+		}
 	}
 	
 	
@@ -141,42 +150,25 @@ public class Layer {
 	}
 	
 	public double calculateCortexRatio(double noduleV, double noduleSA, double avgFlakesPerNodule) {
-		//flake volume
-		double flakeV = 0;
-		for(int i=0; i < this.flakelist.size(); i ++) {
-			flakeV += this.flakelist.get(i).getVolume();
+		int numNods = this.getNodules().size();
+		int numFlks = this.getFlakes().size();
+		int flksOnNods = 0;
+		for(int n=0; n < this.getNodules().size(); n++) {
+			flksOnNods += this.getNodules().get(n).getFlakes().size();
 		}
 		
-		//core volume
-		double coreV = 0;
-		for(int i=0; i < this.nodulelist.size(); i++) {
-			coreV += this.nodulelist.get(i).getVolume();
-		}
+		double flakevol = numFlks * ((noduleV * 0.05) / avgFlakesPerNodule);
+		double nodvol = numNods * (noduleV * (1.0 - 0.05));
+		double fnvol = flksOnNods * ((noduleV * 0.05) / avgFlakesPerNodule);
 		
-		//assemblage volume
-		double assemV = flakeV + coreV;
+		double modeledNodNum = (flakevol + nodvol + fnvol) / noduleV;
 		
-		//expected surface area
-		double eNN = assemV / noduleV;
-		double eSA =  noduleSA * eNN;
+		double expSA = noduleSA * modeledNodNum;
+		double obsSA = ((numFlks + flksOnNods) / avgFlakesPerNodule) * noduleSA;
 		
-		//observed surface area 
-		double oSA = 0;
-		int totalFlakeSize = 0;
-		for(int i=0; i < this.nodulelist.size(); i++) {
-			ArrayList<Flake> flakes = this.nodulelist.get(i).getFlakes();
-			for(int f=0; f < flakes.size(); f++) {
-				totalFlakeSize += flakes.get(f).getSize();
-			}
-		}
-		for(int i=0; i < this.flakelist.size(); i++) {
-			totalFlakeSize += flakelist.get(i).getSize();
-		}
+		double CR = obsSA / expSA;
 		
-		oSA = (totalFlakeSize / avgFlakesPerNodule) * noduleSA;
-		
-		
-		return (oSA / eSA);
+		return CR;
 	}
 	
 	public double calculateRecyclingIntensity() { //what proportion of artifacts have been recycled
@@ -199,21 +191,25 @@ public class Layer {
 
 	public void print() {
 		System.out.println("Age: " + date + " , Artifacts:");
-		if(artifacts) {
-			for(int i=0; i < artifactlist.size(); i++) {
-				System.out.print("\t");
-				artifactlist.get(i).print(); 
-			}
-		} else if(nodules) {
-			for(int i=0; i < nodulelist.size(); i++) {
-				System.out.print("\t");
-				nodulelist.get(i).print(); 
-			}
-		} else if(flakes) {
-			for(int i=0; i < flakelist.size(); i++) {
-				System.out.print("\t");
-				flakelist.get(i).print(); 
-			}
+		if(artifacts || nodules || flakes) {
+			if(artifacts) {
+				for(int i=0; i < artifactlist.size(); i++) {
+					System.out.print("\t");
+					artifactlist.get(i).print(); 
+				}
+			} 
+			if(nodules) {
+				for(int i=0; i < nodulelist.size(); i++) {
+					System.out.print("\t");
+					nodulelist.get(i).print(); 
+				}
+			} 
+			if(flakes) {
+				for(int i=0; i < flakelist.size(); i++) {
+					System.out.print("\t");
+					flakelist.get(i).print(); 
+				}
+			} 
 		} else {
 			System.out.println("\t No artifacts");
 		}

@@ -26,8 +26,8 @@ Agent-based model of recycling in extreme case of no geological processes with a
 **args[13]** mu (double) *parameter for Levy walk function*  
 **args[14]** sizePref (boolean) *selection is based on size of objects*  
 **args[15]** flakePref (boolean) *preference of flakes over nodules*  
-**args[16]** minNS (int) *selection for nodules of at least this size*  
-**args[17]** minFS (int) *selection for flakes of at least this size*  
+**args[16]** minFS (int) *selection for flakes of at least this size*  
+**args[17]** minNS (int) *selection for nodules of at least this size*  
 **args[18]** strict (boolean) *possibility of scavenging items that do not match selection parameters*  
 **args[19]** ED (double) *probability of erosion* **unused in current model code**  
 **args[20]** GF (int) *frequency of geological events* **unused in current model code**  

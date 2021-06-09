@@ -84,7 +84,7 @@ public class Nodule {
 		Flake f = this.flakes.remove(index);
 		f.addGroup(a.getGroup());
 		f.addTech(a.getTech());
-		this.volume -= (this.volume * f.getVolume());
+		this.volume -= f.getVolume();
 		this.addGroup(a.getGroup());
 		this.addTech(a.getTech());
 		return f;
