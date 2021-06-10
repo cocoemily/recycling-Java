@@ -2,6 +2,12 @@ package recycling;
 
 import java.util.*;
 
+/**
+ * Nodule (core) artifacts that have a size and particular number of flakes that can be removed
+ * for the ExtendedModel 
+ * @author emilycoco
+ *
+ */
 public class Nodule {
 	
 	private int size;

@@ -2,6 +2,11 @@ package recycling;
 
 import java.util.*;
 
+/**
+ * Object for storing artifact lists associated with a particular model year
+ * @author emilycoco
+ *
+ */
 public class Layer {
 
 	private boolean artifacts;
@@ -14,11 +19,11 @@ public class Layer {
 	private ArrayList<Nodule> nodulelist;
 	private ArrayList<Flake> flakelist;
 	
-	private int numEncounters; //need to record how many times a particular layer/assemblage has been revisited
-	private int numDiscard; //need to record how many discard events into a particular layer/assemblage
-	private int exposureTime; //need to record how long a layer/assemblage is on the surface
-	private int manufactureEvents;
-	private int retouchEvents;
+	private int numEncounters; //how many times the layer has been visited
+	private int numDiscard; //how many discard events into the layer
+	private int exposureTime; //how long the layer is on the surface //will need to be added with geo event functionality
+	private int manufactureEvents; //how many blanks produced + retouch actions at the layer location
+	private int retouchEvents; //how many flake retouches happen at the layer location
 
 	public Layer(int d) {
 		artifacts = false;
@@ -149,6 +154,13 @@ public class Layer {
 		return retouchEvents;
 	}
 	
+	/**
+	 * Function for calculating the Cortex Ratio of all the artifacts in layer
+	 * @param noduleV nodule volume
+	 * @param noduleSA nodule surface area
+	 * @param avgFlakesPerNodule average number of flakes per nodule
+	 * @return Cortex Ratio
+	 */
 	public double calculateCortexRatio(double noduleV, double noduleSA, double avgFlakesPerNodule) {
 		int numNods = this.getNodules().size();
 		int numFlks = this.getFlakes().size();
@@ -171,6 +183,10 @@ public class Layer {
 		return CR;
 	}
 	
+	/**
+	 * Function for calculating recycling intensity as the recycled proportion of all the artifacts in the layer
+	 * @return recycling intensity
+	 */
 	public double calculateRecyclingIntensity() { //what proportion of artifacts have been recycled
 		double recycledItems = 0.0;
 		double aSize = this.flakelist.size() + this.nodulelist.size();

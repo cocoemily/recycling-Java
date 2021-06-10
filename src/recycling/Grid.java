@@ -1,5 +1,10 @@
 package recycling;
 
+/**
+ * Object for storing a two-dimensional array of Square objects that serves as artificial landscape
+ * @author emilycoco
+ *
+ */
 public class Grid {
 	
 	Square[][] grid;

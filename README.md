@@ -3,7 +3,7 @@
 Agent-based model of recycling 
 
 ### OriginalModel
-Translation of agent-based model from Coco et al 2020 from R to Java
+Translation of agent-based model from Coco et al 2020 from R to Java. Replication analysis can be found in the analysis folder.
 
 
 ### ExtendedModel

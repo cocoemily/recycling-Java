@@ -2,6 +2,11 @@ package recycling;
 
 import java.util.ArrayList;
 
+/**
+ * Flake artifacts that have a size and shape for the ExtendedModel 
+ * @author emilycoco
+ *
+ */
 public class Flake {
 	
 	private int size;

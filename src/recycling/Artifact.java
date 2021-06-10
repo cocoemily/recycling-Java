@@ -2,20 +2,21 @@ package recycling;
 
 import java.util.ArrayList;
 
+/**
+ * Simple artifacts that can be retouched indefinitely for Original Model
+ * @author emilycoco
+ *
+ */
 public class Artifact {
 	
 	private int stage;
 	private ArrayList<Integer> groups;
 	private ArrayList<Integer> techs;
 	
-	//need to add in properties for types of artifacts
-	
 	public Artifact() {
 		stage = 0;
 		groups = new ArrayList<Integer>();
 		techs = new ArrayList<Integer>();
-		
-		//initialize other properties
 	}
 	
 	public void addGroup(int group) {

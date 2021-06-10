@@ -122,6 +122,10 @@ public class ExtendedModel {
 
 	}
 
+	/**
+	 * Creates a new agent and updates variable for providing agents unique id numbers
+	 * @param techNum integer specifying the technology type of an agent
+	 */
 	public void createAgent(int techNum) {
 		int counter = nextId;
 		agents.add(new Agent(counter, techNum));
@@ -129,6 +133,11 @@ public class ExtendedModel {
 		this.nextId = counter;
 	}
 
+	/**
+	 * Creates multiple new agents as specified by numAgents parameter
+	 * @param techNum integer specifying the technology type of an agent
+	 * @param numAgents integer for number of agents to be created
+	 */
 	public void createAgents(int techNum, int numAgents) {
 		int counter = nextId;
 		for(int i=0; i < numAgents; i++) {
@@ -139,10 +148,19 @@ public class ExtendedModel {
 
 	}
 
+	/**
+	 * Removes agents from the model agent list if they are of a specific technology type
+	 * @param techNum integer specifying the technology type of an agent
+	 */
 	public void removeAgents(int techNum) {
 		this.agents.removeIf(Agent -> Agent.getTech() == techNum);
 	}
 
+	/**
+	 * Initialize some squares within the landscape with new nodules
+	 * @param sourceProb probability that a square will be initialized with new nodules
+	 * @param numArtifacts number of nodules added to a square
+	 */
 	public void createRandomSources(double sourceProb, int numArtifacts) { 
 		//initialize landscape with some artifacts
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
@@ -163,6 +181,9 @@ public class ExtendedModel {
 	}
 
 
+	/**
+	 * Calls functions for geological events within the Square class for each grid square in the model
+	 */
 	public void geologicalEvents() {
 		int year = currentYear + timestep;
 		for(int j=0; j < landscape.getNumRows(); j++) { //each row of the Grid
@@ -185,6 +206,10 @@ public class ExtendedModel {
 
 
 	//Agent methods
+	/**
+	 * Moves all agents in the agent list, either randomly or according to the Levy walk function
+	 * @param randomMove if true agents move randomly; if false agents use Levy walks
+	 */
 	public void moveAgents(boolean randomMove) { //for when there are multiple agents on the landscape
 		for(int i=0; i < agents.size(); i++) {
 			if(randomMove) {
@@ -200,7 +225,12 @@ public class ExtendedModel {
 			}
 		}
 	}
-
+	
+	/**
+	 * Moves a single agent, either randomly or according to the Levy walk function 
+	 * @param agent to be moved
+	 * @param randomMove if true agents move randomly; if false agents use Levy walks
+	 */
 	public void moveAgent(Agent agent, boolean randomMove) { //for when there is a single agent on the landscape
 		if(randomMove) {
 			agent.randomMove(this.landscape.getNumRows(), this.landscape.getNumCols());
@@ -215,10 +245,20 @@ public class ExtendedModel {
 		}
 	}
 
+	/**
+	 * Agent "finds" new nodules and adds them to its nodule list
+	 * @param agent 
+	 * @param numNodules number of nodules agent "finds"
+	 */
 	public void findNodules(Agent agent, int numNodules) {
 		agent.initializeNodules(numNodules, this.maxNoduleSize, this.noduleV, this.maxFlakeSize);
 	}
-
+	
+	/**
+	 * Agent scavenges artifacts from a grid square randomly (using no selection parameters) 
+	 * and adds them to its artifact lists
+	 * @param agent 
+	 */
 	public void collectRandomArtifacts(Agent agent) { //completely random
 		for(int i=agent.getAgentArtifacts().size(); i < this.maxUseIntensity; i++) {
 			ArrayList<Object> all = new ArrayList<Object>();
@@ -233,35 +273,32 @@ public class ExtendedModel {
 				if(choice instanceof Nodule) {
 					agent.collectNodule((Nodule) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) choice);
-					this.numberScavengingEvents++;
+					this.numberScavengingEvents++; //tracks number of scavenging events
 
 				} else if(choice instanceof Flake) {
 					agent.collectFlake((Flake) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) choice);
-					this.numberScavengingEvents++;
+					this.numberScavengingEvents++; //tracks number of scavenging events
 				}
 			}
 		}
-
-		//agent.printAllObjects();
 	}
 
-	/*
+	/**
 	 * Function to provide a selection of flakes/nodules from provided lists of flakes and nodules 
 	 * that fit the selection criteria parameters of the model instance
 	 * 
-	 * @param nodules list of Nodule objects
-	 * @param flakes list of Flake objects
-	 * @param number of objects to select
+	 * @param nodules list of Nodule objects to select from
+	 * @param flakes list of Flake objects to select from
+	 * @param numNeeded number of objects to select
 	 * @return list of Objects selected based on combinations of selection parameters
-	 * 
 	 */
 	public ArrayList<Object> select(ArrayList<Nodule> nodules, ArrayList<Flake> flakes, int numNeeded) {
 		ArrayList<Object> selection = new ArrayList<Object>();
 
 		if(this.flakePref) { //flake preference
 			ArrayList<Flake> possFlakes = new ArrayList<Flake>();
-			if(this.sizePref) { 
+			if(this.sizePref) { //size preference
 				for(int i=0; i < flakes.size(); i++) {
 					if(flakes.get(i).getSize() >= this.minAcceptableFlakeSize) {
 						possFlakes.add(flakes.get(i));
@@ -288,9 +325,8 @@ public class ExtendedModel {
 
 		} else { //nodule preference
 			ArrayList<Nodule> possNods = new ArrayList<Nodule>();
-			if(this.sizePref) { 
+			if(this.sizePref) { //size preference
 				for(int i=0; i < nodules.size(); i++) {
-
 					//current selection based on how many flakes are left to take off
 					if(nodules.get(i).getFlakes().size() >= this.minAcceptableNoduleSize) { 
 						possNods.add(nodules.get(i));
@@ -315,7 +351,7 @@ public class ExtendedModel {
 
 		}
 
-		if(!this.strictSelect) {
+		if(!this.strictSelect) { //if selection is not strictly limited to the above parameters, add additional objects
 			if(selection.size() < numNeeded) {
 				ArrayList<Object> possible = new ArrayList<Object>();
 				if(flakes.size() > 0) {
@@ -343,6 +379,11 @@ public class ExtendedModel {
 		return selection;
 	}
 
+	/**
+	 * Agent scavenges artifacts from a grid square using the selection parameters  
+	 * and adds them to its artifact lists
+	 * @param agent
+	 */
 	public void collectSelectedArtifacts(Agent agent) {
 		ArrayList<Object> selection  = select(
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().getNodules(),
@@ -354,20 +395,27 @@ public class ExtendedModel {
 			if(selection.get(i) instanceof Nodule) {
 				agent.collectNodule((Nodule) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) selection.get(i));
-				this.numberScavengingEvents++;
+				this.numberScavengingEvents++; //tracks scavenging events
 			} else if(selection.get(i) instanceof Flake) {
 				agent.collectFlake((Flake) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) selection.get(i));
-				this.numberScavengingEvents++;
+				this.numberScavengingEvents++; //tracks scavenging events
 			}
 		}
 
 	}
 
+	/**
+	 * Resets scavenging event counter to zero to track number of events per model step
+	 */
 	public void resetScavengeEventCounter() {
 		this.numberScavengingEvents = 0;
 	}
 
+	/**
+	 * Agent removes a flake from a random nodule it is holding
+	 * @param agent
+	 */
 	public void produceBlank(Agent agent) { //create new flake 
 		int index = (int) (Math.random() * agent.getAgentNodules().size());
 		if(agent.getAgentNodules().get(index).getFlakes().size() != 0) {
@@ -376,6 +424,10 @@ public class ExtendedModel {
 		}
 	}
 
+	/**
+	 * Agent does work on a random flake it is holding 
+	 * @param agent
+	 */
 	public void retouchFlake(Agent agent) {
 		int index = (int) (Math.random() * agent.getAgentFlakes().size());
 		Flake f = agent.getAgentFlakes().get(index);
@@ -387,6 +439,11 @@ public class ExtendedModel {
 		}
 	}
 
+	/**
+	 * Agent drops any exhausted objects (i.e. nodules with no more flakes to remove 
+	 * & flakes that cannot be retouched anymore)
+	 * @param agent
+	 */
 	public void dropExhaustedArifacts(Agent agent) {
 		ArrayList<Object> all = new ArrayList<Object>();
 		all.addAll(agent.getAgentNodules());
@@ -423,6 +480,11 @@ public class ExtendedModel {
 		}
 	}
 
+	/**
+	 * Agent drops objects when it is carrying too many according to the selection parameters.
+	 * Agents will keep objects that fit the selection parameters over other objects. 
+	 * @param agent
+	 */
 	public void dropArtifacts(Agent agent) { 
 		//select flakes/nodules to keep
 		if(agent.getAgentFlakes().size() != 0 || agent.getAgentNodules().size() != 0 ) {
@@ -470,6 +532,13 @@ public class ExtendedModel {
 		}
 	}
 
+	/**
+	 * Function for calculating the Cortex Ratio of all the artifacts left on the landscape for a given model step
+	 * @param year
+	 * @return Cortex Ratio 
+	 */
+	//need to rethink how this would work with geological events happening, 
+	//because layers on "surface" would not necessarily have the same age
 	public double calculateTotalCortexRatio(int year) {
 		int numNods = 0;
 		int numFlks = 0;
@@ -505,6 +574,14 @@ public class ExtendedModel {
 		return CR;
 	}
 
+	/**
+	 * Function for calculating recycling intensity as the recycled proportion of all the artifacts 
+	 * left on the landscape for a given model step
+	 * @param year
+	 * @return recycling intensity
+	 */
+	//need to rethink how this would work with geological events happening, 
+	//because layers on "surface" would not necessarily have the same age
 	public double calculateTotalRecyclingIntensity(int year) {
 		double recycledItems = 0.0;
 		double aSize = 0;
@@ -536,7 +613,7 @@ public class ExtendedModel {
 		return (recycledItems / aSize);
 	}
 
-	/*
+	/**
 	 * Function for outputting artifact information for each layer 
 	 */
 	public void getArtifactData() {
@@ -594,7 +671,7 @@ public class ExtendedModel {
 		this.artifactdata.addAll(data);
 	}
 
-	/*
+	/**
 	 * Function for outputting information for each layer 
 	 */
 	public void getLayerData() {
@@ -635,7 +712,7 @@ public class ExtendedModel {
 		this.layerdata.addAll(data);
 	}
 
-	/*
+	/**
 	 * Function for outputting model data at necessary intervals
 	 */
 	public void getModelData() {
@@ -693,6 +770,10 @@ public class ExtendedModel {
 		this.modeldata.addAll(data);
 	}
 
+	/**
+	 * Function for tracking parameter data of the model
+	 * @return two Strings with column names and parameter values
+	 */
 	public ArrayList<String> getParameterData() {
 		ArrayList<String> data = new ArrayList<String>();
 		data.add("size," +
@@ -741,18 +822,26 @@ public class ExtendedModel {
 		return data;
 	}
 
+	/**
+	 * @return Strings with model data
+	 */
 	public ArrayList<String> modelOutput() {
 		return this.modeldata;
 	}
 
+	/**
+	 * @return Strings with layer data
+	 */
 	public ArrayList<String> layersOutput() {
 		return this.layerdata;
 	}
 
+	/**
+	 * @return Strings with artifact data
+	 */
 	public ArrayList<String> artifactsOutput() {
 		return this.artifactdata;
 	}
-
 
 	public void print() { //need to update as deciding what factors we are most interested in 
 		System.out.println(this.outputFile + " " + this.name + " parameters:");
@@ -762,10 +851,15 @@ public class ExtendedModel {
 		System.out.println("\t overlap: " + this.overlap);
 		System.out.println("\t Levy mu: " + this.mu);
 
-		System.out.println("\t Selection parameters: " + " flake preference " + this.flakePref + " size preference " + this.sizePref + " strict preferences " + this.strictSelect);
-
-		System.out.println("\t ED ratio: " + this.EDratio);
-		System.out.println("\t geo frequency: " + this.geoFreq);
+		System.out.println("\t selection parameters: " + "flake preference " + this.flakePref + " size preference " + this.sizePref + " strict preferences " + this.strictSelect);
+		
+		System.out.println("\t blank probablity: " + this.blankProb);
+		System.out.println("\t scavenging probablity: " + this.scavengeProb);
+		System.out.println("\t max use intensity: " + this.maxUseIntensity);
+		System.out.println("\t max artifact carry: " + this.maxArtifactCarry);
+		
+		//System.out.println("\t ED ratio: " + this.EDratio);
+		//System.out.println("\t geo frequency: " + this.geoFreq);
 
 	}
 

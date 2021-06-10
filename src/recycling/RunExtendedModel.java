@@ -8,6 +8,10 @@ import java.io.FileWriter;
 
 public class RunExtendedModel {
 
+	/**
+	 * Class for running the Extended Model on HPC
+	 * @param args parameter values
+	 */
 	public static void main(String[] args) {
 		//arguments
 		if(args.length != 22) {
@@ -43,7 +47,7 @@ public class RunExtendedModel {
 			System.out.println("model created.");
 
 			//create agents per overlap parameter
-			if(model.overlap == 1) {
+			if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
 				ArrayList<Integer> techs = new ArrayList<Integer>();
 				for(int i=0; i < (int) (model.totalAgents * model.groupPerc); i++) {
 					techs.add(1);
@@ -57,16 +61,15 @@ public class RunExtendedModel {
 					model.createAgent(techs.get(i));
 				}
 
-			} else if(model.overlap == 0) {
+			} else if(model.overlap == 0) { //no overlap -> agents added in order starting with all type 1 agents
 				model.createAgents(1, (int) (model.totalAgents * model.groupPerc));
 				model.createAgents(2, model.totalAgents - ((int) (model.totalAgents * model.groupPerc)));
 
-			} else if(model.overlap == 0.5) {
+			} else if(model.overlap == 0.5) { //partial overlap -> one third type 1 agents, one third random mix of agents, one third type 2 agents
 				int oneThird = (int) (model.totalAgents / 3.0);
 				int aLeft = model.totalAgents - (oneThird + oneThird);
-
+				
 				model.createAgents(1, oneThird);
-
 
 				ArrayList<Integer> techs = new ArrayList<Integer>();
 				for(int i=0; i < (int) (aLeft * model.groupPerc); i++) {
@@ -82,6 +85,7 @@ public class RunExtendedModel {
 				}
 
 				model.createAgents(2, oneThird);
+				
 			} else { //if model overlap is anything else, create agents with all different technology types
 				int tech = 1;
 				for(int i=0; i < model.totalAgents; i++) {
@@ -89,7 +93,7 @@ public class RunExtendedModel {
 					tech++;
 				}
 			}
-			model.printAgents();
+			//model.printAgents();
 			System.out.println("agents created.");
 			
 
@@ -101,6 +105,7 @@ public class RunExtendedModel {
 				model.currentYear = model.startYear + (i*model.timestep); //update current year of model
 				System.out.println("current year: " + model.currentYear);
 
+				//geological events are not tested in this model, but would go here in model run
 				//geological events
 				//				if(i % model.geoFreq == 0) {
 				//					model.geologicalEvents();
@@ -113,8 +118,8 @@ public class RunExtendedModel {
 					Square s = model.landscape.getElement(a.getCurrentX(), a.getCurrentY());
 					Layer l = s.getTopLayer();
 
-					s.occupied();
-					l.encounter();
+					s.occupied(); //update behavior counters
+					l.encounter(); //update behavior counters
 
 					if(l.hasFlakes() || l.hasNodules()) { //if there are objects at the current layer, collect with certain probability
 						if(Math.random() < model.scavengeProb) {
@@ -123,8 +128,8 @@ public class RunExtendedModel {
 						}
 					}
 					
-					if(a.hasObjects()) {
-						if(Math.random() < model.blankProb) {
+					if(a.hasObjects()) { //if agent is holding objects
+						if(Math.random() < model.blankProb) { //produce blanks with certain probability
 							if(a.getAgentNodules().size() != 0 ) {
 								System.out.println("\t agent produced blanks");
 								for(int ui=0; ui < model.maxUseIntensity; ui++) {
@@ -132,7 +137,7 @@ public class RunExtendedModel {
 									l.manufactured();
 								}
 							}
-						} else {
+						} else { //if agent is not making blanks, retouch flakes
 							if(a.getAgentFlakes().size() != 0) {
 								System.out.println("\t agent retouched flakes");
 								for(int ui=0; ui < model.maxUseIntensity; ui++) {
@@ -143,7 +148,7 @@ public class RunExtendedModel {
 							}
 						}
 
-					} else {
+					} else { //if agents is not holding objects
 						model.findNodules(a, model.maxArtifactCarry - a.numberCurrentObjects());
 						System.out.println("\t agent found new nodules");
 					}
@@ -153,10 +158,9 @@ public class RunExtendedModel {
 					//drop up to maxArtifactCarry
 					model.dropArtifacts(a);
 					
-					
 					model.moveAgent(model.agents.get(whichAgent), false);
 
-				} else {
+				} else { //if agent has moved outside of the window of observation, move onto next agent
 					if(whichAgent < model.agents.size()-1) {
 						whichAgent++;
 						model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());

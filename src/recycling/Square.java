@@ -2,6 +2,12 @@ package recycling;
 
 import java.util.*;
 
+/**
+ * Object for storing an Array List of Layer objects that serves to track the geological events 
+ * that occur at a particular Grid location 
+ * @author emilycoco
+ *
+ */
 public class Square {
 	
 	ArrayList<Layer> yearsBP;
@@ -17,6 +23,9 @@ public class Square {
 		numDiscard = 0;
 	}
 	
+	/**
+	 * Removes a Layer when erosion happens
+	 */
 	public void erode() {
 		if(yearsBP.size() == 1) {
 			return;
@@ -27,6 +36,10 @@ public class Square {
 		}
 	}
 	
+	/**
+	 * Adds a new Layer when deposition happens
+	 * @param currentYear current model step
+	 */
 	public void deposit(int currentYear) {
 		yearsBP.add(new Layer(currentYear));
 	}

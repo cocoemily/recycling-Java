@@ -30,6 +30,11 @@ public class Agent {
 
 	}
 
+	/**
+	 * Create new flakes not from nodules
+	 * @param f number of flakes to make
+	 * @param maxFS maximum size flakes can be
+	 */
 	public void initializeFlakes(int f, int maxFS) {
 		for(int i=0; i<f; i++) {
 			int fSize = (int) ((Math.random() * maxFS) + 1);
@@ -37,6 +42,13 @@ public class Agent {
 		}
 	}
 
+	/**
+	 * Create new nodules
+	 * @param n number of nodules to make
+	 * @param maxNS maximum size nodules can be
+	 * @param nV nodule volume
+	 * @param maxFS maximum size flakes on nodules can be
+	 */
 	public void initializeNodules(int n, int maxNS, double nV, int maxFS) {
 		for(int i=0; i<n; i++) {
 			//int nSize = (int) (20 * ((Math.random() * 2) + 1));
@@ -65,6 +77,11 @@ public class Agent {
 		return curY;
 	}
 
+	/** 
+	 * Move to a random grid square
+	 * @param rows number of possible grid rows
+	 * @param cols number of possible grid columns
+	 */
 	public void randomMove(int rows, int cols) {
 		this.setLocation((int) (Math.random()* rows), (int) (Math.random()* cols));
 		this.locationList.add(new Point(this.curX, this.curY));
@@ -72,6 +89,10 @@ public class Agent {
 
 	}
 
+	/**
+	 * Move via Levy walk 
+	 * @param mu Levy walk function parameter
+	 */
 	public void randomWalk(double mu) {
 		int[] pHeadings = new int[]{ 0, 45, 90, 135, 180, 225, 270, 315, 360 };
 		int index = (int) (Math.random() * pHeadings.length);
@@ -85,7 +106,7 @@ public class Agent {
 		int newX = 0;
 		int newY = 0;
 
-		if(heading == 0) {
+		if(heading == 0) { //stay in same location
 			newX = curX;
 			newY = curY;
 			
