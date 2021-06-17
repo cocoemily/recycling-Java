@@ -57,7 +57,7 @@ public class ExtendedModel {
 			String of, String name, int size, int startYear, int timestep, //run parameters
 			int maxUI, int maxAC, int maxFS, int maxNS, 
 			double bProb, double sProb, //action probability parameters
-			int numAgents, double overlap, double mu, //agent creation and movement parameters
+			double overlap, double mu, //agent creation and movement parameters
 			boolean sizePref, boolean flakePref, int minFS, int minNS, boolean strict, //selection parameters
 			double ED, int GF, //geology parameters
 			int totalSteps) {
@@ -72,7 +72,7 @@ public class ExtendedModel {
 
 		this.nextId = 1;
 		this.agents = new ArrayList<Agent>();
-		this.totalAgents = numAgents;
+		this.totalAgents = (int) Math.ceil((0.315 * totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number
 		this.groupPerc = 0.5;
 
 		this.maxArtifactCarry = maxAC;
@@ -152,9 +152,9 @@ public class ExtendedModel {
 	 * Removes agents from the model agent list if they are of a specific technology type
 	 * @param techNum integer specifying the technology type of an agent
 	 */
-	public void removeAgents(int techNum) {
-		this.agents.removeIf(Agent -> Agent.getTech() == techNum);
-	}
+//	public void removeAgents(int techNum) {
+//		this.agents.removeIf(Agent -> (Agent.getTech() == techNum));
+//	}
 
 	/**
 	 * Initialize some squares within the landscape with new nodules
@@ -470,13 +470,13 @@ public class ExtendedModel {
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositNodules(dropN);
-			System.out.println("agent dropped nodules");
+			System.out.println("\t agent dropped nodules");
 		}
 		if(dropF.size() != 0) {
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
-			System.out.println("agent dropped flakes");
+			System.out.println("\t agent dropped flakes");
 		}
 	}
 
@@ -520,13 +520,13 @@ public class ExtendedModel {
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositNodules(dropN);
-				System.out.println("agent dropped nodules");
+				System.out.println("\t agent dropped nodules");
 			}
 			if(dropF.size() != 0) {
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
-				System.out.println("agent dropped flakes");
+				System.out.println("\t agent dropped flakes");
 
 			}
 		}

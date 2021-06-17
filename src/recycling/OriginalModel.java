@@ -76,8 +76,14 @@ public class OriginalModel {
 		
 	}
 	
+	//need to rewrite this function -- something is not working with commented out line
 	public void removeAgents(int techNum) {
-		this.agents.removeIf(Agent -> Agent.getTech() == techNum);
+		//this.agents.removeIf(Agent -> Agent.getTech() == techNum);
+		for(int i=0; i<this.agents.size(); i++) {
+			if(this.agents.get(i).getTech() == techNum) {
+				
+			}
+		}
 	}
 	
 	public void createRandomSources(double sourceProb, int numArtifacts, int techType) { 

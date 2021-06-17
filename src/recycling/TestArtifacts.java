@@ -44,7 +44,6 @@ public class TestArtifacts {
 				20, 		//maxNS
 				0.5,		//bProb
 				0.5,		//sProb
-				1000, 		//numAgents
 				0, 			//overlap
 				1.0,  		//mu
 				true, 		//sizePref

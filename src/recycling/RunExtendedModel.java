@@ -14,7 +14,7 @@ public class RunExtendedModel {
 	 */
 	public static void main(String[] args) {
 		//arguments
-		if(args.length != 22) {
+		if(args.length != 21) {
 			System.out.println("Missing arguments");
 
 
@@ -31,17 +31,16 @@ public class RunExtendedModel {
 					Integer.parseInt(args[8]), 		//maxNS
 					Double.parseDouble(args[9]),	//bProb
 					Double.parseDouble(args[10]),	//sProb
-					Integer.parseInt(args[11]), 	//numAgents
-					Double.parseDouble(args[12]), 	//overlap
-					Double.parseDouble(args[13]),  	//mu
-					Boolean.parseBoolean(args[14]), //sizePref
-					Boolean.parseBoolean(args[15]), //flakePref
-					Integer.parseInt(args[16]), 	//minFS
-					Integer.parseInt(args[17]), 	//minNS
-					Boolean.parseBoolean(args[18]), //strict
-					Double.parseDouble(args[19]), 	//ED
-					Integer.parseInt(args[20]), 	//GF
-					Integer.parseInt(args[21])		//totalSteps
+					Double.parseDouble(args[11]), 	//overlap
+					Double.parseDouble(args[12]),  	//mu
+					Boolean.parseBoolean(args[13]), //sizePref
+					Boolean.parseBoolean(args[14]), //flakePref
+					Integer.parseInt(args[15]), 	//minFS
+					Integer.parseInt(args[16]), 	//minNS
+					Boolean.parseBoolean(args[17]), //strict
+					Double.parseDouble(args[18]), 	//ED
+					Integer.parseInt(args[19]), 	//GF
+					Integer.parseInt(args[20])		//totalSteps
 					);
 			model.print();
 			System.out.println("model created.");
@@ -104,6 +103,8 @@ public class RunExtendedModel {
 
 				model.currentYear = model.startYear + (i*model.timestep); //update current year of model
 				System.out.println("current year: " + model.currentYear);
+				System.out.println("current year: " + model.currentYear);
+				System.out.println("\t current agent: " + model.agents.get(whichAgent).getGroup());
 
 				//geological events are not tested in this model, but would go here in model run
 				//geological events
@@ -123,8 +124,14 @@ public class RunExtendedModel {
 
 					if(l.hasFlakes() || l.hasNodules()) { //if there are objects at the current layer, collect with certain probability
 						if(Math.random() < model.scavengeProb) {
-							model.collectSelectedArtifacts(a);
-							System.out.println("\t agent collected artifacts");
+							if(!model.flakePref && !model.sizePref) {
+								model.collectRandomArtifacts(a);
+								System.out.println("\t agent collected random artifacts");
+							} else {
+								model.collectSelectedArtifacts(a);
+								System.out.println("\t agent collected selected artifacts");
+							}
+							
 						}
 					}
 					
