@@ -1,7 +1,7 @@
 library(tidyverse)
 library(batman)
 
-parameter.list <- readxl::read_excel("~/eclipse-workspace/recycling-Java/output/experiment-parameters.xlsx", sheet = "ExtendedModel")
+parameter.list <- readxl::read_excel("experiment-parameters.xlsx", sheet = "ExtendedModel")
 parameter.list = as.data.frame(parameter.list[1:2, 2:22])
 colnames(parameter.list) = parameter.list[1,]
 parameters = parameter.list[1,]
