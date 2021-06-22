@@ -78,4 +78,6 @@ for(s in size.values) {
   }
 }
 
+save(parameters, file = "parameters.RData")
+write.csv(parameters, file = "parameters.csv")
 
