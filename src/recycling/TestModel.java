@@ -17,13 +17,13 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"test-numAgents",	//outputFile
-				"run21", 	//name
+				"test-INT",	//outputFile
+				"run18", 	//name
 				5, 			//size 
 				500000, 	//startYear
-				10, 		//timestep
-				20, 		//maxUI
-				10, 			//maxAC
+				100, 		//timestep
+				40, 		//maxUI
+				25, 			//maxAC
 				1, 			//maxFS
 				20, 		//maxNS
 				0.5,		//bProb
@@ -178,7 +178,7 @@ public class TestModel {
 			model.resetScavengeEventCounter();
 		}
 		
-		//RunExtendedModel.outputModelData(model);
+		RunExtendedModel.outputModelData(model);
 	}
 
 }
