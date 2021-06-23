@@ -82,8 +82,10 @@ save(parameters, file = "ExtendedModel-analysis/parameters/parameters.RData")
 
 options(scipen=10)
 clean.parameters = as.data.frame(lapply(parameters[2:nrow(parameters),], function(x) as.numeric(as.character(x))))
-write.csv(clean.parameters, file = "parameters.csv")
-write.csv(clean.parameters[1:10,], file = "test.csv")
+
+setwd("..") #moves up a directory
+write.csv(clean.parameters, file = "run-scripts/parameters.csv")
+write.csv(clean.parameters[1:10,], file = "run-scripts/test.csv")
 
 
 ##produce different CSVs for each experiment?
