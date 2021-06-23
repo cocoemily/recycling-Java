@@ -1,3 +1,5 @@
 output/
 .Rproj.user
 analysis/.Rhistory
+run-scripts/OriginalModel/
+run-scripts/ExtendedModel/
