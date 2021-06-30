@@ -84,8 +84,26 @@ options(scipen=10)
 clean.parameters = as.data.frame(lapply(parameters[2:nrow(parameters),], function(x) as.numeric(as.character(x))))
 
 setwd("..") #moves up a directory
-write.csv(clean.parameters, file = "run-scripts/parameters.csv")
-write.csv(clean.parameters[1:10,], file = "run-scripts/test.csv")
+write.csv(clean.parameters, file = "run-scripts/parameters.csv", row.names=F)
+write.csv(clean.parameters[1:10,], file = "run-scripts/test.csv", row.names=F)
+setwd("analysis") #move back to analysis folder
 
 
-##produce different CSVs for each experiment?
+#need different parameter files to run on HPC
+paramcsv = list()
+rows = 7829
+firstrow = 1
+for(i in 1:15) {
+  toadd = clean.parameters[firstrow:(rows+firstrow),]
+  paramcsv[[i]] = toadd
+  firstrow = firstrow + rows
+}
+
+setwd("..")
+for(i in 1:length(paramcsv)) {
+  filename = paste0("run-scripts/params", i, ".csv")
+  write.csv(paramcsv[[i]], file = filename, row.names=F)
+}
+setwd("analysis") #move back to analysis folder
+
+
