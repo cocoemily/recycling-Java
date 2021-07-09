@@ -91,7 +91,7 @@ setwd("analysis") #move back to analysis folder
 
 #need different parameter files to run on HPC
 paramcsv = list()
-rows = 7829
+rows = 7373
 firstrow = 1
 for(i in 1:15) {
   toadd = clean.parameters[firstrow:(rows+firstrow),]
@@ -101,7 +101,7 @@ for(i in 1:15) {
 
 setwd("..")
 for(i in 1:length(paramcsv)) {
-  filename = paste0("run-scripts/params", i, ".csv")
+  filename = paste0("run-scripts/ExtendedModel/params", i, ".csv")
   write.csv(paramcsv[[i]], file = filename, row.names=F)
 }
 setwd("analysis") #move back to analysis folder
