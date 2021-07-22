@@ -91,9 +91,9 @@ setwd("analysis") #move back to analysis folder
 
 #need different parameter files to run on HPC
 paramcsv = list()
-rows = 7373
+rows = 5530
 firstrow = 1
-for(i in 1:15) {
+for(i in 1:20) {
   toadd = clean.parameters[firstrow:(rows+firstrow),]
   paramcsv[[i]] = toadd
   firstrow = firstrow + rows
