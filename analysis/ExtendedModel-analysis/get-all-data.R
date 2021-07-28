@@ -13,10 +13,21 @@ for(d in list.dirs(path = "../output")) {
     }
   }
 }
-
 alldata = bind_rows(data)
-save(alldata, file = "alldata.RData")
 
+
+alldata = data.frame()
+for(d in list.dirs(path = "../output")) {
+  files = list.files(path = dirs[d], full.names = T)
+  for(f in files)  {
+    if(!is.null(f)) {
+      alldata = rbind(alldata, read.csv(f))
+    }
+  }
+}
+
+
+save(alldata, file = "alldata.RData")
 
 tavg = alldata %>% group_by_at(unlist(c(parameters, "exp", "model_year"))) %>%
   summarize(cr = mean(cortex.ratio, na.rm = T), 

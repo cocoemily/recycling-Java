@@ -99,10 +99,25 @@ for(i in 1:20) {
   firstrow = firstrow + rows
 }
 
+#params 17-20 take over 3 days to run with 5530 rows
+#code below splits them into two csvs each
+paramcsv2 = paramcsv[1:16]
+index = 17
+for(i in 17:20) {
+  tosplit = paramcsv[[i]] %>% filter(!is.na(of))
+  half = ceiling(nrow(tosplit)/2)
+  split1 = tosplit[1:half,]
+  split2 = tosplit[(half+1):nrow(tosplit),]
+  paramcsv2[[index]] = split1
+  paramcsv2[[index+1]] = split2
+  index = index + 2
+}
+
+
 setwd("..")
-for(i in 1:length(paramcsv)) {
+for(i in 1:length(paramcsv2)) {
   filename = paste0("run-scripts/ExtendedModel/params", i, ".csv")
-  write.csv(paramcsv[[i]], file = filename, row.names=F)
+  write.csv(paramcsv2[[i]], file = filename, row.names=F)
 }
 setwd("analysis") #move back to analysis folder
 
