@@ -1,0 +1,77 @@
+---
+title: "parameter sensitivity"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+load("~/eclipse-workspace/recycling-Java/analysis/test-data.RData")
+parameters = colnames(alldata[,c(1,4:9,11:17)])
+results = colnames(alldata[,c(25:33)])
+
+alldata = alldata %>% group_by_at(unlist(parameters)) %>%
+  mutate(exp = cur_group_id())
+
+tavg = alldata %>% group_by_at(unlist(c(parameters, "exp", "model_year"))) %>%
+  summarize(cr = mean(cortex.ratio, na.rm = T), 
+            ri = mean(recycling.intensity, na.rm = T), 
+            nd = mean(num.discards, na.rm = T), 
+            ne = mean(num.encounters, na.rm = T),
+            nm = mean(num.encounters, na.rm = T), 
+            nr = mean(num.retouch, na.rm = T), 
+            no = mean(num.occupation, na.rm = T))
+```
+
+## Influence of parameters over time on recycling intensity at a landscape scale
+
+```{r interaction}
+
+with(tavg, interaction.plot(model_year, size, ri))
+summary(aov(ri ~ size*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, max_use_intensity, ri))
+summary(aov(ri ~ max_use_intensity*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, max_artifact_carry, ri))
+summary(aov(ri ~ max_artifact_carry*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, max_flake_size, ri))
+summary(aov(ri ~ max_flake_size*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, max_nodules_size, ri))
+summary(aov(ri ~ max_nodules_size*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, blank_prob, ri))
+summary(aov(ri ~ blank_prob*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, discard_prob, ri))
+summary(aov(ri ~ discard_prob*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, overlap, ri)) 
+summary(aov(ri ~ overlap*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, mu, ri))
+summary(aov(ri ~ mu*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, size_preference, ri))
+summary(aov(ri ~ size_preference*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, flake_preference, ri))
+summary(aov(ri ~ flake_preference*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, min_suitable_nodule_size, ri))
+summary(aov(ri ~ min_suitable_nodule_size*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, min_suitable_flake_size, ri))
+summary(aov(ri ~ min_suitable_flake_size*model_year, data=tavg))
+
+with(tavg, interaction.plot(model_year, strict_selection, ri))
+summary(aov(ri ~ size*model_year, data=tavg))
+
+
+```
+
+## Influence of interaction between parameters over time on recycling intensity at the landscape scale
+

@@ -19,9 +19,9 @@ results = colnames(alldata[,c(25:33)])
 alldata = alldata %>% group_by_at(unlist(parameters)) %>%
   mutate(exp = cur_group_id())
 
-ggplot(data = alldata, aes(x=model_year, y=recycling.intensity, group = exp, color = exp)) + 
-  geom_smooth(se = F) +
-  scale_x_reverse()
+# ggplot(data = alldata, aes(x=model_year, y=recycling.intensity, group = exp, color = exp)) + 
+#   geom_smooth(se = F) +
+#   scale_x_reverse()
 
 ##regression over time 
 tavg = alldata %>% group_by_at(unlist(c(parameters, "exp", "model_year"))) %>%
@@ -33,18 +33,18 @@ tavg = alldata %>% group_by_at(unlist(c(parameters, "exp", "model_year"))) %>%
             nr = mean(num.retouch, na.rm = T), 
             no = mean(num.occupation, na.rm = T))
 
-ggplot(data = tavg, aes(x = model_year, y = ri)) +
-  geom_point(size = 0.1) +
-  geom_smooth() +
-  scale_x_reverse()
+# ggplot(data = tavg, aes(x = model_year, y = ri)) +
+#   geom_point(size = 0.1) +
+#   geom_smooth() +
+#   scale_x_reverse()
 
 #see how different output measurements change over time based on specific parameters
-with(tavg, interaction.plot(model_year, size, cr))
-with(tavg, interaction.plot(model_year, size, nd))
-with(tavg, interaction.plot(model_year, size, ne))
-with(tavg, interaction.plot(model_year, size, nm))
-with(tavg, interaction.plot(model_year, size, nr))
-with(tavg, interaction.plot(model_year, size, no))
+# with(tavg, interaction.plot(model_year, size, cr))
+# with(tavg, interaction.plot(model_year, size, nd))
+# with(tavg, interaction.plot(model_year, size, ne))
+# with(tavg, interaction.plot(model_year, size, nm))
+# with(tavg, interaction.plot(model_year, size, nr))
+# with(tavg, interaction.plot(model_year, size, no))
 
 with(tavg, interaction.plot(model_year, size, ri))
 with(tavg, interaction.plot(model_year, max_use_intensity, ri))
@@ -78,14 +78,12 @@ min.fl.aov = aov(ri ~ min_suitable_flake_size*model_year, data=tavg)
 summary(min.fl.aov)
 
 
-
-
 #Repeated Measures of ANOVA
 test = alldata %>% filter(model_year < 450000 & model_year > 449000) 
 ggplot(test, aes(x = as.factor(model_year), y = recycling.intensity, color = as.factor(blank_prob))) +
   geom_boxplot()
 ggpubr::ggqqplot(test, "recycling.intensity", ggtheme = theme_bw()) +
-  facet_grid(model_year ~ blank_prob, labeller = "label_both")
+  facet_grid(model_year ~ blank_prob + max_flake_size, labeller = "label_both")
 
 #cannot do this without equal sized parameter sets
 pwc <- test2 %>%
