@@ -17,8 +17,8 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"test-INT",	//outputFile
-				"run18", 	//name
+				"test-output",	//outputFile
+				"run1", 	//name
 				5, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
@@ -37,7 +37,7 @@ public class TestModel {
 				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
-				5000		//totalSteps
+				500		//totalSteps
 				);
 
 

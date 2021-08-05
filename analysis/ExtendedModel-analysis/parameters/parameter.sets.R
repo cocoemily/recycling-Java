@@ -155,7 +155,7 @@ stillmissing = c(33186, 47554, 47558, 47560, 47562, 47564, 47571, 47574,
                  102551, 102553, 102558, 102560, 102628, 102632, 102634, 
                  102654, 102656, 102728, 102729, 102732, 102735, 102736, 
                  102739, 102740, 102741, 102746, 102751, 102752, 102817, 
-                 102818, 102819, 102820’, 102821, 102822, 102823, 102824, 
+                 102818, 102819, 102820, 102821, 102822, 102823, 102824, 
                  102825, 102826, 102827, 102828, 102829, 102830, 102831, 
                  102832, 102833, 102834, 102835, 102836, 102837, 102838, 
                  102839, 102840, 102841, 102842, 102843, 102844, 102845, 
@@ -166,4 +166,12 @@ mparams2 = clean.parameters %>%
 
 setwd("..")
 write.csv(mparams2, file = "run-scripts/ExtendedModel/mparams2.csv", row.names = F)
+setwd("analysis") #move back to analysis folder
+
+
+test = mparams2 %>% filter(of %in% c(47554, 47558, 47560, 47562)) %>%
+  mutate(of = c("test1", "test2", "test3", "test4"))
+
+setwd("..")
+write.csv(test, file = "run-scripts/ExtendedModel/test.csv", row.names = F)
 setwd("analysis") #move back to analysis folder

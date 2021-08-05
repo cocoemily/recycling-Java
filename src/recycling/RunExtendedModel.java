@@ -194,10 +194,10 @@ public class RunExtendedModel {
 		createFile((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 		
 		//output layer data
-		//createFile((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		createFile((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 		
 		//output artifact data
-		//createFile((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
 	public static void createFile(String filename, ArrayList<String> data) {
@@ -206,6 +206,19 @@ public class RunExtendedModel {
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error occurred.");
+			e.printStackTrace();
+		}
+
+	}
+	
+	public static void createFile2(String filename, StringBuilder data) {
+		try {
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			fw.write(data.toString());
 			fw.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

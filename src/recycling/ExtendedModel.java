@@ -50,7 +50,7 @@ public class ExtendedModel {
 	//output data 
 	ArrayList<String> layerdata;
 	ArrayList<String> modeldata;
-	ArrayList<String> artifactdata;
+	StringBuilder artifactdata;
 
 
 	public ExtendedModel(
@@ -117,8 +117,8 @@ public class ExtendedModel {
 		this.modeldata = new ArrayList<String>();
 		String mcols = this.getParameterData().get(0) + ",model_year,num.scav.events,total.recycled,num.deposits,total.encounters,total.discards,total.manu.events,total.retouches,total.CR,total.RI"; 
 		this.modeldata.add(mcols);
-		this.artifactdata = new ArrayList<String>();
-		this.artifactdata.add("row,col,model_year,layer_year,obj_type,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled");
+		this.artifactdata = new StringBuilder();
+		this.artifactdata.append("row,col,model_year,layer_year,obj_type,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
 
 	}
 
@@ -617,7 +617,7 @@ public class ExtendedModel {
 	 * Function for outputting artifact information for each layer 
 	 */
 	public void getArtifactData() {
-		ArrayList<String> data = new ArrayList<String>();
+		String toAddData = "";
 
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
 			for(int j=0; j < this.landscape.getNumCols(); j++) {
@@ -634,7 +634,7 @@ public class ExtendedModel {
 							}
 							boolean nodRecycled = nods.get(n).getFirstTech() != nods.get(n).getLastTech();
 
-							data.add(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
+							toAddData += (i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
 									+ "nodule" + ","  									//obj_type
 									+ nods.get(n).getSize() + "," 						//size
 									+ nods.get(n).getVolume() + ","						//volume
@@ -652,7 +652,7 @@ public class ExtendedModel {
 					ArrayList<Flake> flakes = layers.get(l).getFlakes();
 					if(flakes.size() != 0) {
 						for(int f=0; f<flakes.size(); f++) {
-							data.add(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
+							toAddData += (i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
 									+ "flake" + ","  									//obj_type
 									+ flakes.get(f).getSize() + "," 					//size
 									+ flakes.get(f).getVolume() + ","					//volume
@@ -668,7 +668,10 @@ public class ExtendedModel {
 				}
 			}
 		}
-		this.artifactdata.addAll(data);
+		if(toAddData != "" ) {
+			this.artifactdata.append(toAddData + "\n");
+		}
+		
 	}
 
 	/**
@@ -839,7 +842,7 @@ public class ExtendedModel {
 	/**
 	 * @return Strings with artifact data
 	 */
-	public ArrayList<String> artifactsOutput() {
+	public StringBuilder artifactsOutput() {
 		return this.artifactdata;
 	}
 
