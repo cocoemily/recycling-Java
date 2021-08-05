@@ -191,10 +191,10 @@ public class RunExtendedModel {
 		file.mkdir();
 		
 		//output model data
-		createFile((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 		
 		//output layer data
-		createFile((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 		
 		//output artifact data
 		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());

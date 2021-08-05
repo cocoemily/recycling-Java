@@ -48,8 +48,8 @@ public class ExtendedModel {
 	public int numberScavengingEvents; 
 
 	//output data 
-	ArrayList<String> layerdata;
-	ArrayList<String> modeldata;
+	StringBuilder layerdata;
+	StringBuilder modeldata;
 	StringBuilder artifactdata;
 
 
@@ -110,13 +110,13 @@ public class ExtendedModel {
 
 		this.numberScavengingEvents = 0;
 
-		this.layerdata = new ArrayList<String>();
+		this.layerdata = new StringBuilder();
 		String cols = this.getParameterData().get(0) + ",row,col,model_year,year,nodule.count,flake.count,cortex.ratio,"
 				+ "recycling.intensity,num.discards,num.encounters,num.manufacture,num.retouch,num.occupation";
-		this.layerdata.add(cols);
-		this.modeldata = new ArrayList<String>();
+		this.layerdata.append(cols + "\n");
+		this.modeldata = new StringBuilder();
 		String mcols = this.getParameterData().get(0) + ",model_year,num.scav.events,total.recycled,num.deposits,total.encounters,total.discards,total.manu.events,total.retouches,total.CR,total.RI"; 
-		this.modeldata.add(mcols);
+		this.modeldata.append(mcols + "\n");
 		this.artifactdata = new StringBuilder();
 		this.artifactdata.append("row,col,model_year,layer_year,obj_type,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
 
@@ -617,7 +617,7 @@ public class ExtendedModel {
 	 * Function for outputting artifact information for each layer 
 	 */
 	public void getArtifactData() {
-		String toAddData = "";
+		StringBuilder toAddData = new StringBuilder();
 
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
 			for(int j=0; j < this.landscape.getNumCols(); j++) {
@@ -634,7 +634,7 @@ public class ExtendedModel {
 							}
 							boolean nodRecycled = nods.get(n).getFirstTech() != nods.get(n).getLastTech();
 
-							toAddData += (i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
+							toAddData.append(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
 									+ "nodule" + ","  									//obj_type
 									+ nods.get(n).getSize() + "," 						//size
 									+ nods.get(n).getVolume() + ","						//volume
@@ -643,7 +643,7 @@ public class ExtendedModel {
 									+ nods.get(n).getGroups().size() + ","				//numgroups
 									+ nods.get(n).getFirstTech() + ","					//first_tech
 									+ nods.get(n).getLastTech() + "," 					//last_tech
-									+ nodRecycled + ","									//recycled
+									+ nodRecycled + "\n"									//recycled
 									);
 
 						}
@@ -652,7 +652,7 @@ public class ExtendedModel {
 					ArrayList<Flake> flakes = layers.get(l).getFlakes();
 					if(flakes.size() != 0) {
 						for(int f=0; f<flakes.size(); f++) {
-							toAddData += (i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
+							toAddData.append(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
 									+ "flake" + ","  									//obj_type
 									+ flakes.get(f).getSize() + "," 					//size
 									+ flakes.get(f).getVolume() + ","					//volume
@@ -661,16 +661,14 @@ public class ExtendedModel {
 									+ flakes.get(f).getGroups().size() + ","			//numgroups
 									+ flakes.get(f).getFirstTech() + ","				//first_tech
 									+ flakes.get(f).getLastTech() + "," 				//last_tech
-									+ flakes.get(f).checkWasRecycled()					//recycled
+									+ flakes.get(f).checkWasRecycled() + "\n"			//recycled
 									);
 						}
 					}
 				}
 			}
 		}
-		if(toAddData != "" ) {
-			this.artifactdata.append(toAddData + "\n");
-		}
+		this.artifactdata.append(toAddData.toString());
 		
 	}
 
@@ -678,7 +676,7 @@ public class ExtendedModel {
 	 * Function for outputting information for each layer 
 	 */
 	public void getLayerData() {
-		ArrayList<String> data = new ArrayList<String>();
+		StringBuilder data = new StringBuilder();
 		ArrayList<String> params = this.getParameterData();
 
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
@@ -708,18 +706,18 @@ public class ExtendedModel {
 					//occupation event count
 					datastring += square.getOccupationEvents();
 
-					data.add(datastring);
+					data.append(datastring + "\n");
 				}
 			}
 		}
-		this.layerdata.addAll(data);
+		this.layerdata.append(data.toString());
 	}
 
 	/**
 	 * Function for outputting model data at necessary intervals
 	 */
 	public void getModelData() {
-		ArrayList<String> data = new ArrayList<String>();
+		StringBuilder data = new StringBuilder();
 		ArrayList<String> params = this.getParameterData();
 
 		String datastring = params.get(1);
@@ -769,8 +767,8 @@ public class ExtendedModel {
 		}
 		datastring += totalRecycledItems + "," + numDeposits + "," + totalEncounters + "," + totalDiscards + "," + totalManufactures + "," + totalRetouches + ",";
 		datastring += totalCR + "," + totalRI;
-		data.add(datastring);
-		this.modeldata.addAll(data);
+		data.append(datastring + "\n");
+		this.modeldata.append(data.toString());
 	}
 
 	/**
@@ -828,14 +826,14 @@ public class ExtendedModel {
 	/**
 	 * @return Strings with model data
 	 */
-	public ArrayList<String> modelOutput() {
+	public StringBuilder modelOutput() {
 		return this.modeldata;
 	}
 
 	/**
 	 * @return Strings with layer data
 	 */
-	public ArrayList<String> layersOutput() {
+	public StringBuilder layersOutput() {
 		return this.layerdata;
 	}
 

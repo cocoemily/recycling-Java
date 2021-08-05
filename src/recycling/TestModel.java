@@ -37,7 +37,7 @@ public class TestModel {
 				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
-				500		//totalSteps
+				1000		//totalSteps
 				);
 
 

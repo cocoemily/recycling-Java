@@ -4,3 +4,6 @@ analysis/.Rhistory
 run-scripts/OriginalModel/
 run-scripts/ExtendedModel/slurm*
 run-scripts/ExtendedModel/*.sbatch
+
+**/.DS_Store
+
