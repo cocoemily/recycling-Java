@@ -785,7 +785,7 @@ public class ExtendedModel {
 				"max_flake_size," +
 				"max_nodules_size," +
 				"blank_prob," +
-				"discard_prob," +
+				"scavenge_prob," +
 				"num_agents," +
 				"overlap," +
 				"mu," +
@@ -806,7 +806,7 @@ public class ExtendedModel {
 				this.maxFlakeSize + "," +
 				this.maxNoduleSize + "," +
 				this.blankProb + "," +
-				this.discardProb + "," +
+				this.scavengeProb + "," +
 				this.totalAgents + "," +
 				this.overlap + "," +
 				this.mu + "," +

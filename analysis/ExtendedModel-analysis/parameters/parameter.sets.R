@@ -78,14 +78,19 @@ for(s in size.values) {
   }
 }
 
+parameters = parameters %>%
+  mutate(sizePref = tolower(as.character(as.logical(sizePref))), 
+         flakePref = tolower(as.character(as.logical(flakePref))), 
+         strict = tolower(as.character(as.logical(strict))))
+
 save(parameters, file = "ExtendedModel-analysis/parameters/parameters.RData")
 
 options(scipen=10)
-clean.parameters = as.data.frame(lapply(parameters[2:nrow(parameters),], function(x) as.numeric(as.character(x))))
+parameters[,c(2:13, 16, 17, 19:ncol(parameters))] = lapply(parameters[,c(2:13, 16, 17, 19:ncol(parameters))], function(x) as.numeric(as.character(x)))
 
 setwd("..") #moves up a directory
-write.csv(clean.parameters, file = "run-scripts/parameters.csv", row.names=F)
-write.csv(clean.parameters[1:10,], file = "run-scripts/test.csv", row.names=F)
+write.csv(parameters, file = "run-scripts/parameters.csv", row.names=F)
+write.csv(parameters[1:10,], file = "run-scripts/test.csv", row.names=F)
 setwd("analysis") #move back to analysis folder
 
 
@@ -94,7 +99,7 @@ paramcsv = list()
 rows = 5530
 firstrow = 1
 for(i in 1:20) {
-  toadd = clean.parameters[firstrow:(rows+firstrow),]
+  toadd = parameters[firstrow:(rows+firstrow),]
   paramcsv[[i]] = toadd
   firstrow = firstrow + rows
 }
@@ -140,7 +145,7 @@ missing = c(5533, 16598, 33168, 47305, 47308, 47312, 47457, 47503,
             102831, 102832, 102833, 102834, 102835, 102836, 102837, 102838, 
             102839, 102840, 102841, 102842, 102843, 102844, 102845, 102846, 
             102847, 102848, 102868)
-mparams = clean.parameters %>%
+mparams = parameters %>%
   filter(of %in% missing)
 
 setwd("..")
@@ -161,7 +166,7 @@ stillmissing = c(33186, 47554, 47558, 47560, 47562, 47564, 47571, 47574,
                  102839, 102840, 102841, 102842, 102843, 102844, 102845, 
                  102846, 102847, 102848)
 
-mparams2 = clean.parameters %>%
+mparams2 = parameters %>%
   filter(of %in% stillmissing)
 
 setwd("..")

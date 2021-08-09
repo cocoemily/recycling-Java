@@ -38,8 +38,8 @@ summary(aov(total.RI ~ max_nodules_size*model_year, data=tavg))
 with(tavg, interaction.plot(model_year, blank_prob, total.RI))
 summary(aov(total.RI ~ blank_prob*model_year, data=tavg))
 
-with(tavg, interaction.plot(model_year, discard_prob, total.RI))
-summary(aov(total.RI ~ discard_prob*model_year, data=tavg))
+with(tavg, interaction.plot(model_year, scavenge_prob, total.RI))
+summary(aov(total.RI ~ scavenge_prob*model_year, data=tavg))
 
 with(tavg, interaction.plot(model_year, overlap, total.RI)) 
 summary(aov(total.RI ~ overlap*model_year, data=tavg))
