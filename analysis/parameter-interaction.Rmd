@@ -23,47 +23,59 @@ alldata = alldata %>% group_by_at(unlist(parameters)) %>%
 # with(tavg, interaction.plot(model_year, size, total.RI))
 # summary(aov(total.RI ~ size*model_year, data=tavg))
 
-with(tavg, interaction.plot(model_year, max_use_intensity, total.RI))
-summary(aov(total.RI ~ max_use_intensity*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, max_use_intensity, total.RI))
+summary(aov(total.RI ~ max_use_intensity*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, max_artifact_carry, total.RI))
-summary(aov(total.RI ~ max_artifact_carry*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, max_artifact_carry, total.RI))
+summary(aov(total.RI ~ max_artifact_carry*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, max_flake_size, total.RI))
-summary(aov(total.RI ~ max_flake_size*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, max_flake_size, total.RI))
+summary(aov(total.RI ~ max_flake_size*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, max_nodules_size, total.RI))
-summary(aov(total.RI ~ max_nodules_size*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, max_nodules_size, total.RI))
+summary(aov(total.RI ~ max_nodules_size*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, blank_prob, total.RI))
-summary(aov(total.RI ~ blank_prob*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, blank_prob, total.RI))
+summary(aov(total.RI ~ blank_prob*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, scavenge_prob, total.RI))
-summary(aov(total.RI ~ scavenge_prob*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, scavenge_prob, total.RI))
+summary(aov(total.RI ~ scavenge_prob*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, overlap, total.RI)) 
-summary(aov(total.RI ~ overlap*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, overlap, total.RI)) 
+summary(aov(total.RI ~ overlap*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, mu, total.RI))
-summary(aov(total.RI ~ mu*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, mu, total.RI))
+summary(aov(total.RI ~ mu*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, size_preference, total.RI))
-summary(aov(total.RI ~ size_preference*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, size_preference, total.RI))
+summary(aov(total.RI ~ size_preference*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, flake_preference, total.RI))
-summary(aov(total.RI ~ flake_preference*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, flake_preference, total.RI))
+summary(aov(total.RI ~ flake_preference*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
-summary(aov(total.RI ~ min_suitable_nodule_size*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
+summary(aov(total.RI ~ min_suitable_nodule_size*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, min_suitable_flake_size, total.RI))
-summary(aov(total.RI ~ min_suitable_flake_size*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, min_suitable_flake_size, total.RI))
+summary(aov(total.RI ~ min_suitable_flake_size*model_year, data=alldata))
 
-with(tavg, interaction.plot(model_year, strict_selection, total.RI))
-summary(aov(total.RI ~ size*model_year, data=tavg))
+with(alldata, interaction.plot(model_year, strict_selection, total.RI))
+summary(aov(total.RI ~ strict_selection*model_year, data=alldata))
 
 
 ```
 
 ## Influence of interaction between parameters over time on recycling intensity at the landscape scale
+```{r three way interaction}
 
+summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*model_year, data=alldata))
+
+summary(aov(total.RI ~ size_preference*min_suitable_flake_size*model_year, data=alldata))
+
+summary(aov(total.RI ~ flake_preference*max_flake_size*model_year, data=alldata))
+
+summary(aov(total.RI ~ size_preference*strict_selection*model_year, data=alldata))
+
+summary(aov(total.RI ~ flake_preference*strict_selection*model_year, data=alldata))
+
+```
