@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 setwd("..")
-alldata = read_csv(file = "output/joined_data.csv")
+
 parameters = colnames(alldata[,c(1,4:9,11:17)])
 
 alldata = alldata %>% group_by_at(unlist(parameters)) %>%
@@ -20,8 +20,8 @@ alldata = alldata %>% group_by_at(unlist(parameters)) %>%
 
 ```{r interaction}
 
-with(tavg, interaction.plot(model_year, size, total.RI))
-summary(aov(total.RI ~ size*model_year, data=tavg))
+# with(tavg, interaction.plot(model_year, size, total.RI))
+# summary(aov(total.RI ~ size*model_year, data=tavg))
 
 with(tavg, interaction.plot(model_year, max_use_intensity, total.RI))
 summary(aov(total.RI ~ max_use_intensity*model_year, data=tavg))
