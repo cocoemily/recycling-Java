@@ -20,8 +20,8 @@ public class RunExtendedModel {
 
 		} else {
 			ExtendedModel model = new ExtendedModel(
-					(String) args[0], 				//outputFile
-					(String) args[1], 				//name
+					args[0], 						//outputFile
+					args[1], 						//name
 					Integer.parseInt(args[2]), 		//size 
 					Integer.parseInt(args[3]), 		//startYear
 					Integer.parseInt(args[4]), 		//timestep
