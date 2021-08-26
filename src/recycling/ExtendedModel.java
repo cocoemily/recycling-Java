@@ -791,8 +791,8 @@ public class ExtendedModel {
 				"mu," +
 				"size_preference," +
 				"flake_preference," +
-				"min_suitable_nodule_size," +
 				"min_suitable_flake_size," +
+				"min_suitable_nodule_size," +
 				"strict_selection," +
 				"erosion_deposition_ratio," +
 				"geo_event_freq," +

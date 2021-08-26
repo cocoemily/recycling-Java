@@ -7,6 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+theme_set(theme_minimal())
 #setwd("..")
 
 #parameters = colnames(alldata[,c(1,4:9,11:17)])
@@ -55,9 +56,11 @@ summary(aov(total.RI ~ size_preference*model_year, data=alldata))
 with(alldata, interaction.plot(model_year, flake_preference, total.RI))
 summary(aov(total.RI ~ flake_preference*model_year, data=alldata))
 
+#actually flake size
 with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
 summary(aov(total.RI ~ min_suitable_nodule_size*model_year, data=alldata))
 
+#actually nodule size
 with(alldata, interaction.plot(model_year, min_suitable_flake_size, total.RI))
 summary(aov(total.RI ~ min_suitable_flake_size*model_year, data=alldata))
 
@@ -70,14 +73,25 @@ summary(aov(total.RI ~ strict_selection*model_year, data=alldata))
 ## Influence of interaction between parameters over time on recycling intensity at the landscape scale
 ```{r three way interaction}
 
+#actually flake size
+ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_nodule_size)) + facet_grid(~size_preference, labeller=label_both)
 summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*model_year, data=alldata))
 
+#actually flake size
+ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_nodule_size)) + facet_grid(max_flake_size~size_preference, labeller=label_both)
+summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*max_flake_size*model_year, data=alldata))
+
+#actually nodule size
+ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_flake_size)) + facet_grid(~size_preference, labeller=label_both)
 summary(aov(total.RI ~ size_preference*min_suitable_flake_size*model_year, data=alldata))
 
+ggplot(alldata, aes(x = model_year, y = total.RI, color = max_flake_size)) + facet_grid(~flake_preference, labeller=label_both)
 summary(aov(total.RI ~ flake_preference*max_flake_size*model_year, data=alldata))
 
-summary(aov(total.RI ~ size_preference*strict_selection*model_year, data=alldata))
+ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_nodule_size)) + facet_grid(size_preference~flake_preference, labeller=label_both)
+summary(aov(total.RI ~ size_preference*flake_preference*min_suitable_nodule_size*model_year, data=alldata))
 
-summary(aov(total.RI ~ flake_preference*strict_selection*model_year, data=alldata))
+ggplot(alldata, aes(x = model_year, y = total.RI, color = strict_selection)) + facet_grid(size_preference~flake_preference, labeller=label_both)
+summary(aov(total.RI ~ size_preference*flake_preference*strict_selection*model_year, data=alldata))
 
 ```
