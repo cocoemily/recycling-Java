@@ -7,12 +7,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-setwd("..")
+#setwd("..")
 
-parameters = colnames(alldata[,c(1,4:9,11:17)])
+#parameters = colnames(alldata[,c(1,4:9,11:17)])
 
-alldata = alldata %>% group_by_at(unlist(parameters)) %>%
-  mutate(exp = cur_group_id())
+#alldata = alldata %>% group_by_at(unlist(parameters)) %>%
+#  mutate(exp = cur_group_id())
+
+alldata = alldata %>% filter(!is.na(total.RI))
 
 ```
 
