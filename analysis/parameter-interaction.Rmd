@@ -74,24 +74,24 @@ summary(aov(total.RI ~ strict_selection*model_year, data=alldata))
 ```{r three way interaction}
 
 #actually flake size
-ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_nodule_size)) + facet_grid(~size_preference, labeller=label_both)
+ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_nodule_size))) + facet_grid(~size_preference, labeller=label_both) + geom_smooth(se=F)
 summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*model_year, data=alldata))
 
 #actually flake size
-ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_nodule_size)) + facet_grid(max_flake_size~size_preference, labeller=label_both)
+ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_nodule_size))) + facet_grid(max_flake_size~size_preference, labeller=label_both) + geom_smooth(se=F)
 summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*max_flake_size*model_year, data=alldata))
 
 #actually nodule size
-ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_flake_size)) + facet_grid(~size_preference, labeller=label_both)
+ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_flake_size))) + facet_grid(~size_preference, labeller=label_both) + geom_smooth(se=F)
 summary(aov(total.RI ~ size_preference*min_suitable_flake_size*model_year, data=alldata))
 
-ggplot(alldata, aes(x = model_year, y = total.RI, color = max_flake_size)) + facet_grid(~flake_preference, labeller=label_both)
+ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(max_flake_size))) + facet_grid(~flake_preference, labeller=label_both) + geom_smooth(se=F)
 summary(aov(total.RI ~ flake_preference*max_flake_size*model_year, data=alldata))
 
-ggplot(alldata, aes(x = model_year, y = total.RI, color = min_suitable_nodule_size)) + facet_grid(size_preference~flake_preference, labeller=label_both)
+ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_nodule_size))) + facet_grid(size_preference~flake_preference, labeller=label_both) + geom_smooth(se=F)
 summary(aov(total.RI ~ size_preference*flake_preference*min_suitable_nodule_size*model_year, data=alldata))
 
-ggplot(alldata, aes(x = model_year, y = total.RI, color = strict_selection)) + facet_grid(size_preference~flake_preference, labeller=label_both)
+ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(strict_selection))) + facet_grid(size_preference~flake_preference, labeller=label_both) + geom_smooth(se=F)
 summary(aov(total.RI ~ size_preference*flake_preference*strict_selection*model_year, data=alldata))
 
 ```
