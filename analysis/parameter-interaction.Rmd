@@ -29,20 +29,20 @@ alldata = alldata %>% filter(!is.na(total.RI))
 
 with(alldata, interaction.plot(model_year, max_use_intensity, total.RI))
 summary(aov(total.RI ~ max_use_intensity*model_year, data=alldata))
-lsmeans(lm(total.RI ~ max_use_intensity*model_year, data=alldata), 
-        pairwise ~ max_use_intensity, 
+lsmeans(lm(total.RI ~ as.factor(max_use_intensity)*model_year, data=alldata), 
+        pairwise ~ as.factor(max_use_intensity), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, max_artifact_carry, total.RI))
 summary(aov(total.RI ~ max_artifact_carry*model_year, data=alldata))
-lsmeans(lm(total.RI ~ max_artifact_carry*model_year, data=alldata), 
-        pairwise ~ max_artifact_carry, 
+lsmeans(lm(total.RI ~ as.factor(max_artifact_carry)*model_year, data=alldata), 
+        pairwise ~ as.factor(max_artifact_carry), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, max_flake_size, total.RI))
 summary(aov(total.RI ~ max_flake_size*model_year, data=alldata))
-lsmeans(lm(total.RI ~ max_flake_size*model_year, data=alldata), 
-        pairwise ~ max_flake_size, 
+lsmeans(lm(total.RI ~ as.factor(max_flake_size)*model_year, data=alldata), 
+        pairwise ~ as.factor(max_flake_size), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, max_nodules_size, total.RI))
@@ -53,26 +53,26 @@ lsmeans(lm(total.RI ~ max_nodules_size*model_year, data=alldata),
 
 with(alldata, interaction.plot(model_year, blank_prob, total.RI))
 summary(aov(total.RI ~ blank_prob*model_year, data=alldata))
-lsmeans(lm(total.RI ~ blank_prob*model_year, data=alldata), 
-        pairwise ~ blank_prob, 
+lsmeans(lm(total.RI ~ as.factor(blank_prob)*model_year, data=alldata), 
+        pairwise ~ as.factor(blank_prob), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, scavenge_prob, total.RI))
 summary(aov(total.RI ~ scavenge_prob*model_year, data=alldata))
-lsmeans(lm(total.RI ~ scavenge_prob*model_year, data=alldata), 
-        pairwise ~ scavenge_prob, 
+lsmeans(lm(total.RI ~ as.factor(scavenge_prob)*model_year, data=alldata), 
+        pairwise ~ as.factor(scavenge_prob), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, overlap, total.RI)) 
 summary(aov(total.RI ~ overlap*model_year, data=alldata))
-lsmeans(lm(total.RI ~ overlap*model_year, data=alldata), 
-        pairwise ~ overlap, 
+lsmeans(lm(total.RI ~ as.factor(overlap)*model_year, data=alldata), 
+        pairwise ~ as.factor(overlap), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, mu, total.RI))
 summary(aov(total.RI ~ mu*model_year, data=alldata))
-lsmeans(lm(total.RI ~ mu*model_year, data=alldata), 
-        pairwise ~ mu, 
+lsmeans(lm(total.RI ~ as.factor(mu)*model_year, data=alldata), 
+        pairwise ~ as.factor(mu), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, size_preference, total.RI))
@@ -90,15 +90,15 @@ lsmeans(lm(total.RI ~ flake_preference*model_year, data=alldata),
 #actually flake size
 with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
 summary(aov(total.RI ~ min_suitable_nodule_size*model_year, data=alldata))
-lsmeans(lm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata), 
-        pairwise ~ min_suitable_nodule_size, 
+lsmeans(lm(total.RI ~ as.factor(min_suitable_nodule_size)*model_year, data=alldata), 
+        pairwise ~ as.factor(min_suitable_nodule_size), 
         adjust = "tukey")
 
 #actually nodule size
 with(alldata, interaction.plot(model_year, min_suitable_flake_size, total.RI))
 summary(aov(total.RI ~ min_suitable_flake_size*model_year, data=alldata))
-lsmeans(lm(total.RI ~ min_suitable_flake_size*model_year, data=alldata), 
-        pairwise ~ min_suitable_flake_size, 
+lsmeans(lm(total.RI ~ as.factor(min_suitable_flake_size)*model_year, data=alldata), 
+        pairwise ~ as.factor(min_suitable_flake_size), 
         adjust = "tukey")
 
 with(alldata, interaction.plot(model_year, strict_selection, total.RI))
@@ -116,10 +116,10 @@ lsmeans(lm(total.RI ~ strict_selection*model_year, data=alldata),
 p1 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_nodule_size))) + facet_grid(~size_preference, labeller=label_both) + geom_smooth(se=F)
 plot(p1)
 summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*model_year, data=alldata))
-tukey = lsmeans(lm(total.RI ~ size_preference*min_suitable_nodule_size*model_year, data=alldata), 
-                pairwise ~ size_preference:min_suitable_nodule_size, 
+tukey = lsmeans(lm(total.RI ~ size_preference*as.factor(min_suitable_nodule_size)*model_year, data=alldata), 
+                pairwise ~ size_preference:as.factor(min_suitable_nodule_size), 
                 adjust = "tukey")
-cld(tukey, 
+cld(tukey$lsmeans, 
     alpha = 0.05, 
     Letters=letters, 
     adjust="tukey")
@@ -128,10 +128,10 @@ cld(tukey,
 p2 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_nodule_size))) + facet_grid(max_flake_size~size_preference, labeller=label_both) + geom_smooth(se=F)
 plot(p2)
 summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*max_flake_size*model_year, data=alldata))
-tukey2 = lsmeans(lm(total.RI ~ size_preference*min_suitable_nodule_size*max_flake_size*model_year, data=alldata), 
-                pairwise ~ size_preference:min_suitable_nodule_size:max_flake_size, 
+tukey2 = lsmeans(lm(total.RI ~ size_preference*as.factor(min_suitable_nodule_size)*as.factor(max_flake_size)*model_year, data=alldata), 
+                pairwise ~ size_preference:as.factor(min_suitable_nodule_size):as.factor(max_flake_size), 
                 adjust = "tukey")
-cld(tukey2, 
+cld(tukey2$lsmeans, 
     alpha = 0.05, 
     Letters=letters, 
     adjust="tukey")
@@ -143,7 +143,7 @@ summary(aov(total.RI ~ size_preference*min_suitable_flake_size*model_year, data=
 tukey3 = lsmeans(lm(total.RI ~ size_preference*min_suitable_flake_size*model_year, data=alldata), 
                 pairwise ~ size_preference:min_suitable_flake_size, 
                 adjust = "tukey")
-cld(tukey3, 
+cld(tukey3$lsmeans, 
     alpha = 0.05, 
     Letters=letters, 
     adjust="tukey")
@@ -155,7 +155,7 @@ summary(aov(total.RI ~ flake_preference*max_flake_size*model_year, data=alldata)
 tukey4 = lsmeans(lm(total.RI ~ flake_preference*max_flake_size*model_year, data=alldata), 
                 pairwise ~ flake_preference:max_flake_size, 
                 adjust = "tukey")
-cld(tukey4, 
+cld(tukey4$lsmeans, 
     alpha = 0.05, 
     Letters=letters, 
     adjust="tukey")
@@ -167,7 +167,7 @@ summary(aov(total.RI ~ size_preference*flake_preference*min_suitable_nodule_size
 tukey5 = lsmeans(lm(total.RI ~ size_preference*flake_preference*min_suitable_nodule_size*model_year, data=alldata), 
                 pairwise ~ size_preference:flake_preference:min_suitable_nodule_size, 
                 adjust = "tukey")
-cld(tukey5, 
+cld(tukey5$lsmeans, 
     alpha = 0.05, 
     Letters=letters, 
     adjust="tukey")
@@ -178,7 +178,7 @@ summary(aov(total.RI ~ size_preference*flake_preference*strict_selection*model_y
 tukey6 = lsmeans(lm(total.RI ~ size_preference*flake_preference*strict_selection*model_year, data=alldata), 
                 pairwise ~ size_preference:flake_preference:strict_selection, 
                 adjust = "tukey")
-cld(tukey6, 
+cld(tukey6$lsmeans, 
     alpha = 0.05, 
     Letters=letters, 
     adjust="tukey")
