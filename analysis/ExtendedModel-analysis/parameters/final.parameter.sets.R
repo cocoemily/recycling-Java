@@ -29,7 +29,7 @@ maxAC.values = c(10, 20)
 maxFS.values = c(1, 2)
 maxNS.values = c(10, 20)
 bProb.values = c(0.25, 0.5, 0.75)
-sProb.values = c(0.25, 0.5, 0.275)
+sProb.values = c(0.25, 0.5, 0.75)
 overlap.values = c(1, 2) #1 = randomly alternating between 2 tech types, 2 = all different tech types
 mu.values = c(1, 2, 3)
 sizePref.values = c("true", "false")
@@ -94,39 +94,15 @@ for(s in size.values) {
 }
 
 fparameters = parameters %>% filter(!(minFS > maxFS)) %>%
-  filter(!(sizePref == "false" & maxFS != minFS)) 
+  filter(!(sizePref == "false" & maxFS != minFS))
+fparameters = fparameters %>%
+  mutate(of = seq(1, nrow(fparameters), by = 1))
 
 save(fparameters, file = "ExtendedModel-analysis/parameters/modelrun-params.RData")
-
-# modelruns = data.frame(of = character(),
-#                        name = character(),
-#                        size = numeric(),
-#                        startYear = numeric(),
-#                        timestep = numeric(),
-#                        maxUI = numeric(),
-#                        maxAC = numeric(),
-#                        maxFS = numeric(),
-#                        maxNS = numeric(),
-#                        bProb = numeric(),
-#                        sProb = numeric(),
-#                        overlap = numeric(),
-#                        mu = numeric(),
-#                        sizePref = character(),
-#                        flakePref = character(),
-#                        minFS = numeric(),
-#                        minNS = numeric(),
-#                        strict = character(),
-#                        ED = numeric(),
-#                        GF = numeric(),
-#                        totalSteps = numeric()) 
-# 
-# for(i in 1:nrow(fparameters)) {
-#   for(rep in 1:50) {
-#     newrow = as.vector(fparameters[i,] %>% mutate(name = rep))
-#     modelruns[nrow(modelruns) + 1, ] = newrow
-#   }
-# }
 
 setwd("..") #moves up a directory
 write.csv(fparameters, file = "run-scripts/ExtendedModel-model-runs/parameters.csv", row.names=F)
 
+write.csv(fparameters[1:2880,], file = "run-scripts/ExtendedModel-model-runs/parameters1.csv", row.names = F)
+write.csv(fparameters[2881:5760,], file = "run-scripts/ExtendedModel-model-runs/parameters2.csv", row.names = F)
+write.csv(fparameters[5761:8640,], file = "run-scripts/ExtendedModel-model-runs/parameters3.csv", row.names = F)
