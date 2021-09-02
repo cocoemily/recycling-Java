@@ -29,7 +29,7 @@ maxAC.values = c(10, 20)
 maxFS.values = c(1, 2)
 maxNS.values = c(10, 20)
 bProb.values = c(0.25, 0.5, 0.75)
-sProb.values = c(0.25, 0.5, 0.275)
+sProb.values = c(0.25, 0.5, 0.75)
 overlap.values = c(1, 2) #1 = randomly alternating between 2 tech types, 2 = all different tech types
 mu.values = c(1, 2, 3)
 sizePref.values = c("true", "false")
@@ -94,7 +94,9 @@ for(s in size.values) {
 }
 
 fparameters = parameters %>% filter(!(minFS > maxFS)) %>%
-  filter(!(sizePref == "false" & maxFS != minFS)) 
+  filter(!(sizePref == "false" & maxFS != minFS))
+fparameters = fparameters %>%
+  mutate(of = seq(1, nrow(fparameters), by = 1))
 
 save(fparameters, file = "ExtendedModel-analysis/parameters/modelrun-params.RData")
 
