@@ -17,7 +17,7 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"test-output",	//outputFile
+				"test",	//outputFile
 				"run1", 	//name
 				5, 			//size 
 				500000, 	//startYear
