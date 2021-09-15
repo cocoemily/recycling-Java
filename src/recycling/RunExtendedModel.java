@@ -99,7 +99,7 @@ public class RunExtendedModel {
 			int whichAgent = 0;
 			model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
 
-			for(int i=0; i < model.totalSteps; i++) {
+			for(int i=0; i <= model.totalSteps; i++) {
 
 				model.currentYear = model.startYear + (i*model.timestep); //update current year of model
 				System.out.println("current year: " + model.currentYear);
@@ -161,9 +161,9 @@ public class RunExtendedModel {
 					}
 
 					//drop all exhausted objects
-					model.dropExhaustedArifacts(a);
+					model.dropExhaustedArifacts(a, model.currentYear);
 					//drop up to maxArtifactCarry
-					model.dropArtifacts(a);
+					model.dropArtifacts(a, model.currentYear);
 					
 					model.moveAgent(model.agents.get(whichAgent), false);
 
@@ -174,7 +174,10 @@ public class RunExtendedModel {
 					}
 				}
 				
-				//model.getArtifactData();
+				if(i % (model.totalSteps/2) == 0) {
+					model.getArtifactData();
+				}
+				
 				model.getLayerData();
 				model.getModelData();
 				model.resetScavengeEventCounter();
@@ -197,7 +200,7 @@ public class RunExtendedModel {
 		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 		
 		//output artifact data
-		//createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
 	public static void createFile(String filename, ArrayList<String> data) {

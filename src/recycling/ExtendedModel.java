@@ -111,14 +111,14 @@ public class ExtendedModel {
 		this.numberScavengingEvents = 0;
 
 		this.layerdata = new StringBuilder();
-		String cols = this.getParameterData().get(0) + ",row,col,model_year,year,nodule.count,flake.count,cortex.ratio,"
-				+ "recycling.intensity,num.discards,num.encounters,num.manufacture,num.retouch,num.occupation";
+		String cols = this.getParameterData().get(0) + ",row,col,model_year,year,nodule.count,flake.count,assemblage.vol,cortex.ratio,"
+				+ "recycling.intensity,num.discards,num.scavenge,num.encounters,num.manufacture,num.retouch,num.occupation";
 		this.layerdata.append(cols + "\n");
 		this.modeldata = new StringBuilder();
 		String mcols = this.getParameterData().get(0) + ",model_year,num.scav.events,total.recycled,num.deposits,total.encounters,total.discards,total.manu.events,total.retouches,total.CR,total.RI"; 
 		this.modeldata.append(mcols + "\n");
 		this.artifactdata = new StringBuilder();
-		this.artifactdata.append("row,col,model_year,layer_year,obj_type,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
+		this.artifactdata.append("row,col,model_year,layer_year,obj_type,initial_discard,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
 
 	}
 
@@ -273,11 +273,13 @@ public class ExtendedModel {
 				if(choice instanceof Nodule) {
 					agent.collectNodule((Nodule) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) choice);
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
 					this.numberScavengingEvents++; //tracks number of scavenging events
 
 				} else if(choice instanceof Flake) {
 					agent.collectFlake((Flake) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) choice);
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
 					this.numberScavengingEvents++; //tracks number of scavenging events
 				}
 			}
@@ -395,10 +397,12 @@ public class ExtendedModel {
 			if(selection.get(i) instanceof Nodule) {
 				agent.collectNodule((Nodule) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) selection.get(i));
+				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
 				this.numberScavengingEvents++; //tracks scavenging events
 			} else if(selection.get(i) instanceof Flake) {
 				agent.collectFlake((Flake) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) selection.get(i));
+				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
 				this.numberScavengingEvents++; //tracks scavenging events
 			}
 		}
@@ -406,10 +410,11 @@ public class ExtendedModel {
 	}
 
 	/**
-	 * Resets scavenging event counter to zero to track number of events per model step
+	 * Resets scavenging event counters to zero to track number of events per model step
 	 */
 	public void resetScavengeEventCounter() {
 		this.numberScavengingEvents = 0;
+		
 	}
 
 	/**
@@ -444,7 +449,7 @@ public class ExtendedModel {
 	 * & flakes that cannot be retouched anymore)
 	 * @param agent
 	 */
-	public void dropExhaustedArifacts(Agent agent) {
+	public void dropExhaustedArifacts(Agent agent, int currentYear) {
 		ArrayList<Object> all = new ArrayList<Object>();
 		all.addAll(agent.getAgentNodules());
 		all.addAll(agent.getAgentFlakes());
@@ -455,11 +460,17 @@ public class ExtendedModel {
 		for(int i=0; i < all.size(); i++) {
 			if(all.get(i) instanceof Nodule) {
 				if(((Nodule) all.get(i)).getFlakes().size() == 0) {
+					if(((Nodule) all.get(i)).getDiscardYear() == 0) {
+						((Nodule) all.get(i)).setDiscardYear(currentYear);
+					}
 					dropN.add((Nodule) all.get(i));
 					agent.getAgentNodules().remove((Nodule) all.get(i));
 				}
 			} else if(all.get(i) instanceof Flake) {
 				if(!((Flake) all.get(i)).checkFlakeUsable()) {
+					if(((Flake) all.get(i)).getDiscardYear() == 0) {
+						((Flake) all.get(i)).setDiscardYear(currentYear);
+					}
 					dropF.add((Flake) all.get(i));
 					agent.getAgentFlakes().remove((Flake) all.get(i));
 				}
@@ -485,7 +496,7 @@ public class ExtendedModel {
 	 * Agents will keep objects that fit the selection parameters over other objects. 
 	 * @param agent
 	 */
-	public void dropArtifacts(Agent agent) { 
+	public void dropArtifacts(Agent agent, int currentYear) { 
 		//select flakes/nodules to keep
 		if(agent.getAgentFlakes().size() != 0 || agent.getAgentNodules().size() != 0 ) {
 			ArrayList<Object> toKeep = select(
@@ -505,10 +516,16 @@ public class ExtendedModel {
 			for(int i=0; i < all.size(); i++) {
 				if(!toKeep.contains(all.get(i))) {
 					if(all.get(i) instanceof Nodule) {
+						if(((Nodule) all.get(i)).getDiscardYear() == 0) {
+							((Nodule) all.get(i)).setDiscardYear(currentYear);
+						}
 						dropN.add((Nodule) all.get(i));
 						agent.getAgentNodules().remove((Nodule) all.get(i));
 
 					} else if(all.get(i) instanceof Flake) {
+						if(((Flake) all.get(i)).getDiscardYear() == 0) {
+							((Flake) all.get(i)).setDiscardYear(currentYear);
+						}
 						dropF.add((Flake) all.get(i));
 						agent.getAgentFlakes().remove((Flake) all.get(i));
 
@@ -635,7 +652,8 @@ public class ExtendedModel {
 							boolean nodRecycled = nods.get(n).getFirstTech() != nods.get(n).getLastTech();
 
 							toAddData.append(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
-									+ "nodule" + ","  									//obj_type
+									+ "nodule" + ","                                    //obj_type
+									+ nods.get(n).getDiscardYear() + ","				//initial discard year
 									+ nods.get(n).getSize() + "," 						//size
 									+ nods.get(n).getVolume() + ","						//volume
 									+ fleft + ","										//cortex (equal to size of flakes left)
@@ -654,6 +672,7 @@ public class ExtendedModel {
 						for(int f=0; f<flakes.size(); f++) {
 							toAddData.append(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
 									+ "flake" + ","  									//obj_type
+									+ flakes.get(f).getDiscardYear() + ","				//initial discard year
 									+ flakes.get(f).getSize() + "," 					//size
 									+ flakes.get(f).getVolume() + ","					//volume
 									+ flakes.get(f).getSize() + ","						//cortex (equal to size of flake)
@@ -691,13 +710,17 @@ public class ExtendedModel {
 					datastring += layer.getNodules().size() + ",";
 					//flake count
 					datastring += layer.getFlakes().size() + ",";
+					//assemblage volume
+					datastring += layer.calculateAssemblageVol() + ",";
 					//cortex ratio
 					datastring += layer.calculateCortexRatio(this.noduleV, this.noduleSA, this.avgFlakesOnNodule) + ",";
 					// recycling intensity
 					datastring += layer.calculateRecyclingIntensity() + ",";
 					// discard count
 					datastring += layer.getDiscardEvents() + ",";
-					//encounter count
+					// scavenging event count
+					datastring += layer.getScavengeEvents() + ",";
+ 					//encounter count
 					datastring += layer.getEncounters() + ",";
 					//manufacture event count
 					datastring += layer.getManufactureEvents() + ",";

@@ -37,7 +37,7 @@ public class TestModel {
 				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
-				1000		//totalSteps
+				100		//totalSteps
 				);
 
 
@@ -91,14 +91,14 @@ public class TestModel {
 				tech++;
 			}
 		}
-		//model.printAgents();
+		model.printAgents();
 		System.out.println("agents created.");
 		
 
 		int whichAgent = 0;
 		model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
 
-		for(int i=0; i < model.totalSteps; i++) {
+		for(int i=0; i <= model.totalSteps; i++) {
 
 			model.currentYear = model.startYear + (i*model.timestep); //update current year of model
 			System.out.println("current year: " + model.currentYear);
@@ -124,9 +124,11 @@ public class TestModel {
 					if(Math.random() < model.scavengeProb) {
 						if(!model.flakePref && !model.sizePref) {
 							model.collectRandomArtifacts(a);
+							//l.scavenged();
 							System.out.println("\t agent collected random artifacts");
 						} else {
 							model.collectSelectedArtifacts(a);
+							//l.scavenged();
 							System.out.println("\t agent collected selected artifacts");
 						}
 						
@@ -159,9 +161,9 @@ public class TestModel {
 				}
 
 				//drop all exhausted objects
-				model.dropExhaustedArifacts(a);
+				model.dropExhaustedArifacts(a, model.currentYear);
 				//drop up to maxArtifactCarry
-				model.dropArtifacts(a);
+				model.dropArtifacts(a, model.currentYear);
 				
 				model.moveAgent(model.agents.get(whichAgent), false);
 
@@ -172,7 +174,10 @@ public class TestModel {
 				}
 			}
 			
-			model.getArtifactData();
+			if(i % (model.totalSteps/2) == 0) {
+				model.getArtifactData();
+			}
+			
 			model.getLayerData();
 			model.getModelData();
 			model.resetScavengeEventCounter();

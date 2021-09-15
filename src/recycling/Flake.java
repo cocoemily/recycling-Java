@@ -19,6 +19,8 @@ public class Flake {
 	private boolean usable;
 	private boolean recycled;
 	
+	private int discardYear;
+	
 	public Flake(int s) {
 		this.size = s;
 		this.volume = (this.size * 0.05) * 100000; //proportion same as Davies et al 2018
@@ -27,6 +29,7 @@ public class Flake {
 		this.techs = new ArrayList<Integer>();
 		this.usable = true;
 		this.recycled = false;
+		this.discardYear = 0;
 	}
 	
 	public void addGroup(int group) {
@@ -87,6 +90,14 @@ public class Flake {
 	
 	public boolean checkWasRecycled() {
 		return this.recycled;
+	}
+	
+	public int getDiscardYear() {
+		return this.discardYear;
+	}
+	
+	public void setDiscardYear(int currentYear) {
+		this.discardYear = currentYear;
 	}
 	
 	public void print() {

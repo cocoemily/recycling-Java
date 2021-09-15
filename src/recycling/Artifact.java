@@ -10,11 +10,13 @@ import java.util.ArrayList;
 public class Artifact {
 	
 	private int stage;
+	private int initialDiscardYear;
 	private ArrayList<Integer> groups;
 	private ArrayList<Integer> techs;
 	
 	public Artifact() {
 		stage = 0;
+		initialDiscardYear = 0;
 		groups = new ArrayList<Integer>();
 		techs = new ArrayList<Integer>();
 	}
@@ -41,6 +43,10 @@ public class Artifact {
 	
 	public int getLastTech() {
 		return this.techs.get(this.techs.size()-1);
+	}
+	
+	public int getDiscardYear() {
+		return this.initialDiscardYear;
 	}
 	
 	public void print() {

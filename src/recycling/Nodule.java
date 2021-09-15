@@ -17,6 +17,8 @@ public class Nodule {
 	private ArrayList<Integer> groups;
 	private ArrayList<Integer> techs;
 	
+	private int discardYear;
+	
 	
 	public Nodule(int s, double noduleV, int maxFS) {
 		this.size = s;
@@ -39,6 +41,8 @@ public class Nodule {
 			}
 			
 		}
+		
+		this.discardYear = 0;
 	}
 	
 	public int getSize() {
@@ -94,6 +98,14 @@ public class Nodule {
 		this.addGroup(a.getGroup());
 		this.addTech(a.getTech());
 		return f;
+	}
+	
+	public int getDiscardYear() {
+		return this.discardYear;
+	}
+	
+	public void setDiscardYear(int currentYear) {
+		this.discardYear = currentYear;
 	}
 	
 	public void print() {

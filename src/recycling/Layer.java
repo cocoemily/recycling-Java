@@ -20,6 +20,7 @@ public class Layer {
 	private ArrayList<Flake> flakelist;
 	
 	private int numEncounters; //how many times the layer has been visited
+	private int numScavenge;
 	private int numDiscard; //how many discard events into the layer
 	private int exposureTime; //how long the layer is on the surface //will need to be added with geo event functionality
 	private int manufactureEvents; //how many blanks produced + retouch actions at the layer location
@@ -37,6 +38,7 @@ public class Layer {
 		
 		numEncounters = 0;
 		numDiscard = 0;
+		numScavenge = 0;
 		exposureTime = 0;
 		manufactureEvents = 0;
 		retouchEvents = 0;
@@ -113,13 +115,20 @@ public class Layer {
 		}
 	}
 	
-	
 	public void discards(int num) {
 		numDiscard += num;
 	}
 	
 	public int getDiscardEvents() {
 		return numDiscard;
+	}
+	
+	public void scavenged() {
+		numScavenge ++;
+	}
+	
+	public int getScavengeEvents() {
+		return numScavenge;
 	}
 	
 	public void exposed() {
@@ -181,6 +190,19 @@ public class Layer {
 		double CR = obsSA / expSA;
 		
 		return CR;
+	}
+	
+	public double calculateAssemblageVol() {
+		double vol = 0;
+		
+		for(int i=0; i < this.flakelist.size(); i++) {
+			vol += this.flakelist.get(i).getVolume();
+		}
+		for(int i=0; i < this.nodulelist.size(); i++) {
+			vol += this.nodulelist.get(i).getVolume();
+		}
+		
+		return vol;
 	}
 	
 	/**
