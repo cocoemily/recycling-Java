@@ -103,6 +103,14 @@ save(fparameters, file = "ExtendedModel-analysis/parameters/modelrun-params.RDat
 setwd("..") #moves up a directory
 write.csv(fparameters, file = "run-scripts/ExtendedModel-model-runs/parameters.csv", row.names=F)
 
-write.csv(fparameters[1:2880,], file = "run-scripts/ExtendedModel-model-runs/parameters1.csv", row.names = F)
-write.csv(fparameters[2881:5760,], file = "run-scripts/ExtendedModel-model-runs/parameters2.csv", row.names = F)
-write.csv(fparameters[5761:8640,], file = "run-scripts/ExtendedModel-model-runs/parameters3.csv", row.names = F)
+
+#split up parameters into smaller bit to be run on HPC
+write.csv(fparameters[1:1000,], file = "run-scripts/ExtendedModel-model-runs/parameters1.csv", row.names = F)
+write.csv(fparameters[1001:2000,], file = "run-scripts/ExtendedModel-model-runs/parameters2.csv", row.names = F)
+write.csv(fparameters[2001:3000,], file = "run-scripts/ExtendedModel-model-runs/parameters3.csv", row.names = F)
+write.csv(fparameters[3001:4000,], file = "run-scripts/ExtendedModel-model-runs/parameters1.csv", row.names = F)
+write.csv(fparameters[4001:5000,], file = "run-scripts/ExtendedModel-model-runs/parameters2.csv", row.names = F)
+write.csv(fparameters[5001:6000,], file = "run-scripts/ExtendedModel-model-runs/parameters3.csv", row.names = F)
+write.csv(fparameters[6001:7000,], file = "run-scripts/ExtendedModel-model-runs/parameters1.csv", row.names = F)
+write.csv(fparameters[7001:8000,], file = "run-scripts/ExtendedModel-model-runs/parameters2.csv", row.names = F)
+write.csv(fparameters[8001:8640,], file = "run-scripts/ExtendedModel-model-runs/parameters3.csv", row.names = F)
