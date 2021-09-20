@@ -1,6 +1,15 @@
 #!/bin/bash
 
-echo >> /scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv
+module purge 
+module load jdk/11.0.9 
+
+#cd ..
+#cd ..
+#cd src
+#javac -d ../classes/ recycling/*.java
+#cd ..
+
+
 while IFS=, read -r line; do
   #echo $line
   if [[ $line != \"of* ]]
@@ -13,4 +22,4 @@ while IFS=, read -r line; do
   #do
   #  echo "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
   #done
-done < test.csv
+done < /scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/test2.csv
