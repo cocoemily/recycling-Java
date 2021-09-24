@@ -14,15 +14,17 @@ library(rpart)
 library(rpart.plot)
 theme_set(theme_minimal())
 
-alldata = read_csv("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv")
-alldata = alldata %>% mutate(
-  total.RI = as.numeric(total.RI),
-  total.CR = as.numeric(total.CR)
-)
+# alldata = read_csv("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv")
+# alldata = alldata %>% mutate(
+#   total.RI = as.numeric(total.RI),
+#   total.CR = as.numeric(total.CR)
+# )
+# 
+# alldata = alldata[1:50010,]
+# 
+# parameters = colnames(alldata[,c(1,4:9,11:17)])
 
-alldata = alldata[1:50010,]
 
-parameters = colnames(alldata[,c(1,4:9,11:17)])
 
 for(p in parameters) {
   print(c(unique(alldata[p])))
@@ -33,7 +35,7 @@ for(p in parameters) {
 ## Where is there missing data for recycling intensity?
 Because of the way that recycling intensity is calculated
 
-```{r recycling-intensity}
+```{r missing-recycling-intensity}
 
 visdat::vis_dat(alldata, warn_large_data = F)
 
