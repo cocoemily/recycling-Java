@@ -1,0 +1,151 @@
+---
+title: "outputs-recycle-overlap"
+author: "Emily Coco"
+date: "9/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(data.table)
+
+theme_set(theme_minimal())
+
+testdata = as.data.frame(fread("/Users/emilycoco/eclipse-workspace/recycling-Java/output/test/run1_layers-data.csv"))
+
+layerdata = testdata
+
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
+outputs = c("nodule.count",	"flake.count","assemblage.vol",	"cortex.ratio", "recycling.intensity",	"num.discards",	"num.scavenge",	"num.encounters", "num.manufacture",	"num.retouch",	"num.occupation")
+
+```
+
+## Do high values of recycling correspond with certain values of the other behaviors?
+
+```{r relationships, warning=F}
+
+#assemblage volume
+ggplot(layerdata, aes(x = recycling.intensity, y = assemblage.vol)) +
+  geom_point() +
+  geom_smooth()
+
+#cortex ratio
+ggplot(layerdata, aes(x = recycling.intensity, y = cortex.ratio)) +
+  geom_point() +
+  geom_smooth()
+
+#number of discards
+ggplot(layerdata, aes(x = recycling.intensity, y = num.discards)) +
+  geom_point() +
+  geom_smooth()
+
+#number of scavenging events
+ggplot(layerdata, aes(x = recycling.intensity, y = num.scavenge)) +
+  geom_point() +
+  geom_smooth()
+
+#number of encounters with assemblage 
+ggplot(layerdata, aes(x = recycling.intensity, y = num.encounters)) +
+  geom_point() +
+  geom_smooth()
+
+#number of manufacturing events
+ggplot(layerdata, aes(x = recycling.intensity, y = num.manufacture)) +
+  geom_point() +
+  geom_smooth()
+
+#number of retouching events
+ggplot(layerdata, aes(x = recycling.intensity, y = num.retouch)) +
+  geom_point() +
+  geom_smooth()
+
+#number of occupations
+ggplot(layerdata, aes(x = recycling.intensity, y = num.occupation)) +
+  geom_point() +
+  geom_smooth()
+
+```
+
+## How are the relationships between recycling intensity and other behaviors impacted by experimental parameters?
+```{r correlations, warning=F}
+library(corrplot)
+
+plot_correlogram = function(cordata, title) { 
+  cormat = cor(cordata, use = "complete.obs")
+  
+  cor.mtest <- function(mat, ...) {
+    mat <- as.matrix(mat)
+    n <- ncol(mat)
+    p.mat<- matrix(NA, n, n)
+    diag(p.mat) <- 0
+    for (i in 1:(n - 1)) {
+      for (j in (i + 1):n) {
+        tmp <- cor.test(mat[, i], mat[, j], ...)
+        p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+      }
+    }
+    colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+    p.mat
+  }
+  # matrix of the p-value of the correlation
+  p.mat <- cor.mtest(cordata)
+  
+  col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+  return(corrplot(cormat, method="color", col=col(200),  
+                  type="upper", order="hclust", 
+                  addCoef.col = "black", # Add coefficient of correlation
+                  tl.col="black", tl.srt=45, #Text label color and rotation
+                  # Combine with significance
+                  p.mat = p.mat, sig.level = 0.05, insig = "blank",
+                  number.cex = 0.5, 
+                  # hide correlation coefficient on the principal diagonal
+                  diag=FALSE, title=title
+                  )
+         )
+}
+
+
+
+for(p in parameters) {
+  values = c(unique(layerdata[p]))
+  for(v in values[[1]]) {
+    cordata = layerdata %>% filter(!!as.name(p) == v) %>% select(outputs)
+    title = paste(p, ":", v)
+    plot_correlogram(cordata, title)
+  }
+}
+
+
+#possibly add in some indication of how different correlation matrices are based on parameters
+#r values to z scores between recycling and each of the outputs
+#regression on z scores?
+
+cor.by.exp = layerdata %>% group_by_at(vars(one_of(parameters))) %>% 
+  summarize(ri.cr.cor = cor(recycling.intensity, cortex.ratio, use ="complete.obs"),
+            ri.nc.cor = cor(recycling.intensity, nodule.count, use ="complete.obs"),
+            ri.fc.cor = cor(recycling.intensity, flake.count, use ="complete.obs"),
+            ri.nd.cor = cor(recycling.intensity, num.discards, use ="complete.obs"),
+            ri.ns.cor = cor(recycling.intensity, num.scavenge, use ="complete.obs"),
+            ri.ne.cor = cor(recycling.intensity, num.encounters, use ="complete.obs"),
+            ri.nm.cor = cor(recycling.intensity, num.manufacture, use ="complete.obs"),
+            ri.nr.cor = cor(recycling.intensity, num.retouch, use ="complete.obs"),
+            ri.no.cor = cor(recycling.intensity, num.retouch, use ="complete.obs"),
+            ri.av.cor = cor(recycling.intensity, assemblage.vol, use ="complete.obs"),
+            )
+
+
+#regression of recycling intensity and cortex ratio correlation
+model1 = lm(ri.cr.cor ~ max_use_intensity + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + strict_selection, data = cor.by.exp)
+summary(model1)
+
+#regression of recycling intensity and flake count correlation
+model2 = lm(ri.fc.cor ~ max_use_intensity + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + strict_selection, data = cor.by.exp)
+summary(model1)
+
+
+
+```
+
+
