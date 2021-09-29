@@ -45,16 +45,16 @@ for(i in 1:200) {
   
   
   
-  ri.cr.cor = cor(data$recycling.intensity, data$cortex.ratio, use ="complete.obs")
-  ri.nc.cor = cor(data$recycling.intensity, data$nodule.count, use ="complete.obs")
-  ri.fc.cor = cor(data$recycling.intensity, data$flake.count, use ="complete.obs")
-  ri.nd.cor = cor(data$recycling.intensity, data$num.discards, use ="complete.obs")
-  ri.ns.cor = cor(data$recycling.intensity, data$num.scavenge, use ="complete.obs")
-  ri.ne.cor = cor(data$recycling.intensity, data$num.encounters, use ="complete.obs")
-  ri.nm.cor = cor(data$recycling.intensity, data$num.manufacture, use ="complete.obs")
-  ri.nr.cor = cor(data$recycling.intensity, data$num.retouch, use ="complete.obs")
-  ri.no.cor = cor(data$recycling.intensity, data$num.retouch, use ="complete.obs")
-  ri.av.cor = cor(data$recycling.intensity, data$assemblage.vol, use ="complete.obs")
+  ri.cr.cor = cor(data$recycling.intensity, data$cortex.ratio, method = "spearman", use ="na.or.complete")
+  ri.nc.cor = cor(data$recycling.intensity, data$nodule.count, method = "spearman", use ="na.or.complete")
+  ri.fc.cor = cor(data$recycling.intensity, data$flake.count, method = "spearman", use ="na.or.complete")
+  ri.nd.cor = cor(data$recycling.intensity, data$num.discards, method = "spearman", use ="na.or.complete")
+  ri.ns.cor = cor(data$recycling.intensity, data$num.scavenge, method = "spearman", use ="na.or.complete")
+  ri.ne.cor = cor(data$recycling.intensity, data$num.encounters, method = "spearman", use ="na.or.complete")
+  ri.nm.cor = cor(data$recycling.intensity, data$num.manufacture, method = "spearman", use ="na.or.complete")
+  ri.nr.cor = cor(data$recycling.intensity, data$num.retouch, method = "spearman", use ="na.or.complete")
+  ri.no.cor = cor(data$recycling.intensity, data$num.retouch, method = "spearman", use ="na.or.complete")
+  ri.av.cor = cor(data$recycling.intensity, data$assemblage.vol, method = "spearman", use ="na.or.complete")
   
   newrow = c(i, unlist(data[1, parameters]), ri.cr.cor, ri.nc.cor, ri.fc.cor, 
              ri.nd.cor, ri.ns.cor, ri.ne.cor, ri.nm.cor, ri.nr.cor, ri.no.cor, 
