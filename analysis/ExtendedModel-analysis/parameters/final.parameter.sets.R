@@ -23,7 +23,7 @@ parameters = data.frame(of = character(),
                         GF = numeric(),
                         totalSteps = numeric()) 
 
-size.values = c(4)
+size.values = c(5)
 maxUI.values = c(15, 30)
 maxAC.values = c(10, 20)
 maxFS.values = c(1, 2)
