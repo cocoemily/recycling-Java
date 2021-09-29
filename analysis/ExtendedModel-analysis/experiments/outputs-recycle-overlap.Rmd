@@ -13,63 +13,55 @@ library(data.table)
 
 theme_set(theme_minimal())
 
-testdata = as.data.frame(fread("/Users/emilycoco/eclipse-workspace/recycling-Java/output/test/run1_layers-data.csv"))
+source("layers-data-prep.R")
 
-layerdata = testdata
+layerdata = df
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-outputs = c("nodule.count",	"flake.count","assemblage.vol",	"cortex.ratio", "recycling.intensity",	"num.discards",	"num.scavenge",	"num.encounters", "num.manufacture",	"num.retouch",	"num.occupation")
+outputs = c("ri.cr.cor","ri.nc.cor","ri.fc.cor","ri.nd.cor","ri.ns.cor","ri.ne.cor","ri.nm.cor","ri.nr.cor","ri.no.cor","ri.av.cor")
 
 ```
 
 ## Do high values of recycling correspond with certain values of the other behaviors?
 
-```{r relationships, warning=F}
+```{r relationships, warning=F, fig.dim=c(11, 5)}
 
-#assemblage volume
-ggplot(layerdata, aes(x = recycling.intensity, y = assemblage.vol)) +
-  geom_point() +
-  geom_smooth()
+plot_correlations = function(o) {
+  p1 = ggplot(layerdata, aes(x = as.factor(blank_prob), y = get(o), color = as.factor(scavenge_prob))) +
+  geom_boxplot() +
+  facet_grid(max_use_intensity ~ max_artifact_carry, labeller = label_both) +
+    labs(x = "blank prob", y = o, color = "scavenge prob") +
+    theme(text = element_text(size = 6))
+  
+  p2 = ggplot(layerdata, aes(x = as.factor(max_flake_size), y = get(o), color = as.factor(max_nodules_size))) +
+  geom_boxplot() +
+  facet_grid(min_suitable_flake_size ~ size_preference + flake_preference + strict_selection, labeller = label_both) +
+    labs(x = "max flake size", y = o, color = "max nod size") +
+    theme(text = element_text(size = 6))
+  
+  p3 = ggplot(layerdata, aes(x = as.factor(blank_prob), y = get(o), color = as.factor(scavenge_prob))) +
+  geom_boxplot() +
+  facet_grid(overlap ~ mu, labeller = label_both) +
+    labs(x = "blank prob", y = o, color = "scavenge prob") +
+    theme(text = element_text(size = 6))
+  
+  return(list(p1, p3, p2))
+}
 
-#cortex ratio
-ggplot(layerdata, aes(x = recycling.intensity, y = cortex.ratio)) +
-  geom_point() +
-  geom_smooth()
+for(o in outputs) {
 
-#number of discards
-ggplot(layerdata, aes(x = recycling.intensity, y = num.discards)) +
-  geom_point() +
-  geom_smooth()
+  plots = plot_correlations(o)
+  plot(cowplot::plot_grid(plots[[1]], plots[[2]], plots[[3]]))
 
-#number of scavenging events
-ggplot(layerdata, aes(x = recycling.intensity, y = num.scavenge)) +
-  geom_point() +
-  geom_smooth()
+  
+}
 
-#number of encounters with assemblage 
-ggplot(layerdata, aes(x = recycling.intensity, y = num.encounters)) +
-  geom_point() +
-  geom_smooth()
 
-#number of manufacturing events
-ggplot(layerdata, aes(x = recycling.intensity, y = num.manufacture)) +
-  geom_point() +
-  geom_smooth()
-
-#number of retouching events
-ggplot(layerdata, aes(x = recycling.intensity, y = num.retouch)) +
-  geom_point() +
-  geom_smooth()
-
-#number of occupations
-ggplot(layerdata, aes(x = recycling.intensity, y = num.occupation)) +
-  geom_point() +
-  geom_smooth()
 
 ```
 
 ## How are the relationships between recycling intensity and other behaviors impacted by experimental parameters?
-```{r correlations, warning=F}
+```{r correlations, warning=F, include=F, eval=F}
 library(corrplot)
 
 plot_correlogram = function(cordata, title) { 
