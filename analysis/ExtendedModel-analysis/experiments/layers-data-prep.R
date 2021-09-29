@@ -30,15 +30,18 @@ df = data.frame(exp = numeric(),
                 ri.av.cor = numeric()
 )
 
+setwd("..")
+setwd("..")
+setwd("..")
 #for testing
-for(i in 1:3) {
+for(i in 1:200) {
   
-  data = as.data.frame(fread(paste0("/Users/emilycoco/eclipse-workspace/recycling-Java/output/exp", i, "/run0_layers-data.csv")))
+  #data = as.data.frame(fread(paste0("/Users/emilycoco/eclipse-workspace/recycling-Java/output/exp", i, "/run0_layers-data.csv")))
 
 
 #for(i in 1:8640) {
   
-  #data = as.data.frame(fread(paste0("output/exp", i, "/layers-data.csv")))
+  data = as.data.frame(fread(paste0("output/exp", i, "/layers-data.csv")))
   
   
   
@@ -60,5 +63,5 @@ for(i in 1:3) {
   df[nrow(df) + 1, ] = newrow
 }
 
-
+setwd("analysis")
 
