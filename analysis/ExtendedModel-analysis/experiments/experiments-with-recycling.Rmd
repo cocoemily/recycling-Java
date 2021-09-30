@@ -13,12 +13,13 @@ library(naniar)
 library(rpart)
 library(rpart.plot)
 library(data.table)
+library(UpSetR)
 theme_set(theme_minimal())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
 # alldata = read_csv("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv")
-# alldata = as.data.frame(fread("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv", select=c(parameters, "model_year", "total.RI")))
+alldata = as.data.frame(fread("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv"))
 # alldata = alldata %>% mutate(
 #   total.RI = as.numeric(total.RI),
 #   total.CR = as.numeric(total.CR)
@@ -28,10 +29,7 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 # 
 # parameters = colnames(alldata[,c(1,4:9,11:17)])
 
-
-for(p in parameters) {
-  print(c(unique(alldata[p])))
-}
+outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
 ```
 
@@ -40,23 +38,29 @@ Because of the way that recycling intensity is calculated
 
 ```{r missing-recycling-intensity}
 
-visdat::vis_dat(alldata, warn_large_data = F)
-
 for(p in parameters) {
-  graph_data = alldata %>% select(model_year, p, total.RI)
-  
-  ggplot(graph_data, aes(x = model_year, y = total.RI)) +
-    geom_miss_point() +
-    facet_wrap(as.formula(paste("~", p)), labeller=label_both) +
-    scale_x_reverse()
-  
+  print(c(unique(alldata[p])))
 }
 
-alldata %>%
-  select(parameters, "total.RI") %>%
-  add_prop_miss() %>%
-  rpart(prop_miss_all ~ ., data = ., model=T) %>%
-  prp(type = 4, extra = 101, prefix = "Prop. Miss =")
+
+output_data = alldata %>% select(outputs)
+gg_miss_var(output_data, show_pct = T)
+
+
+missing_counts = alldata %>% group_by_at(parameters) %>%
+  summarize(missing.RI = sum(is.na(total.RI))/n(), 
+            missing.CR = sum(is.na(total.CR))/n(), 
+            total.discards = sum(total.discards))
+
+lmdata = missing_counts %>% select(parameters, "missing.RI")
+m1 = lm(missing.RI ~ . , data = lmdata)
+summary(m1)
+plot(m1, which=2)
+
+m2 = lm(missing.RI ~ max_flake_size*max_nodules_size*size_preference*flake_preference*min_suitable_flake_size, data = lmdata)
+stargazer::stargazer(m2, type= "text")
+
+
 
 ```
 
