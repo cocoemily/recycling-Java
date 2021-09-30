@@ -310,6 +310,7 @@ public class ExtendedModel {
 				possFlakes = flakes;
 			}
 
+			
 			if(possFlakes.size() <= numNeeded) { //if there are fewer flakes than number needed or exactly the number needed, return all
 				for(int i=0; i < possFlakes.size(); i++) {
 					selection.add(possFlakes.get(i));
@@ -343,7 +344,7 @@ public class ExtendedModel {
 					selection.add(possNods.get(i));
 					nodules.remove(possNods.get(i));
 				}
-			} else if(possNods.size() > numNeeded){
+			} else if(possNods.size() > numNeeded ){
 				for(int i=numNeeded; i < possNods.size(); i++) {//if there are more nodules than number needed, randomly select from possible nodules
 					int index = (int) (Math.random() * possNods.size());
 					selection.add(possNods.get(index));
@@ -372,6 +373,14 @@ public class ExtendedModel {
 					for(int i=0; i < iter; i++) {
 						int index = (int) (Math.random() * possible.size());
 						selection.add(possible.get(index));
+						
+						
+						if(possible.get(index) instanceof Flake) {
+							flakes.remove(possible.get(index));
+						} else if (possible.get(index)instanceof Nodule) {
+							nodules.remove(possible.get(index));
+						}
+						
 						possible.remove(index);
 					}
 				}
