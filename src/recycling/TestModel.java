@@ -17,27 +17,27 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"test",	//outputFile
-				"run1", 	//name
+				"exp2",	//outputFile
+				"run0", 	//name
 				5, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
-				40, 		//maxUI
-				25, 			//maxAC
+				15, 		//maxUI
+				10, 			//maxAC
 				1, 			//maxFS
-				20, 		//maxNS
-				0.5,		//bProb
-				0.5,		//sProb
+				10, 		//maxNS
+				0.75,		//bProb
+				0.75,		//sProb
 				1, 			//overlap
 				1.0,  		//mu
 				false, 		//sizePref
-				false, 		//flakePref
+				true, 		//flakePref
 				1, 			//minFS
 				10, 		//minNS
 				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
-				100		//totalSteps
+				3000		//totalSteps
 				);
 
 

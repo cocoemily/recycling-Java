@@ -1,5 +1,0 @@
-"of","name","size","startYear","timestep","maxUI","maxAC","maxFS","maxNS","bProb","sProb","overlap","mu","sizePref","flakePref","minFS","minNS","strict","ED","GF","totalSteps"
-"test1",0,5,500000,100,30,20,1,20,0.75,0.25,2,2,"true","true",1,5,"false",0.5,0,5000
-"test2",0,5,500000,100,30,20,1,20,0.75,0.25,2,2,"true","true",2,5,"false",0.5,0,5000
-"test3",0,5,500000,100,30,20,1,20,0.75,0.25,2,2,"true","true",2,10,"false",0.5,0,5000
-"test4",0,5,500000,100,30,20,1,20,0.75,0.25,2,2,"true","false",1,5,"false",0.5,0,5000

@@ -1,6 +1,7 @@
 output/
 .Rproj.user
 analysis/.Rhistory
+analysis/ExtendedModel-analysis/experiments/abandoned_code.R
 run-scripts/OriginalModel/
 run-scripts/ExtendedModel-sensitivity/slurm*
 run-scripts/ExtendedModel-sensitivity/*.sbatch

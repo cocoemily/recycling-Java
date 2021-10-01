@@ -7,7 +7,8 @@ colnames(parameter.list) = parameter.list[1,]
 parameters = parameter.list[1,]
 parameter.list = parameter.list[2,]
 
-size.values = as.numeric(unlist((parameter.list %>% select(size))[1,1] %>% str_split(", ")))
+#size.values = as.numeric(unlist((parameter.list %>% select(size))[1,1] %>% str_split(", ")))
+size.values = c(5)
 maxUI.values = as.numeric(unlist((parameter.list %>% select(maxUI))[1,1] %>% str_split(", ")))
 maxAC.values = as.numeric(unlist((parameter.list %>% select(maxAC))[1,1] %>% str_split(", ")))
 maxFS.values = as.numeric(unlist((parameter.list %>% select(maxFS))[1,1] %>% str_split(", ")))
@@ -16,11 +17,11 @@ bProb.values = as.numeric(unlist((parameter.list %>% select(bProb))[1,1] %>% str
 sProb.values = as.numeric(unlist((parameter.list %>% select(sProb))[1,1] %>% str_split(", ")))
 overlap.values = as.numeric(unlist((parameter.list %>% select(overlap))[1,1] %>% str_split(", ")))
 mu.values = as.numeric(unlist((parameter.list %>% select(mu))[1,1] %>% str_split(", ")))
-sizePref.values = as.numeric(to_logical(unlist((parameter.list %>% select(sizePref))[1,1] %>% str_split(", "))))
-flakePref.values = as.numeric(to_logical(unlist((parameter.list %>% select(flakePref))[1,1] %>% str_split(", "))))
+sizePref.values = c("true", "false")
+flakePref.values = c("true", "false")
 minFS.values = as.numeric(unlist((parameter.list %>% select(minFS))[1,1] %>% str_split(", ")))
 minNS.values = as.numeric(unlist((parameter.list %>% select(minNS))[1,1] %>% str_split(", ")))
-strict.values = as.numeric(to_logical(unlist((parameter.list %>% select(strict))[1,1] %>% str_split(", "))))
+strict.values = c("true", "false")
 
 #iterate through all values lists to output a string
 exp.num = 1
