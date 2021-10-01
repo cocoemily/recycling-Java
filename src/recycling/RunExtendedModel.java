@@ -175,10 +175,10 @@ public class RunExtendedModel {
 				}
 				
 				if(i % (model.totalSteps/2) == 0) {
-					model.getArtifactData();
+					//model.getArtifactData();
 				}
 				
-				model.getLayerData();
+				//model.getLayerData();
 				model.getModelData();
 				model.resetScavengeEventCounter();
 			}
@@ -197,10 +197,10 @@ public class RunExtendedModel {
 		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 		
 		//output layer data
-		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		//createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 		
 		//output artifact data
-		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		//createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
 	public static void createFile(String filename, ArrayList<String> data) {
