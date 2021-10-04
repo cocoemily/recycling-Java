@@ -104,3 +104,8 @@ for(i in 1:length(paramcsv)) {
   write.csv(paramcsv[[i]], file = filename, row.names=F)
 }
 setwd("analysis") #move back to analysis folder
+
+
+missing = parameters %>% select(of %in% c(98, 99, 4033))
+
+
