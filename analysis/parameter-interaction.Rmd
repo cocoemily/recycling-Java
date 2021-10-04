@@ -21,10 +21,11 @@ theme_set(theme_minimal())
 # 
 # alldata = rbind(exp1, exp2, exp3)
 # 
-# alldata = alldata %>% mutate(
-#   total.RI = as.numeric(total.RI),
-#   total.CR = as.numeric(total.CR)
-# )
+
+alldata = alldata %>% mutate(
+  total.RI = as.numeric(total.RI),
+  total.CR = as.numeric(total.CR)
+)
 
 alldata = alldata %>% filter(!is.na(total.RI))
 
