@@ -34,26 +34,20 @@ alldata = alldata %>% filter(!is.na(total.RI))
 ```{r assumptions}
 
 sample = dplyr::sample_n(alldata, 5000)
-
-hist(sample$total.RI)
-ggqqplot(sample$total.RI)
 shapiro.test(sample$total.RI)
-ggdensity(alldata, x = "total.RI", fill = "lightgray", title = "total.RI") +
-    stat_overlay_normal_density(color = "red", linetype = "dashed")
-skewness(alldata$total.RI, na.rm =T)
 
 plotNormalHistogram(alldata$total.RI)
+ggqqplot(sample$total.RI)
 
-#transform data
+#transform data -- square root
 alldata = alldata %>% mutate(trans.RI = sqrt(total.RI))
 
+sample = dplyr::sample_n(alldata, 5000)
+shapiro.test(sample$trans.RI)
+
 plotNormalHistogram(alldata$trans.RI)
+ggqqplot(sample$trans.RI)
 
-
-
-ggdensity(alldata, x = "trans.RI", fill = "lightgray", title = "transformed total.RI") +
-    stat_overlay_normal_density(color = "red", linetype = "dashed")
-ggqqplot(alldata$trans.RI)
 
 
 ```

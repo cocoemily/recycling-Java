@@ -106,6 +106,7 @@ for(i in 1:length(paramcsv)) {
 setwd("analysis") #move back to analysis folder
 
 
-missing = parameters %>% select(of %in% c(98, 99, 4033))
-
-
+missing = parameters %>% filter(of %in% c(98, 99, 4033))
+setwd("..")
+write.csv(missing, file = "run-scripts/ExtendedModel-sensitivity/mparams.csv", row.names=F)
+setwd("analysis") #move back to analysis folder
