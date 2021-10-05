@@ -1,6 +1,9 @@
 ---
 title: "parameter sensitivity"
-output: html_document
+output: html_document:
+  pandoc_args: [
+    "+RTS", "-K64m", "-RTS"
+  ]
 ---
 
 ```{r setup, include=FALSE}
