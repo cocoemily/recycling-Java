@@ -9,11 +9,12 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggpubr)
 library(moments)
-library(lsmeans)
+library(emmeans)
 library(multcomp)
 library(rcompanion)
 library(forecast)
-library(pscl)
+library(gamlss)
+
 theme_set(theme_minimal())
 
 # exp1 = read_csv("../output/exp1/run0_model-data.csv")
@@ -23,17 +24,24 @@ theme_set(theme_minimal())
 # alldata = rbind(exp1, exp2, exp3)
 # 
 
-alldata = alldata %>% mutate(
-  total.RI = as.numeric(total.RI),
-  total.CR = as.numeric(total.CR)
-)
+#alldata = read_csv("../output/sub_sensitivity-data.csv")
 
-alldata = alldata %>% filter(!is.na(total.RI))
+alldata = alldata %>% filter(size != "size") %>%
+  mutate(total.RI = as.numeric(total.RI), 
+         total.CR = as.numeric(total.CR)) %>%
+  filter(!is.na(total.RI)) 
+
 
 ```
 
 ## Checking assumptions of recycling intensity output
 ```{r assumptions}
+
+# parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
+# 
+# for(p in parameters) {
+#   print(c(unique(alldata[p])))
+# }
 
 sample = dplyr::sample_n(alldata, 5000)
 shapiro.test(sample$total.RI)
@@ -49,88 +57,59 @@ ggqqplot(sample$total.RI)
 
 ```{r interaction}
 
-##need to look into ways to work with zero inflated distributions
-
 with(alldata, interaction.plot(model_year, max_use_intensity, total.RI))
-# mui = zeroinfl(total.RI ~ max_use_intensity*model_year, data=alldata, dist = "negbin", EM = TRUE)
-# summary(mui)
-# lsmeans(lm(total.RI ~ as.factor(max_use_intensity)*model_year, data=alldata),
-#         pairwise ~ as.factor(max_use_intensity),
-#         adjust = "tukey")
+mui = glm(total.RI ~ max_use_intensity*model_year, data=alldata, family = "quasibinomial")
+mui = gamlss(total.RI ~ max_use_intensity*model_year, data=alldata, family = BEINF)
+summary(mui)
 
-with(alldata, interaction.plot(model_year, max_artifact_carry, total.RI))
-# summary(aov(total.RI ~ max_artifact_carry*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(max_artifact_carry)*model_year, data=alldata),
-#         pairwise ~ as.factor(max_artifact_carry),
-#         adjust = "tukey")
-# 
+with(alldata, interaction.plot(model_year, max_artifact_carry, total.RI, type="l"))
+mac = gamlss(total.RI ~ max_artifact_carry*model_year, data=alldata, family = BEINF)
+summary(mac)
+
 with(alldata, interaction.plot(model_year, max_flake_size, total.RI))
-# summary(aov(total.RI ~ max_flake_size*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(max_flake_size)*model_year, data=alldata),
-#         pairwise ~ as.factor(max_flake_size),
-#         adjust = "tukey")
-# 
+mfs = gamlss(total.RI ~ max_flake_size*model_year, data=alldata, family = BEINF)
+summary(mfs)
+
 with(alldata, interaction.plot(model_year, max_nodules_size, total.RI))
-# summary(aov(total.RI ~ max_nodules_size*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ max_nodules_size*model_year, data=alldata),
-#         pairwise ~ max_nodules_size,
-#         adjust = "tukey")
-# 
+mns = gamlss(total.RI ~ max_nodules_size*model_year, data=alldata, family = BEINF)
+summary(mns)
+
 with(alldata, interaction.plot(model_year, blank_prob, total.RI))
-# summary(aov(total.RI ~ blank_prob*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(blank_prob)*model_year, data=alldata),
-#         pairwise ~ as.factor(blank_prob),
-#         adjust = "tukey")
-# 
+bpb = gamlss(total.RI ~ blank_prob*model_year, data=alldata, family = BEINF)
+summary(bpb)
+
 with(alldata, interaction.plot(model_year, scavenge_prob, total.RI))
-# summary(aov(total.RI ~ scavenge_prob*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(scavenge_prob)*model_year, data=alldata),
-#         pairwise ~ as.factor(scavenge_prob),
-#         adjust = "tukey")
-# 
+spb = gamlss(total.RI ~ scavenge_prob*model_year, data=alldata, family = BEINF)
+summary(spb)
+
 with(alldata, interaction.plot(model_year, overlap, total.RI)) 
-# summary(aov(total.RI ~ overlap*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(overlap)*model_year, data=alldata),
-#         pairwise ~ as.factor(overlap),
-#         adjust = "tukey")
-# 
+ov = gamlss(total.RI ~ overlap*model_year, data=alldata, family = BEINF)
+summary(ov)
+
 with(alldata, interaction.plot(model_year, mu, total.RI))
-# summary(aov(total.RI ~ mu*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(mu)*model_year, data=alldata),
-#         pairwise ~ as.factor(mu),
-#         adjust = "tukey")
-# 
+mu = gamlss(total.RI ~ mu*model_year, data=alldata, family = BEINF)
+summary(mu)
+#emmeans(mu, specs = c("mu"))
+
 with(alldata, interaction.plot(model_year, size_preference, total.RI))
-# summary(aov(total.RI ~ size_preference*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ size_preference*model_year, data=alldata),
-#         pairwise ~ size_preference,
-#         adjust = "tukey")
-# 
+sp = gamlss(total.RI ~ size_preference*model_year, data=alldata, family = BEINF)
+summary(sp)
+
 with(alldata, interaction.plot(model_year, flake_preference, total.RI))
-# summary(aov(total.RI ~ flake_preference*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ flake_preference*model_year, data=alldata),
-#         pairwise ~ flake_preference,
-#         adjust = "tukey")
-# 
-# 
+fp = gamlss(total.RI ~ flake_preference*model_year, data=alldata, family = BEINF)
+summary(fp)
+ 
 with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
-# summary(aov(total.RI ~ min_suitable_nodule_size*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(min_suitable_nodule_size)*model_year, data=alldata),
-#         pairwise ~ as.factor(min_suitable_nodule_size),
-#         adjust = "tukey")
-# 
-# 
+msns = gamlss(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = BEINF)
+summary(msns)
+
 with(alldata, interaction.plot(model_year, min_suitable_flake_size, total.RI))
-# summary(aov(total.RI ~ min_suitable_flake_size*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ as.factor(min_suitable_flake_size)*model_year, data=alldata),
-#         pairwise ~ as.factor(min_suitable_flake_size),
-#         adjust = "tukey")
-# 
+msfs = gamlss(total.RI ~ min_suitable_flake_size*model_year, data=alldata, family = BEINF)
+summary(msfs)
+
 with(alldata, interaction.plot(model_year, strict_selection, total.RI))
-# summary(aov(total.RI ~ strict_selection*model_year, data=alldata))
-# lsmeans(lm(total.RI ~ strict_selection*model_year, data=alldata),
-#         pairwise ~ strict_selection,
-#         adjust = "tukey")
+ss = gamlss(total.RI ~ strict_selection*model_year, data=alldata, family = BEINF)
+summary(ss)
 
 ```
 
