@@ -51,82 +51,82 @@ ggqqplot(sample$total.RI)
 
 ##need to look into ways to work with zero inflated distributions
 
-#with(alldata, interaction.plot(model_year, max_use_intensity, total.RI))
-mui = zeroinfl(total.RI ~ max_use_intensity*model_year, data=alldata, dist = "negbin", EM = TRUE)
-summary(mui)
+with(alldata, interaction.plot(model_year, max_use_intensity, total.RI))
+# mui = zeroinfl(total.RI ~ max_use_intensity*model_year, data=alldata, dist = "negbin", EM = TRUE)
+# summary(mui)
 # lsmeans(lm(total.RI ~ as.factor(max_use_intensity)*model_year, data=alldata),
 #         pairwise ~ as.factor(max_use_intensity),
 #         adjust = "tukey")
 
-# with(alldata, interaction.plot(model_year, max_artifact_carry, total.RI))
+with(alldata, interaction.plot(model_year, max_artifact_carry, total.RI))
 # summary(aov(total.RI ~ max_artifact_carry*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(max_artifact_carry)*model_year, data=alldata),
 #         pairwise ~ as.factor(max_artifact_carry),
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, max_flake_size, total.RI))
+with(alldata, interaction.plot(model_year, max_flake_size, total.RI))
 # summary(aov(total.RI ~ max_flake_size*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(max_flake_size)*model_year, data=alldata),
 #         pairwise ~ as.factor(max_flake_size),
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, max_nodules_size, total.RI))
+with(alldata, interaction.plot(model_year, max_nodules_size, total.RI))
 # summary(aov(total.RI ~ max_nodules_size*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ max_nodules_size*model_year, data=alldata),
 #         pairwise ~ max_nodules_size,
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, blank_prob, total.RI))
+with(alldata, interaction.plot(model_year, blank_prob, total.RI))
 # summary(aov(total.RI ~ blank_prob*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(blank_prob)*model_year, data=alldata),
 #         pairwise ~ as.factor(blank_prob),
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, scavenge_prob, total.RI))
+with(alldata, interaction.plot(model_year, scavenge_prob, total.RI))
 # summary(aov(total.RI ~ scavenge_prob*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(scavenge_prob)*model_year, data=alldata),
 #         pairwise ~ as.factor(scavenge_prob),
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, overlap, total.RI)) 
+with(alldata, interaction.plot(model_year, overlap, total.RI)) 
 # summary(aov(total.RI ~ overlap*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(overlap)*model_year, data=alldata),
 #         pairwise ~ as.factor(overlap),
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, mu, total.RI))
+with(alldata, interaction.plot(model_year, mu, total.RI))
 # summary(aov(total.RI ~ mu*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(mu)*model_year, data=alldata),
 #         pairwise ~ as.factor(mu),
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, size_preference, total.RI))
+with(alldata, interaction.plot(model_year, size_preference, total.RI))
 # summary(aov(total.RI ~ size_preference*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ size_preference*model_year, data=alldata),
 #         pairwise ~ size_preference,
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, flake_preference, total.RI))
+with(alldata, interaction.plot(model_year, flake_preference, total.RI))
 # summary(aov(total.RI ~ flake_preference*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ flake_preference*model_year, data=alldata),
 #         pairwise ~ flake_preference,
 #         adjust = "tukey")
 # 
 # 
-# with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
+with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
 # summary(aov(total.RI ~ min_suitable_nodule_size*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(min_suitable_nodule_size)*model_year, data=alldata),
 #         pairwise ~ as.factor(min_suitable_nodule_size),
 #         adjust = "tukey")
 # 
 # 
-# with(alldata, interaction.plot(model_year, min_suitable_flake_size, total.RI))
+with(alldata, interaction.plot(model_year, min_suitable_flake_size, total.RI))
 # summary(aov(total.RI ~ min_suitable_flake_size*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ as.factor(min_suitable_flake_size)*model_year, data=alldata),
 #         pairwise ~ as.factor(min_suitable_flake_size),
 #         adjust = "tukey")
 # 
-# with(alldata, interaction.plot(model_year, strict_selection, total.RI))
+with(alldata, interaction.plot(model_year, strict_selection, total.RI))
 # summary(aov(total.RI ~ strict_selection*model_year, data=alldata))
 # lsmeans(lm(total.RI ~ strict_selection*model_year, data=alldata),
 #         pairwise ~ strict_selection,
