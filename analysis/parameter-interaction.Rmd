@@ -21,11 +21,11 @@ library(rstatix)
 
 theme_set(theme_minimal())
 
-exp1 = read_csv("../output/exp1/run0_model-data.csv")
-exp2 = read_csv("../output/exp2/run0_model-data.csv")
-exp3 = read_csv("../output/exp3/run0_model-data.csv")
-
-alldata = rbind(exp1, exp2, exp3)
+# exp1 = read_csv("../output/exp1/run0_model-data.csv")
+# exp2 = read_csv("../output/exp2/run0_model-data.csv")
+# exp3 = read_csv("../output/exp3/run0_model-data.csv")
+# 
+# alldata = rbind(exp1, exp2, exp3)
 
 
 #alldata = read_csv("../output/sub_sensitivity-data.csv")
