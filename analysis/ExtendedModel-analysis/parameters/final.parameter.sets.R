@@ -35,7 +35,7 @@ mu.values = c(1, 2, 3)
 sizePref.values = c("true", "false")
 flakePref.values = c("true", "false")
 minFS.values = c(1, 2)
-minNS.values = c(10)
+minNS.values = c(10, 20)
 strict.values = c("true", "false")
 
 exp.num = 1

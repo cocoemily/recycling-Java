@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(data.table)
+library(rcompanion)
 
 theme_set(theme_minimal())
 
@@ -25,16 +26,18 @@ outputs = c("ri.cr.cor","ri.nc.cor","ri.fc.cor","ri.nd.cor","ri.ns.cor","ri.ne.c
 ## Do high values of recycling correspond with certain values of the other behaviors?
 ```{r cor-hist, warning = F}
 
-hist(df$ri.cr.cor)
-hist(df$ri.nc.cor)
-hist(df$ri.fc.cor)
-hist(df$ri.nd.cor)
-hist(df$ri.ns.cor) 
-hist(df$ri.ne.cor)
-hist(df$ri.nm.cor)
-hist(df$ri.nr.cor)
-hist(df$ri.no.cor)
-hist(df$ri.av.cor)
+plotNormalHistogram(df$ri.cr.cor)
+plotNormalHistogram(df$ri.nc.cor)
+plotNormalHistogram(df$ri.fc.cor)
+plotNormalHistogram(df$ri.nd.cor)
+plotNormalHistogram(df$ri.ns.cor) 
+plotNormalHistogram(df$ri.ne.cor)
+plotNormalHistogram(df$ri.nm.cor)
+plotNormalHistogram(df$ri.nr.cor)
+plotNormalHistogram(df$ri.no.cor)
+plotNormalHistogram(df$ri.av.cor)
+
+
              
 ```
 
@@ -77,7 +80,8 @@ for(o in outputs) {
 ```
 
 
-## Next analyses
+## Linear regressions of all parameters on correlations between recycling intensity and other variables
+Currently missing min suitable nodule size because original sensitivity analysis   
 
 ```{r cor-regs, warning=F, }
 
@@ -130,7 +134,6 @@ summary(model8)
 model9 = lm(ri.no.cor ~ max_use_intensity + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + strict_selection, data = layerdata)
 qqnorm(model9)
 summary(model9)
-
 
 
 ```

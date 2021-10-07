@@ -34,14 +34,14 @@ setwd("..")
 setwd("..")
 setwd("..")
 #for testing
-for(i in 1:200) {
+for(i in 1:3) {
   
-  #data = as.data.frame(fread(paste0("/Users/emilycoco/eclipse-workspace/recycling-Java/output/exp", i, "/run0_layers-data.csv")))
+  data = as.data.frame(fread(paste0("/Users/emilycoco/eclipse-workspace/recycling-Java/output/exp", i, "/run0_layers-data.csv")))
 
 
 #for(i in 1:8640) {
   
-  data = as.data.frame(fread(paste0("output/exp", i, "/layers-data.csv")))
+  #data = as.data.frame(fread(paste0("output/exp", i, "/layers-data.csv")))
   
   
   
