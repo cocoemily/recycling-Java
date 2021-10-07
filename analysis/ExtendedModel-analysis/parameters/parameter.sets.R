@@ -8,7 +8,7 @@ parameters = parameter.list[1,]
 parameter.list = parameter.list[2,]
 
 #size.values = as.numeric(unlist((parameter.list %>% select(size))[1,1] %>% str_split(", ")))
-size.values = c(5)
+size.values = c(6)
 maxUI.values = as.numeric(unlist((parameter.list %>% select(maxUI))[1,1] %>% str_split(", ")))
 maxAC.values = as.numeric(unlist((parameter.list %>% select(maxAC))[1,1] %>% str_split(", ")))
 maxFS.values = as.numeric(unlist((parameter.list %>% select(maxFS))[1,1] %>% str_split(", ")))
