@@ -17,9 +17,9 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"exp2",	//outputFile
-				"run0", 	//name
-				5, 			//size 
+				"not-strict",	//outputFile
+				"run_no-size-pref", 	//name
+				6, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
 				15, 		//maxUI
@@ -137,13 +137,15 @@ public class TestModel {
 				
 				if(a.hasObjects()) { //if agent is holding objects
 					if(Math.random() < model.blankProb) { //produce blanks with certain probability
-						if(a.getAgentNodules().size() != 0 ) {
-							System.out.println("\t agent produced blanks");
-							for(int ui=0; ui < model.maxUseIntensity; ui++) {
-								model.produceBlank(a);
-								l.manufactured();
-							}
+						if(a.getAgentNodules().size() == 0 ) { //if agent does not have a nodule to make blanks, find new ones
+							//agent fills up nodules to max artifact carry or finds one additional nodule if already at max capacity
+							model.findNodules(a, Math.max(model.maxArtifactCarry - a.numberCurrentObjects(), 1));
+						} 
+						for(int ui=0; ui < model.maxUseIntensity; ui++) {
+							model.produceBlank(a);
 						}
+						System.out.println("\t agent produced blanks");
+						
 					} else { //if agent is not making blanks, retouch flakes
 						if(a.getAgentFlakes().size() != 0) {
 							System.out.println("\t agent retouched flakes");
@@ -168,9 +170,11 @@ public class TestModel {
 				model.moveAgent(model.agents.get(whichAgent), false);
 
 			} else { //if agent has moved outside of the window of observation, move onto next agent
+				System.out.println("\t agent " + model.agents.get(whichAgent).getGroup() + " has moved outside observation window");
 				if(whichAgent < model.agents.size()-1) {
 					whichAgent++;
 					model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
+					System.out.println("\t agent " + model.agents.get(whichAgent).getGroup() + " has moved into the window");
 				}
 			}
 			

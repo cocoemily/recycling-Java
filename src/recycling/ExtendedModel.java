@@ -152,9 +152,9 @@ public class ExtendedModel {
 	 * Removes agents from the model agent list if they are of a specific technology type
 	 * @param techNum integer specifying the technology type of an agent
 	 */
-//	public void removeAgents(int techNum) {
-//		this.agents.removeIf(Agent -> (Agent.getTech() == techNum));
-//	}
+	//	public void removeAgents(int techNum) {
+	//		this.agents.removeIf(Agent -> (Agent.getTech() == techNum));
+	//	}
 
 	/**
 	 * Initialize some squares within the landscape with new nodules
@@ -225,7 +225,7 @@ public class ExtendedModel {
 			}
 		}
 	}
-	
+
 	/**
 	 * Moves a single agent, either randomly or according to the Levy walk function 
 	 * @param agent to be moved
@@ -253,7 +253,7 @@ public class ExtendedModel {
 	public void findNodules(Agent agent, int numNodules) {
 		agent.initializeNodules(numNodules, this.maxNoduleSize, this.noduleV, this.maxFlakeSize);
 	}
-	
+
 	/**
 	 * Agent scavenges artifacts from a grid square randomly (using no selection parameters) 
 	 * and adds them to its artifact lists
@@ -310,7 +310,7 @@ public class ExtendedModel {
 				possFlakes = flakes;
 			}
 
-			
+
 			if(possFlakes.size() <= numNeeded) { //if there are fewer flakes than number needed or exactly the number needed, return all
 				for(int i=0; i < possFlakes.size(); i++) {
 					selection.add(possFlakes.get(i));
@@ -373,14 +373,14 @@ public class ExtendedModel {
 					for(int i=0; i < iter; i++) {
 						int index = (int) (Math.random() * possible.size());
 						selection.add(possible.get(index));
-						
-						
+
+
 						if(possible.get(index) instanceof Flake) {
 							flakes.remove(possible.get(index));
 						} else if (possible.get(index)instanceof Nodule) {
 							nodules.remove(possible.get(index));
 						}
-						
+
 						possible.remove(index);
 					}
 				}
@@ -423,7 +423,7 @@ public class ExtendedModel {
 	 */
 	public void resetScavengeEventCounter() {
 		this.numberScavengingEvents = 0;
-		
+
 	}
 
 	/**
@@ -435,6 +435,7 @@ public class ExtendedModel {
 		if(agent.getAgentNodules().get(index).getFlakes().size() != 0) {
 			Flake f = agent.getAgentNodules().get(index).removeFlake(agent);
 			agent.collectFlake(f);
+			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().manufactured();
 		}
 	}
 
@@ -500,60 +501,133 @@ public class ExtendedModel {
 		}
 	}
 
+
+	public ArrayList<Object> keep(ArrayList<Nodule> nodules, ArrayList<Flake> flakes, int maxToKeep) {
+		ArrayList<Object> keep = new ArrayList<Object>();
+
+		if(this.flakePref) {
+			if(this.sizePref) { //size preference
+				for(int i=0; i < flakes.size(); i++) {
+					if(flakes.get(i).getSize() >= this.minAcceptableFlakeSize) {
+						if(keep.size() < maxToKeep) {
+							keep.add(flakes.get(i));
+						}
+					}
+				}
+			} else {
+				if(flakes.size() < maxToKeep) {
+					keep.addAll(flakes);
+				} else {
+					ArrayList<Flake> possFlakes = new ArrayList<Flake>();
+				    possFlakes.addAll(flakes);
+					for(int i=0; i < maxToKeep; i++) {
+						int index = (int) (Math.random() * possFlakes.size()); //this does not work properly 
+						keep.add(possFlakes.get(index));
+						possFlakes.remove(index);
+					}
+				}
+			}
+
+		} else {
+			if(this.sizePref) { //size preference
+				for(int i=0; i < nodules.size(); i++) {
+					//current selection based on how many flakes are left to take off
+					if(nodules.get(i).getFlakes().size() >= this.minAcceptableNoduleSize) { 
+						if(keep.size() < maxToKeep) {
+							keep.add(nodules.get(i));
+						}
+					}
+				}
+			} else {
+				if(nodules.size() < maxToKeep) {
+					keep.addAll(nodules);
+				} else {
+					ArrayList<Nodule> possNods = new ArrayList<Nodule>();
+					possNods.addAll(nodules);
+					for(int i=0; i < maxToKeep; i++) {
+						int index = (int) (Math.random() * possNods.size());
+						keep.add(possNods.get(index));
+						possNods.remove(index);
+					}
+				}
+			}
+		}
+		
+		if(!this.strictSelect) {
+			if(keep.size() < maxToKeep) {
+				ArrayList<Object> possible = new ArrayList<Object>();
+				possible.addAll(flakes);
+				possible.addAll(nodules);
+				
+				for(int i=0; i < (maxToKeep - keep.size()); i++) {
+					int index = (int) (Math.random() * possible.size());
+					if(!keep.contains(possible.get(index))) {
+						keep.add(possible.get(index));
+						possible.remove(index);
+						
+					}
+				}
+			}
+			
+		}
+
+		return keep;
+
+	}
+
 	/**
 	 * Agent drops objects when it is carrying too many according to the selection parameters.
 	 * Agents will keep objects that fit the selection parameters over other objects. 
 	 * @param agent
 	 */
 	public void dropArtifacts(Agent agent, int currentYear) { 
-		//select flakes/nodules to keep
-		if(agent.getAgentFlakes().size() != 0 || agent.getAgentNodules().size() != 0 ) {
-			ArrayList<Object> toKeep = select(
-					agent.getAgentNodules(),
-					agent.getAgentFlakes(),
-					this.maxArtifactCarry
-					);
+		if(agent.getAgentFlakes().size() + agent.getAgentNodules().size() > this.maxArtifactCarry) {
+			//select flakes/nodules to keep
+			if(agent.getAgentFlakes().size() != 0 || agent.getAgentNodules().size() != 0 ) {
+				ArrayList<Object> toKeep = this.keep(agent.getAgentNodules(), agent.getAgentFlakes(), maxArtifactCarry);
 
-			//drop other objects from Agent's lists
-			ArrayList<Object> all = new ArrayList<Object>();
-			all.addAll(agent.getAgentNodules());
-			all.addAll(agent.getAgentFlakes());
 
-			ArrayList<Nodule> dropN = new ArrayList<Nodule>();
-			ArrayList<Flake> dropF = new ArrayList<Flake>();
+				//drop other objects from Agent's lists
+				ArrayList<Object> all = new ArrayList<Object>();
+				all.addAll(agent.getAgentFlakes());
+				all.addAll(agent.getAgentNodules());
 
-			for(int i=0; i < all.size(); i++) {
-				if(!toKeep.contains(all.get(i))) {
-					if(all.get(i) instanceof Nodule) {
-						if(((Nodule) all.get(i)).getDiscardYear() == 0) {
-							((Nodule) all.get(i)).setDiscardYear(currentYear);
+				ArrayList<Nodule> dropN = new ArrayList<Nodule>();
+				ArrayList<Flake> dropF = new ArrayList<Flake>();
+
+				for(int i=0; i < all.size(); i++) {
+					if(!toKeep.contains(all.get(i))) {
+						if(all.get(i) instanceof Nodule) {
+							if(((Nodule) all.get(i)).getDiscardYear() == 0) {
+								((Nodule) all.get(i)).setDiscardYear(currentYear);
+							}
+							dropN.add((Nodule) all.get(i));
+							agent.getAgentNodules().remove((Nodule) all.get(i));
+
+						} else if(all.get(i) instanceof Flake) {
+							if(((Flake) all.get(i)).getDiscardYear() == 0) {
+								((Flake) all.get(i)).setDiscardYear(currentYear);
+							}
+							dropF.add((Flake) all.get(i));
+							agent.getAgentFlakes().remove((Flake) all.get(i));
+
 						}
-						dropN.add((Nodule) all.get(i));
-						agent.getAgentNodules().remove((Nodule) all.get(i));
-
-					} else if(all.get(i) instanceof Flake) {
-						if(((Flake) all.get(i)).getDiscardYear() == 0) {
-							((Flake) all.get(i)).setDiscardYear(currentYear);
-						}
-						dropF.add((Flake) all.get(i));
-						agent.getAgentFlakes().remove((Flake) all.get(i));
-
 					}
 				}
-			}
 
-			if(dropN.size() != 0) {
-				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
-				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
-				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositNodules(dropN);
-				System.out.println("\t agent dropped nodules");
-			}
-			if(dropF.size() != 0) {
-				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
-				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
-				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
-				System.out.println("\t agent dropped flakes");
+				if(dropN.size() != 0) {
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositNodules(dropN);
+					System.out.println("\t agent dropped nodules");
+				}
+				if(dropF.size() != 0) {
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
+					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
+					System.out.println("\t agent dropped flakes");
 
+				}
 			}
 		}
 	}
@@ -569,7 +643,7 @@ public class ExtendedModel {
 		int numNods = 0;
 		int numFlks = 0;
 		int flksOnNods = 0;
-		
+
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
 			for(int j=0; j < this.landscape.getNumCols(); j++) {
 				//find layer matching the year provided
@@ -585,18 +659,18 @@ public class ExtendedModel {
 				}
 			}
 		}
-		
+
 		double flakevol = numFlks * ((noduleV * 0.05) / avgFlakesOnNodule);
 		double nodvol = numNods * (noduleV * (1.0 - 0.05));
 		double fnvol = flksOnNods * ((noduleV * 0.05) / avgFlakesOnNodule);
-		
+
 		double modeledNodNum = (flakevol + nodvol + fnvol) / noduleV;
-		
+
 		double expSA = noduleSA * modeledNodNum;
 		double obsSA = ((numFlks + flksOnNods) / avgFlakesOnNodule) * noduleSA;
-		
+
 		double CR = obsSA / expSA;
-		
+
 		return CR;
 	}
 
@@ -611,7 +685,7 @@ public class ExtendedModel {
 	public double calculateTotalRecyclingIntensity(int year) {
 		double recycledItems = 0.0;
 		double aSize = 0;
-		
+
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
 			for(int j=0; j < this.landscape.getNumCols(); j++) {
 				//find layer matching the year provided
@@ -619,7 +693,7 @@ public class ExtendedModel {
 				for(int l=0; l < layers.size(); l++) {
 					if(layers.get(l).getYear() == year) {
 						aSize += layers.get(l).getNodules().size() + layers.get(l).getFlakes().size();
-						
+
 						for(int f=0; f < layers.get(l).getFlakes().size(); f++) {
 							if(layers.get(l).getFlakes().get(f).checkWasRecycled()) {
 								recycledItems += 1;
@@ -635,7 +709,7 @@ public class ExtendedModel {
 				}
 			}
 		}
-		
+
 		return (recycledItems / aSize);
 	}
 
@@ -697,7 +771,7 @@ public class ExtendedModel {
 			}
 		}
 		this.artifactdata.append(toAddData.toString());
-		
+
 	}
 
 	/**
@@ -729,7 +803,7 @@ public class ExtendedModel {
 					datastring += layer.getDiscardEvents() + ",";
 					// scavenging event count
 					datastring += layer.getScavengeEvents() + ",";
- 					//encounter count
+					//encounter count
 					datastring += layer.getEncounters() + ",";
 					//manufacture event count
 					datastring += layer.getManufactureEvents() + ",";
@@ -885,12 +959,12 @@ public class ExtendedModel {
 		System.out.println("\t Levy mu: " + this.mu);
 
 		System.out.println("\t selection parameters: " + "flake preference " + this.flakePref + " size preference " + this.sizePref + " strict preferences " + this.strictSelect);
-		
+
 		System.out.println("\t blank probablity: " + this.blankProb);
 		System.out.println("\t scavenging probablity: " + this.scavengeProb);
 		System.out.println("\t max use intensity: " + this.maxUseIntensity);
 		System.out.println("\t max artifact carry: " + this.maxArtifactCarry);
-		
+
 		//System.out.println("\t ED ratio: " + this.EDratio);
 		//System.out.println("\t geo frequency: " + this.geoFreq);
 

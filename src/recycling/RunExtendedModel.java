@@ -67,7 +67,7 @@ public class RunExtendedModel {
 			} else if(model.overlap == 0.5) { //partial overlap -> one third type 1 agents, one third random mix of agents, one third type 2 agents
 				int oneThird = (int) (model.totalAgents / 3.0);
 				int aLeft = model.totalAgents - (oneThird + oneThird);
-				
+
 				model.createAgents(1, oneThird);
 
 				ArrayList<Integer> techs = new ArrayList<Integer>();
@@ -84,7 +84,7 @@ public class RunExtendedModel {
 				}
 
 				model.createAgents(2, oneThird);
-				
+
 			} else { //if model overlap is anything else, create agents with all different technology types
 				int tech = 1;
 				for(int i=0; i < model.totalAgents; i++) {
@@ -94,7 +94,7 @@ public class RunExtendedModel {
 			}
 			//model.printAgents();
 			System.out.println("agents created.");
-			
+
 
 			int whichAgent = 0;
 			model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
@@ -126,24 +126,28 @@ public class RunExtendedModel {
 						if(Math.random() < model.scavengeProb) {
 							if(!model.flakePref && !model.sizePref) {
 								model.collectRandomArtifacts(a);
+								//l.scavenged();
 								System.out.println("\t agent collected random artifacts");
 							} else {
 								model.collectSelectedArtifacts(a);
+								//l.scavenged();
 								System.out.println("\t agent collected selected artifacts");
 							}
-							
+
 						}
 					}
-					
+
 					if(a.hasObjects()) { //if agent is holding objects
 						if(Math.random() < model.blankProb) { //produce blanks with certain probability
-							if(a.getAgentNodules().size() != 0 ) {
-								System.out.println("\t agent produced blanks");
-								for(int ui=0; ui < model.maxUseIntensity; ui++) {
-									model.produceBlank(a);
-									l.manufactured();
-								}
+							if(a.getAgentNodules().size() == 0 ) { //if agent does not have a nodule to make blanks, find new ones
+								//agent fills up nodules to max artifact carry or finds one additional nodule if already at max capacity
+								model.findNodules(a, Math.max(model.maxArtifactCarry - a.numberCurrentObjects(), 1));
+							} 
+							for(int ui=0; ui < model.maxUseIntensity; ui++) {
+								model.produceBlank(a);
 							}
+							System.out.println("\t agent produced blanks");
+
 						} else { //if agent is not making blanks, retouch flakes
 							if(a.getAgentFlakes().size() != 0) {
 								System.out.println("\t agent retouched flakes");
@@ -164,41 +168,43 @@ public class RunExtendedModel {
 					model.dropExhaustedArifacts(a, model.currentYear);
 					//drop up to maxArtifactCarry
 					model.dropArtifacts(a, model.currentYear);
-					
+
 					model.moveAgent(model.agents.get(whichAgent), false);
 
 				} else { //if agent has moved outside of the window of observation, move onto next agent
+					System.out.println("\t agent " + model.agents.get(whichAgent).getGroup() + " has moved outside observation window");
 					if(whichAgent < model.agents.size()-1) {
 						whichAgent++;
 						model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
+						System.out.println("\t agent " + model.agents.get(whichAgent).getGroup() + " has moved into the window");
 					}
 				}
-				
+
 				if(i % (model.totalSteps/2) == 0) {
 					//model.getArtifactData();
 				}
-				
+
 				//model.getLayerData();
 				model.getModelData();
 				model.resetScavengeEventCounter();
 			}
-			
+
 			outputModelData(model);
 		}
 	}
 
-	
+
 	public static void outputModelData(ExtendedModel em) { 
 		String path = System.getProperty("user.dir") + "/output/" + em.outputFile;
 		File file = new File(path);
 		file.mkdir();
-		
+
 		//output model data
 		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
-		
+
 		//output layer data
 		//createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
-		
+
 		//output artifact data
 		//createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
@@ -217,7 +223,7 @@ public class RunExtendedModel {
 		}
 
 	}
-	
+
 	public static void createFile2(String filename, StringBuilder data) {
 		try {
 			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
