@@ -60,7 +60,7 @@ for(s in size.values) {
                               st, #strict
                               0.5, #ED 
                               0, #GF
-                              5000 #totalSteps 
+                              3000 #totalSteps 
                             )
                             parameters = rbind(parameters, newrow)
                             exp.num = exp.num + 1
