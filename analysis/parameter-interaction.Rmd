@@ -48,12 +48,11 @@ for(p in parameters) {
   print(c(unique(alldata[p])))
 }
 
-sample = dplyr::sample_n(alldata, 4000)
-shapiro.test(sample$total.RI)
+# sample = dplyr::sample_n(alldata, 4000)
+# shapiro.test(sample$total.RI)
 
 plotNormalHistogram(alldata$total.RI)
-ggqqplot(sample$total.RI)
-
+# ggqqplot(sample$total.RI)
 
 var(alldata$total.RI)
 mean(alldata$total.RI)
