@@ -23,7 +23,7 @@ parameters = data.frame(of = character(),
                         GF = numeric(),
                         totalSteps = numeric()) 
 
-size.values = c(5)
+size.values = c(6)
 maxUI.values = c(15, 30)
 maxAC.values = c(10, 20)
 maxFS.values = c(1, 2)
@@ -35,7 +35,7 @@ mu.values = c(1, 2, 3)
 sizePref.values = c("true", "false")
 flakePref.values = c("true", "false")
 minFS.values = c(1, 2)
-minNS.values = c(10, 20)
+minNS.values = c(5)
 strict.values = c("true", "false")
 
 exp.num = 1
