@@ -18,6 +18,7 @@ library(pscl)
 library(MASS)
 library(glmmTMB)
 library(rstatix)
+library(bbmle)
 
 theme_set(theme_minimal())
 
@@ -105,10 +106,20 @@ with(alldata, interaction.plot(model_year, size_preference, total.RI))
 with(alldata, interaction.plot(model_year, flake_preference, total.RI))
 # fp = gamlss(total.RI ~ flake_preference*model_year, data=alldata, family = BEINF)
 # summary(fp)
+fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipossion)
+summary(fp1)
+fp2 = glm.nb(total.RI ~ flake_preference*model_year, data=alldata)
+summary(fp2)
+AICctab(fp1, fp2, base = T, weights = T)
  
 with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
 # msns = gamlss(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = BEINF)
 # summary(msns)
+msns1 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = quasipossion)
+summary(msns1)
+msns2 = glm.nb(total.RI ~ min_suitable_nodule_size*model_year, data=alldata)
+summary(msns2)
+AICctab(msns1, msns2, base = T, weights = T)
 
 with(alldata, interaction.plot(model_year, min_suitable_flake_size, total.RI))
 # msfs = gamlss(total.RI ~ min_suitable_flake_size*model_year, data=alldata, family = BEINF)
@@ -135,7 +146,7 @@ plot(p1)
 #     adjust="tukey")
 
 
-p2 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_nodule_size))) + facet_grid(max_flake_size~size_preference, labeller=label_both) + geom_smooth(se=F)
+p2 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_flake_size))) + facet_grid(max_flake_size~size_preference, labeller=label_both) + geom_smooth(se=F)
 plot(p2)
 # summary(aov(total.RI ~ size_preference*min_suitable_nodule_size*max_flake_size*model_year, data=alldata))
 # tukey2 = lsmeans(lm(total.RI ~ size_preference*as.factor(min_suitable_nodule_size)*as.factor(max_flake_size)*model_year, data=alldata), 
@@ -145,19 +156,6 @@ plot(p2)
 #     alpha = 0.05, 
 #     Letters=letters, 
 #     adjust="tukey")
-
-
-p3 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_flake_size))) + facet_grid(~size_preference, labeller=label_both) + geom_smooth(se=F)
-plot(p3)
-# summary(aov(total.RI ~ size_preference*min_suitable_flake_size*model_year, data=alldata))
-# tukey3 = lsmeans(lm(total.RI ~ size_preference*min_suitable_flake_size*model_year, data=alldata), 
-#                 pairwise ~ size_preference:min_suitable_flake_size, 
-#                 adjust = "tukey")
-# cld(tukey3$lsmeans, 
-#     alpha = 0.05, 
-#     Letters=letters, 
-#     adjust="tukey")
-
 
 p4 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(max_flake_size))) + facet_grid(~flake_preference, labeller=label_both) + geom_smooth(se=F)
 plot(p4)
@@ -171,7 +169,7 @@ plot(p4)
 #     adjust="tukey")
 
 
-p5 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_nodule_size))) + facet_grid(size_preference~flake_preference, labeller=label_both) + geom_smooth(se=F)
+p5 = ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(min_suitable_flake_size))) + facet_grid(size_preference~flake_preference, labeller=label_both) + geom_smooth(se=F)
 plot(p5)
 # summary(aov(total.RI ~ size_preference*flake_preference*min_suitable_nodule_size*model_year, data=alldata))
 # tukey5 = lsmeans(lm(total.RI ~ size_preference*flake_preference*min_suitable_nodule_size*model_year, data=alldata), 
