@@ -1,0 +1,58 @@
+---
+title: "sensitivity-regressions"
+author: "Emily Coco"
+date: "10/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggpubr)
+library(moments)
+library(emmeans)
+library(multcomp)
+library(rcompanion)
+library(forecast)
+library(gamlss)
+library(pscl)
+library(MASS)
+library(glmmTMB)
+library(rstatix)
+library(bbmle)
+
+alldata = alldata %>% filter(size != "size") %>%
+  mutate(total.RI = as.numeric(total.RI), 
+         total.CR = as.numeric(total.CR)) %>%
+  filter(!is.na(total.RI))
+
+
+```
+
+
+### Testing closest interaction lines via regression analysis
+```{r regressions}
+
+plotNormalHistogram(alldata$total.RI)
+
+with(alldata, interaction.plot(model_year, flake_preference, total.RI))
+# fp = gamlss(total.RI ~ flake_preference*model_year, data=alldata, family = BEINF)
+# summary(fp)
+fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipossion)
+summary(fp1)
+fp2 = glm.nb(total.RI ~ flake_preference*model_year, data=alldata)
+summary(fp2)
+AICctab(fp1, fp2, base = T, weights = T)
+ 
+with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
+# msns = gamlss(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = BEINF)
+# summary(msns)
+msns1 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = quasipossion)
+summary(msns1)
+msns2 = glm.nb(total.RI ~ min_suitable_nodule_size*model_year, data=alldata)
+summary(msns2)
+AICctab(msns1, msns2, base = T, weights = T)
+
+```
+
