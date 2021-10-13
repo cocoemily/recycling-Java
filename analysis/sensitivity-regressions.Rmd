@@ -38,7 +38,7 @@ alldata = alldata %>% filter(size != "size") %>%
 ### Testing closest interaction lines via regression analysis
 In the interaction plots, flake preference and minimum suitable nodule size had very similar lines, suggesting that these variables may not be significantly affecting the amount of recycled objects over time. 
 
-```{r distributions}
+```{r distributions, eval=F}
 
 plotNormalHistogram(alldata$total.RI)
 
@@ -49,18 +49,18 @@ descdist(alldata$total.RI, discrete=F, boot=100)
 
 ```{r regressions}
 
-alldata = alldata %>% mutate(s.total.RI = total.RI + 0.0001)
+u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI))
 
 with(alldata, interaction.plot(model_year, flake_preference, total.RI))
 fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipoisson)
 fp2 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = binomial(link="logit"))
-fp3 = betareg(s.total.RI ~ flake_preference*model_year, data=alldata)
+fp3 = betareg(s.total.RI ~ flake_preference*model_year, data=u_alldata)
 AICctab(fp1, fp2, fp3, base = T, weights = T)
  
 with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
 msns1 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = quasipoisson)
 msns2 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = binomial(link="logit"))
-msns3 = betareg(s.total.RI ~ min_suitable_nodule_size*model_year, data=alldata)
+msns3 = betareg(s.total.RI ~ min_suitable_nodule_size*model_year, data=u_alldata)
 AICctab(msns1, msns2, msns3, base = T, weights = T)
 
 
