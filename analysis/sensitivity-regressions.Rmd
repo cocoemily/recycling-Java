@@ -21,6 +21,10 @@ library(MASS)
 library(glmmTMB)
 library(rstatix)
 library(bbmle)
+library(fitdistrplus)
+library(lmtest)
+library(betareg)
+library(sandwich)
 
 alldata = alldata %>% filter(size != "size") %>%
   mutate(total.RI = as.numeric(total.RI), 
@@ -32,27 +36,54 @@ alldata = alldata %>% filter(size != "size") %>%
 
 
 ### Testing closest interaction lines via regression analysis
-```{r regressions}
+In the interaction plots, flake preference and minimum suitable nodule size had very similar lines, suggesting that these variables may not be significantly affecting the amount of recycled objects over time. 
+
+```{r distributions}
 
 plotNormalHistogram(alldata$total.RI)
 
+descdist(alldata$total.RI, discrete=T, boot=100)
+descdist(alldata$total.RI, discrete=F, boot=100)
+
+```
+
+```{r regressions, eval=F}
+
+alldata = alldata %>% mutate(s.total.RI = total.RI + 0.0001)
+
 with(alldata, interaction.plot(model_year, flake_preference, total.RI))
-# fp = gamlss(total.RI ~ flake_preference*model_year, data=alldata, family = BEINF)
-# summary(fp)
-fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipossion)
-summary(fp1)
-fp2 = glm.nb(total.RI ~ flake_preference*model_year, data=alldata)
-summary(fp2)
-AICctab(fp1, fp2, base = T, weights = T)
+fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipoisson)
+fp2 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = binomial(link="logit"))
+fp3 = betareg(s.total.RI ~ flake_preference*model_year, data=alldata)
+AICctab(fp1, fp2, fp3, base = T, weights = T)
  
 with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
-# msns = gamlss(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = BEINF)
-# summary(msns)
-msns1 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = quasipossion)
-summary(msns1)
-msns2 = glm.nb(total.RI ~ min_suitable_nodule_size*model_year, data=alldata)
+msns1 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = quasipoisson)
+msns2 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = binomial(link="logit"))
+msns3 = betareg(s.total.RI ~ min_suitable_nodule_size*model_year, data=alldata)
+AICctab(msns1, msns2, msns3, base = T, weights = T)
+
+
+#beta regression analysis
+summary(fp3)
+summary(msns3)
+
+coeftest(fp3, vcov = sandwich)
+coeftest(msns3, vcov = sandwich)
+
+marginal1 = emmeans(fp3, ~flake_preference)
+pairs(marginal1, adjust = "tukey")
+cld(marginal1, alpha = 0.05, Letters = letters, adjust = "tukey")
+
+marginal2 = emmeans(msns3, ~min_suitable_nodule_size)
+pairs(marginal2, adjust = "tukey")
+cld(marginal2, alpha = 0.05, Letters = letters, adjust = "tukey")
+
+
+#binomial with logit link analysis
+summary(fp2)
 summary(msns2)
-AICctab(msns1, msns2, base = T, weights = T)
+
 
 ```
 
