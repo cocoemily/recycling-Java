@@ -3,10 +3,14 @@ title: "sensitivity-regressions"
 author: "Emily Coco"
 date: "10/12/2021"
 output: html_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=F}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(verbose = TRUE)
+
 
 library(tidyverse)
 library(ggpubr)
@@ -26,6 +30,8 @@ library(lmtest)
 library(betareg)
 library(sandwich)
 
+#alldata = read_csv("../output/sub_sens-data.csv")
+
 alldata = alldata %>% filter(size != "size") %>%
   mutate(total.RI = as.numeric(total.RI), 
          total.CR = as.numeric(total.CR)) %>%
@@ -38,7 +44,7 @@ alldata = alldata %>% filter(size != "size") %>%
 ### Testing closest interaction lines via regression analysis
 In the interaction plots, flake preference and minimum suitable nodule size had very similar lines, suggesting that these variables may not be significantly affecting the amount of recycled objects over time. 
 
-```{r distributions, eval=F}
+```{r distributions, eval=T, message=T}
 
 plotNormalHistogram(alldata$total.RI)
 
@@ -47,9 +53,9 @@ descdist(alldata$total.RI, discrete=F, boot=100)
 
 ```
 
-```{r regressions}
+```{r regressions, eval=T, message=T}
 
-u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI))
+u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifesle(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
 
 with(alldata, interaction.plot(model_year, flake_preference, total.RI))
 fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipoisson)
