@@ -47,7 +47,7 @@ descdist(alldata$total.RI, discrete=F, boot=100)
 
 ```
 
-```{r regressions, eval=F}
+```{r regressions}
 
 alldata = alldata %>% mutate(s.total.RI = total.RI + 0.0001)
 
