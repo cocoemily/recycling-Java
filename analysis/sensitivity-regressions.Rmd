@@ -55,7 +55,7 @@ descdist(alldata$total.RI, discrete=F, boot=100)
 
 ```{r regressions, eval=T, message=T}
 
-u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifesle(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
+u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
 
 with(alldata, interaction.plot(model_year, flake_preference, total.RI))
 fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipoisson)
@@ -71,8 +71,8 @@ AICctab(msns1, msns2, msns3, base = T, weights = T)
 
 
 #beta regression analysis
-summary(fp3)
-summary(msns3)
+#summary(fp3)
+#summary(msns3)
 
 coeftest(fp3, vcov = sandwich)
 coeftest(msns3, vcov = sandwich)
