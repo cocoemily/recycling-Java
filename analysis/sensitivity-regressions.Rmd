@@ -41,16 +41,14 @@ alldata = alldata %>% filter(size != "size") %>%
   mutate(total.RI = as.numeric(total.RI), 
          total.CR = as.numeric(total.CR)) %>%
   group_by(max_use_intensity, max_artifact_carry, max_flake_size, max_nodules_size, blank_prob, scavenge_prob, overlap, mu, size_preference, flake_preference, min_suitable_flake_size, min_suitable_nodule_size, strict_selection) %>%
-  mutate(avg.total.RI = mean(total.RI, na.rm=T))
+  mutate(exp = cur_group_id()) %>%
+  filter(!is.na(total.RI))
 
-# parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size", 
-#                "max_nodules_size", "blank_prob", "scavenge_prob", "overlap", 
-#                "mu", "size_preference", "flake_preference", 
-#                "min_suitable_flake_size", "min_suitable_nodule_size",
-#                "strict_selection")
-# for(p in parameters) {
-#   print(unlist(unique(alldata[,p])))
-# }
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size",
+               "max_nodules_size", "blank_prob", "scavenge_prob", "overlap",
+               "mu", "size_preference", "flake_preference",
+               "min_suitable_flake_size", "min_suitable_nodule_size",
+               "strict_selection")
 
 
 ```
@@ -61,65 +59,34 @@ In the interaction plots, flake preference and minimum suitable nodule size had 
 
 ```{r distributions, eval=T, message=F}
 
-plotNormalHistogram(alldata$avg.total.RI)
+plotNormalHistogram(alldata$total.RI)
 
-descdist(alldata$avg.total.RI, discrete=T, boot=100)
-descdist(alldata$avg.total.RI, discrete=F, boot=100)
+#descdist(alldata$total.RI, discrete=T, boot=100)
+#descdist(alldata$total.RI, discrete=F, boot=100)
 
-```
-
-```{r panel-data, eval=F, message = F}
-ggplot(alldata, aes(x = model_year, y = total.RI, color = as.factor(exp))) +
-  geom_line() +
-  theme(legend.position = "none") +
-  scale_x_reverse()
-
-
-plreg1 = plm(total.RI ~ blank_prob, data = alldata, index = c("exp", "model_year"), model="within", effect = "twoways")
-
+round(cor(alldata[,c(parameters, "total.RI")]), 2)
 
 ```
 
-
-```{r regressions, eval=F, message=F}
+```{r regressions, eval=T, message=F}
 
 u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
 
-#with(alldata, interaction.plot(model_year, flake_preference, total.RI))
-# fp1 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = quasipoisson)
-# fp2 = glm(total.RI ~ flake_preference*model_year, data=alldata, family = binomial(link="logit"))
-#fp3 = betareg(s.total.RI ~ flake_preference*model_year, data=u_alldata)
-#AICctab(fp1, fp2, fp3, base = T, weights = T)
- 
-#with(alldata, interaction.plot(model_year, min_suitable_nodule_size, total.RI))
-# msns1 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = quasipoisson)
-# msns2 = glm(total.RI ~ min_suitable_nodule_size*model_year, data=alldata, family = binomial(link="logit"))
-#msns3 = betareg(s.total.RI ~ min_suitable_nodule_size*model_year, data=u_alldata)
-#AICctab(msns1, msns2, msns3, base = T, weights = T)
-
-
-#testing assumptions
-test1 = lm(s.total.RI ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection , data=u_alldata)
-pairs(u_alldata[,c(parameters, "s.total.RI")])
-round(cor(u_alldata[,c(parameters, "s.total.RI")]), 2)
-
-vif(test1)
 
 #beta regression analysis
 breg1 = betareg(s.total.RI ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection , data=u_alldata)
 
-breg2 = betareg(s.total.RI ~ model_year + max_use_intensity + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + strict_selection , data=u_alldata)
-
-breg3 = betareg(s.total.RI ~ model_year + max_use_intensity + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + min_suitable_flake_size + strict_selection , data=u_alldata)
-
-lrtest(breg3, breg2, breg1)
+# breg2 = betareg(s.total.RI ~ model_year + max_use_intensity + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + strict_selection , data=u_alldata)
+# 
+# breg3 = betareg(s.total.RI ~ model_year + max_use_intensity + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + min_suitable_flake_size + strict_selection , data=u_alldata)
+# 
+# lrtest(breg3, breg2, breg1)
 
 
 plot(breg1$fitted.values, breg1$residuals)
-bptest(breg)
+bptest(breg1)
 
-coeftest(fp3, vcov = vcovPC(fp3))
-
+coeftest(breg1, vcov = vcovBS(breg1, R=50))
 
 ```
 
