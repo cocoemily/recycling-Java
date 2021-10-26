@@ -13,6 +13,7 @@ alldata = read_csv("output/joined_sensitivity-data.csv")
 setwd("analysis")
 #rmarkdown::render("parameter-interaction.Rmd", output_file = "sensitivity-analysis.html")
 rmarkdown::render("sensitivity-regressions.Rmd", output_file = "sensitivity-regressions.html")
+rmarkdown::render("sensitivity-regressions.Rmd", output_file = "sensitivity-indiv_regressions.html")
 
 #alldata = as.data.frame(fread("output/joined_model_data.csv"))
 #setwd("analysis")
