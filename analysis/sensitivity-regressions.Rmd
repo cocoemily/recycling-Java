@@ -55,8 +55,8 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size",
 ```
 
 
-### Testing closest interaction lines via regression analysis
-In the interaction plots, flake preference and minimum suitable nodule size had very similar lines, suggesting that these variables may not be significantly affecting the amount of recycled objects over time. 
+### Testing parameter significance via regression analysis
+Testing which variables explain the changes in the amount of recycled objects over time. 
 
 ```{r distributions, eval=T, message=F}
 
@@ -83,60 +83,62 @@ u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.
 # coeftest(breg1, vcov = vcovBS(breg1, R=50))
 
 #individual explanatory variable beta regressions
+obreg = betareg(s.total.RI ~ model_year, data = u_alldata)
+
 breg_mui = betareg(s.total.RI ~ model_year + max_use_intensity, data = u_alldata)
 lrtest(breg_mui, betareg(s.total.RI ~ model_year, data = u_alldata))
 coeftest(breg_mui, vcov = vcovBS(breg_mui, R=25))
 
 breg_mac = betareg(s.total.RI ~ model_year + max_artifact_carry, data = u_alldata)
-lrtest(breg_mac, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_mac, obreg)
 coeftest(breg_mac, vcov = vcovBS(breg_mac, R=25))
 
 breg_mfs = betareg(s.total.RI ~ model_year + max_flake_size, data = u_alldata)
-lrtest(breg_mfs, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_mfs, obreg)
 coeftest(breg_mfs, vcov = vcovBS(breg_mfs, R=25))
 
 breg_mns = betareg(s.total.RI ~ model_year + max_nodules_size, data = u_alldata)
-lrtest(breg_mns, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_mns, obreg)
 coeftest(breg_mns, vcov = vcovBS(breg_mns, R=25))
 
 breg_mns = betareg(s.total.RI ~ model_year + max_nodules_size, data = u_alldata)
-lrtest(breg_mns, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_mns, obreg)
 coeftest(breg_mns, vcov = vcovBS(breg_mns, R=25))
 
 breg_bp = betareg(s.total.RI ~ model_year + blank_prob, data = u_alldata)
-lrtest(breg_bp, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_bp, obreg)
 coeftest(breg_bp, vcov = vcovBS(breg_bp, R=25))
 
 breg_sp = betareg(s.total.RI ~ model_year + scavenge_prob, data = u_alldata)
-lrtest(breg_sp, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_sp, obreg)
 coeftest(breg_sp, vcov = vcovBS(breg_bp, R=25))
 
 breg_o = betareg(s.total.RI ~ model_year + overlap, data = u_alldata)
-lrtest(breg_o, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_o, obreg)
 coeftest(breg_o, vcov = vcovBS(breg_o, R=25))
 
 breg_m = betareg(s.total.RI ~ model_year + mu, data = u_alldata)
-lrtest(breg_m, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_m, obreg)
 coeftest(breg_m, vcov = vcovBS(breg_m, R=25))
 
 breg_spr = betareg(s.total.RI ~ model_year + size_preference, data = u_alldata)
-lrtest(breg_spr, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_spr, obreg)
 coeftest(breg_spr, vcov = vcovBS(breg_spr, R=25))
 
 breg_fpr = betareg(s.total.RI ~ model_year + flake_preference, data = u_alldata)
-lrtest(breg_fpr, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_fpr, obreg)
 coeftest(breg_fpr, vcov = vcovBS(breg_fpr, R=25))
 
 breg_msns = betareg(s.total.RI ~ model_year + min_suitable_nodule_size, data = u_alldata)
-lrtest(breg_msns, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_msns, obreg)
 coeftest(breg_msns, vcov = vcovBS(breg_msns, R=25))
 
 breg_msfs = betareg(s.total.RI ~ model_year + min_suitable_flake_size, data = u_alldata)
-lrtest(breg_msfs, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_msfs, obreg)
 coeftest(breg_msfs, vcov = vcovBS(breg_msfs, R=25))
 
 breg_ss = betareg(s.total.RI ~ model_year + strict_selection, data = u_alldata)
-lrtest(breg_ss, betareg(s.total.RI ~ model_year, data = u_alldata))
+lrtest(breg_ss, obreg)
 coeftest(breg_ss, vcov = vcovBS(breg_ss, R=25))
 
 ```
