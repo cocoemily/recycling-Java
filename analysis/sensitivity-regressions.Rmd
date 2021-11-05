@@ -36,7 +36,7 @@ library(rcompanion)
 
 theme_set(theme_minimal())
 
-# alldata = read_csv("../output/sub_sens-data.csv")
+#alldata = read_csv("../output/sub_sens-data.csv")
 
 alldata = alldata %>% filter(size != "size") %>%
   mutate(total.RI = as.numeric(total.RI), 
@@ -60,7 +60,7 @@ Testing which variables explain the changes in the amount of recycled objects ov
 
 ```{r distributions, eval=T, message=F}
 
-plotNormalHistogram(alldata$total.RI)
+#plotNormalHistogram(alldata$total.RI)
 
 #descdist(alldata$total.RI, discrete=T, boot=100)
 #descdist(alldata$total.RI, discrete=F, boot=100)
@@ -73,7 +73,6 @@ round(cor(alldata[,c(parameters, "total.RI")]), 2)
 
 u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
 
-
 #beta regression analysis
 # breg1 = betareg(s.total.RI ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection , data=u_alldata)
 # 
@@ -85,61 +84,73 @@ u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.
 #individual explanatory variable beta regressions
 obreg = betareg(s.total.RI ~ model_year, data = u_alldata)
 
-breg_mui = betareg(s.total.RI ~ model_year + max_use_intensity, data = u_alldata)
-lrtest(breg_mui, betareg(s.total.RI ~ model_year, data = u_alldata))
-coeftest(breg_mui, vcov = vcovBS(breg_mui, R=25))
+beta_regression = function(variable) {
+  modelfun = paste("s.total.RI ~ model_year + ", variable)
+  breg = betareg(eval(parse(text = modelfun)), data = u_alldata)
+  lrtest(breg, obreg)
+  coeftest(breg, vcov = vcovBS(breg, R=25))
+}
 
-breg_mac = betareg(s.total.RI ~ model_year + max_artifact_carry, data = u_alldata)
-lrtest(breg_mac, obreg)
-coeftest(breg_mac, vcov = vcovBS(breg_mac, R=25))
+mclapply(c("blank_prob", "scavenge_prob"), beta_regression, mc.cores=16)
 
-breg_mfs = betareg(s.total.RI ~ model_year + max_flake_size, data = u_alldata)
-lrtest(breg_mfs, obreg)
-coeftest(breg_mfs, vcov = vcovBS(breg_mfs, R=25))
+#mclapply(parameters, beta_regression)
 
-breg_mns = betareg(s.total.RI ~ model_year + max_nodules_size, data = u_alldata)
-lrtest(breg_mns, obreg)
-coeftest(breg_mns, vcov = vcovBS(breg_mns, R=25))
 
-breg_mns = betareg(s.total.RI ~ model_year + max_nodules_size, data = u_alldata)
-lrtest(breg_mns, obreg)
-coeftest(breg_mns, vcov = vcovBS(breg_mns, R=25))
-
-breg_bp = betareg(s.total.RI ~ model_year + blank_prob, data = u_alldata)
-lrtest(breg_bp, obreg)
-coeftest(breg_bp, vcov = vcovBS(breg_bp, R=25))
-
-breg_sp = betareg(s.total.RI ~ model_year + scavenge_prob, data = u_alldata)
-lrtest(breg_sp, obreg)
-coeftest(breg_sp, vcov = vcovBS(breg_bp, R=25))
-
-breg_o = betareg(s.total.RI ~ model_year + overlap, data = u_alldata)
-lrtest(breg_o, obreg)
-coeftest(breg_o, vcov = vcovBS(breg_o, R=25))
-
-breg_m = betareg(s.total.RI ~ model_year + mu, data = u_alldata)
-lrtest(breg_m, obreg)
-coeftest(breg_m, vcov = vcovBS(breg_m, R=25))
-
-breg_spr = betareg(s.total.RI ~ model_year + size_preference, data = u_alldata)
-lrtest(breg_spr, obreg)
-coeftest(breg_spr, vcov = vcovBS(breg_spr, R=25))
-
-breg_fpr = betareg(s.total.RI ~ model_year + flake_preference, data = u_alldata)
-lrtest(breg_fpr, obreg)
-coeftest(breg_fpr, vcov = vcovBS(breg_fpr, R=25))
-
-breg_msns = betareg(s.total.RI ~ model_year + min_suitable_nodule_size, data = u_alldata)
-lrtest(breg_msns, obreg)
-coeftest(breg_msns, vcov = vcovBS(breg_msns, R=25))
-
-breg_msfs = betareg(s.total.RI ~ model_year + min_suitable_flake_size, data = u_alldata)
-lrtest(breg_msfs, obreg)
-coeftest(breg_msfs, vcov = vcovBS(breg_msfs, R=25))
-
-breg_ss = betareg(s.total.RI ~ model_year + strict_selection, data = u_alldata)
-lrtest(breg_ss, obreg)
-coeftest(breg_ss, vcov = vcovBS(breg_ss, R=25))
+# breg_mui = betareg(s.total.RI ~ model_year + max_use_intensity, data = u_alldata)
+# lrtest(breg_mui, obreg)
+# coeftest(breg_mui, vcov = vcovBS(breg_mui, R=25))
+# 
+# breg_mac = betareg(s.total.RI ~ model_year + max_artifact_carry, data = u_alldata)
+# lrtest(breg_mac, obreg)
+# coeftest(breg_mac, vcov = vcovBS(breg_mac, R=25))
+# 
+# breg_mfs = betareg(s.total.RI ~ model_year + max_flake_size, data = u_alldata)
+# lrtest(breg_mfs, obreg)
+# coeftest(breg_mfs, vcov = vcovBS(breg_mfs, R=25))
+# 
+# breg_mns = betareg(s.total.RI ~ model_year + max_nodules_size, data = u_alldata)
+# lrtest(breg_mns, obreg)
+# coeftest(breg_mns, vcov = vcovBS(breg_mns, R=25))
+# 
+# breg_mns = betareg(s.total.RI ~ model_year + max_nodules_size, data = u_alldata)
+# lrtest(breg_mns, obreg)
+# coeftest(breg_mns, vcov = vcovBS(breg_mns, R=25))
+# 
+# breg_bp = betareg(s.total.RI ~ model_year + blank_prob, data = u_alldata)
+# lrtest(breg_bp, obreg)
+# coeftest(breg_bp, vcov = vcovBS(breg_bp, R=25))
+# 
+# breg_sp = betareg(s.total.RI ~ model_year + scavenge_prob, data = u_alldata)
+# lrtest(breg_sp, obreg)
+# coeftest(breg_sp, vcov = vcovBS(breg_bp, R=25))
+# 
+# breg_o = betareg(s.total.RI ~ model_year + overlap, data = u_alldata)
+# lrtest(breg_o, obreg)
+# coeftest(breg_o, vcov = vcovBS(breg_o, R=25))
+# 
+# breg_m = betareg(s.total.RI ~ model_year + mu, data = u_alldata)
+# lrtest(breg_m, obreg)
+# coeftest(breg_m, vcov = vcovBS(breg_m, R=25))
+# 
+# breg_spr = betareg(s.total.RI ~ model_year + size_preference, data = u_alldata)
+# lrtest(breg_spr, obreg)
+# coeftest(breg_spr, vcov = vcovBS(breg_spr, R=25))
+# 
+# breg_fpr = betareg(s.total.RI ~ model_year + flake_preference, data = u_alldata)
+# lrtest(breg_fpr, obreg)
+# coeftest(breg_fpr, vcov = vcovBS(breg_fpr, R=25))
+# 
+# breg_msns = betareg(s.total.RI ~ model_year + min_suitable_nodule_size, data = u_alldata)
+# lrtest(breg_msns, obreg)
+# coeftest(breg_msns, vcov = vcovBS(breg_msns, R=25))
+# 
+# breg_msfs = betareg(s.total.RI ~ model_year + min_suitable_flake_size, data = u_alldata)
+# lrtest(breg_msfs, obreg)
+# coeftest(breg_msfs, vcov = vcovBS(breg_msfs, R=25))
+# 
+# breg_ss = betareg(s.total.RI ~ model_year + strict_selection, data = u_alldata)
+# lrtest(breg_ss, obreg)
+# coeftest(breg_ss, vcov = vcovBS(breg_ss, R=25))
 
 ```
 
