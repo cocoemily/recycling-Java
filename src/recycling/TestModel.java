@@ -17,9 +17,9 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"not-strict",	//outputFile
-				"run_no-size-pref", 	//name
-				6, 			//size 
+				"test-layer-output",	//outputFile
+				"run_0", 	//name
+				10, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
 				15, 		//maxUI
@@ -30,8 +30,8 @@ public class TestModel {
 				0.75,		//sProb
 				1, 			//overlap
 				1.0,  		//mu
-				false, 		//sizePref
-				true, 		//flakePref
+				true, 		//sizePref
+				false, 		//flakePref
 				1, 			//minFS
 				10, 		//minNS
 				false, 		//strict
@@ -181,8 +181,15 @@ public class TestModel {
 			if(i % (model.totalSteps/2) == 0) {
 				model.getArtifactData();
 			}
+
+			if(i % (model.totalSteps/1000) == 0) {
+				model.getLayerData();
+			}
 			
-			model.getLayerData();
+			if(i == model.totalSteps) {
+				model.getLayerData();
+			}
+			
 			model.getModelData();
 			model.resetScavengeEventCounter();
 		}

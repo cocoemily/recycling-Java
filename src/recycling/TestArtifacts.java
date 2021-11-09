@@ -49,10 +49,10 @@ public class TestArtifacts {
 				0, 			//overlap
 				1.0,  		//mu
 				true, 		//sizePref
-				true, 		//flakePref
+				false, 		//flakePref
 				2, 			//minFS
 				10, 		//minNS
-				true, 		//strict
+				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
 				1000		//totalSteps
