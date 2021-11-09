@@ -182,7 +182,7 @@ public class TestModel {
 				model.getArtifactData();
 			}
 
-			if(i % (model.totalSteps/1000) == 0) {
+			if(i % (model.totalSteps/500) == 0) {
 				model.getLayerData();
 			}
 			
