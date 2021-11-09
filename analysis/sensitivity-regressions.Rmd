@@ -60,16 +60,16 @@ Testing which variables explain the changes in the amount of recycled objects ov
 
 ```{r distributions, eval=T, message=F}
 
-#plotNormalHistogram(alldata$total.RI)
+plotNormalHistogram(alldata$total.RI)
 
 #descdist(alldata$total.RI, discrete=T, boot=100)
-#descdist(alldata$total.RI, discrete=F, boot=100)
+descdist(alldata$total.RI, discrete=F, boot=100)
 
 round(cor(alldata[,c(parameters, "total.RI")]), 2)
 
 ```
 
-```{r regressions, eval=T, message=F}
+```{r regressions, eval=F, message=F}
 
 u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
 
@@ -91,9 +91,7 @@ beta_regression = function(variable) {
   coeftest(breg, vcov = vcovBS(breg, R=25))
 }
 
-mclapply(c("blank_prob", "scavenge_prob"), beta_regression, mc.cores=16)
-
-#mclapply(parameters, beta_regression)
+mclapply(parameters, beta_regression, mc.cores = 13)
 
 
 # breg_mui = betareg(s.total.RI ~ model_year + max_use_intensity, data = u_alldata)
