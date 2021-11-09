@@ -184,7 +184,7 @@ public class RunExtendedModel {
 					model.getArtifactData();
 				}
 
-				if(i % (model.totalSteps/500) == 0) {
+				if(i % (model.totalSteps/300) == 0) {
 					model.getLayerData();
 				}
 				
