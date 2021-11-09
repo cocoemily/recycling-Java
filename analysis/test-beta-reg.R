@@ -21,6 +21,9 @@ library(foreign)
 library(car)
 library(gplots)
 library(rcompanion)
+library(parallel)
+
+detectCores()
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size", 
                "max_nodules_size", "blank_prob", "scavenge_prob", "overlap", 
