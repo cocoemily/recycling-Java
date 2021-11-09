@@ -23,7 +23,7 @@ parameters = data.frame(of = character(),
                         GF = numeric(),
                         totalSteps = numeric()) 
 
-size.values = c(6)
+size.values = c(10)
 maxUI.values = c(15, 30)
 maxAC.values = c(10, 20)
 maxFS.values = c(1, 2)
@@ -35,7 +35,7 @@ mu.values = c(1, 2, 3)
 sizePref.values = c("true", "false")
 flakePref.values = c("true", "false")
 minFS.values = c(1, 2)
-minNS.values = c(5)
+minNS.values = c(5, 10)
 strict.values = c("true", "false")
 
 exp.num = 1
@@ -105,12 +105,20 @@ write.csv(fparameters, file = "run-scripts/ExtendedModel-model-runs/parameters.c
 
 
 #split up parameters into smaller bit to be run on HPC
-write.csv(fparameters[1:1000,], file = "run-scripts/ExtendedModel-model-runs/parameters1.csv", row.names = F)
-write.csv(fparameters[1001:2000,], file = "run-scripts/ExtendedModel-model-runs/parameters2.csv", row.names = F)
-write.csv(fparameters[2001:3000,], file = "run-scripts/ExtendedModel-model-runs/parameters3.csv", row.names = F)
-write.csv(fparameters[3001:4000,], file = "run-scripts/ExtendedModel-model-runs/parameters4.csv", row.names = F)
-write.csv(fparameters[4001:5000,], file = "run-scripts/ExtendedModel-model-runs/parameters5.csv", row.names = F)
-write.csv(fparameters[5001:6000,], file = "run-scripts/ExtendedModel-model-runs/parameters6.csv", row.names = F)
-write.csv(fparameters[6001:7000,], file = "run-scripts/ExtendedModel-model-runs/parameters7.csv", row.names = F)
-write.csv(fparameters[7001:8000,], file = "run-scripts/ExtendedModel-model-runs/parameters8.csv", row.names = F)
-write.csv(fparameters[8001:8640,], file = "run-scripts/ExtendedModel-model-runs/parameters9.csv", row.names = F)
+for(i in c(1:18)) {
+  startrow = 1 + ((i*1000) - 1000)
+  endrow = i * 1000
+  filename = paste0("run-scripts/ExtendedModel-model-runs/parameters", i, ".csv")
+  write.csv(fparameters[startrow:endrow,], file = filename, row.names = F)
+}
+
+# write.csv(fparameters[1:1000,], file = "run-scripts/ExtendedModel-model-runs/parameters1.csv", row.names = F)
+# write.csv(fparameters[1001:2000,], file = "run-scripts/ExtendedModel-model-runs/parameters2.csv", row.names = F)
+# write.csv(fparameters[2001:3000,], file = "run-scripts/ExtendedModel-model-runs/parameters3.csv", row.names = F)
+# write.csv(fparameters[3001:4000,], file = "run-scripts/ExtendedModel-model-runs/parameters4.csv", row.names = F)
+# write.csv(fparameters[4001:5000,], file = "run-scripts/ExtendedModel-model-runs/parameters5.csv", row.names = F)
+# write.csv(fparameters[5001:6000,], file = "run-scripts/ExtendedModel-model-runs/parameters6.csv", row.names = F)
+# write.csv(fparameters[6001:7000,], file = "run-scripts/ExtendedModel-model-runs/parameters7.csv", row.names = F)
+# write.csv(fparameters[7001:8000,], file = "run-scripts/ExtendedModel-model-runs/parameters8.csv", row.names = F)
+# write.csv(fparameters[8001:9000,], file = "run-scripts/ExtendedModel-model-runs/parameters9.csv", row.names = F)
+
