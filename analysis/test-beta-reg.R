@@ -70,6 +70,6 @@ beta_regression = function(variable) {
   #coeftest(breg, vcov = vcovBS(breg, R=25))
 }
 
-mclapply(c("blank_prob", "scavenge_prob"), beta_regression, mc.cores=2)
-#mclapply(parameters, beta_regression, mc.cores = 13)
+#mclapply(c("blank_prob", "scavenge_prob"), beta_regression, mc.cores=2)
+mclapply(parameters, beta_regression, mc.cores = 13)
 
