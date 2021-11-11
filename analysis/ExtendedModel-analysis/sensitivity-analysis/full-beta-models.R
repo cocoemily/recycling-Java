@@ -2,10 +2,7 @@ library(betareg)
 library(tidyverse)
 library(lmtest)
 
-
-setwd("..")
-alldata = read_csv("output/joined_sensitivity-data.csv")
-setwd("analysis")
+alldata = read_csv("../output/joined_sensitivity-data.csv")
 
 alldata = alldata %>% filter(size != "size") %>%
   mutate(total.RI = as.numeric(total.RI), 

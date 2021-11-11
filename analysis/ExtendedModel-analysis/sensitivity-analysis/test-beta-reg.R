@@ -25,16 +25,7 @@ library(parallel)
 
 args = commandArgs(trailingOnly=TRUE)
 
-# detectCores()
-# 
-# parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size", 
-#                "max_nodules_size", "blank_prob", "scavenge_prob", "overlap", 
-#                "mu", "size_preference", "flake_preference", 
-#                "min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
-
-setwd("..")
-alldata = read_csv("output/joined_sensitivity-data.csv")
-setwd("analysis")
+alldata = read_csv("../output/joined_sensitivity-data.csv")
 
 alldata = alldata %>% filter(size != "size") %>%
   mutate(total.RI = as.numeric(total.RI), 
