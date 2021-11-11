@@ -2,7 +2,7 @@ library(betareg)
 library(tidyverse)
 library(lmtest)
 
-alldata = read_csv("../output/joined_sensitivity-data.csv")
+alldata = read_csv("/scratch/ec3307/recycling-Java/output/joined_sensitivity-data.csv")
 
 alldata = alldata %>% filter(size != "size") %>%
   mutate(total.RI = as.numeric(total.RI), 
