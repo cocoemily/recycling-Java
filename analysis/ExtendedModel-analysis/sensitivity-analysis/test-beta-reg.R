@@ -4,6 +4,8 @@ library(betareg)
 
 
 args = commandArgs(trailingOnly=TRUE)
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+
 
 alldata = read_csv("/scratch/ec3307/recycling-Java/output/joined_sensitivity-data.csv")
 
@@ -25,5 +27,6 @@ beta_regression = function(variable) {
   #coeftest(breg, vcov = vcovBS(breg, R=25))
 }
 
-beta_regression(args[1])
+variable = parameters[as.numeric(args[1])]
+beta_regression(variable)
 
