@@ -7,7 +7,6 @@
 #SBATCH --mem=500GB
 #SBATCH --time=12:00:00
 #SBATCH --output=regression_output/regression_%A_%a.out
-#SBATCH --error=regression_output/regression_%A_%a.err
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ec3307@nyu.edu
 
@@ -15,6 +14,9 @@ module purge
 module load r/gcc/4.1.0
 module load pandoc/2.11.3.2
 
-parameters=("max_use_intensity" "max_artifact_carry" "max_flake_size" "max_nodules_size" "blank_prob" "scavenge_prob" "overlap" "mu" "size_preference" "flake_preference" "min_suitable_flake_size" "min_suitable_nodule_size" "strict_selection")
+#parameters=("max_use_intensity" "max_artifact_carry" "max_flake_size" 
+#"max_nodules_size" "blank_prob" "scavenge_prob" "overlap" "mu" 
+#"size_preference" "flake_preference" "min_suitable_flake_size" 
+#"min_suitable_nodule_size" "strict_selection")
 
-R --no-save -q -f test-beta-reg.R ${parameters[$SLURM_ARRAY_TASK_ID]}
+Rscript --vanilla test-beta-reg.R $SLURM_ARRAY_TASK_ID
