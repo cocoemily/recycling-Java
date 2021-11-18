@@ -35,4 +35,4 @@ loo_beta_regression = function() {
 breg2 = loo_beta_regression()
 coeftest(breg2)
 
-lrtest(breg1, breg2)
+lrtest(breg2, breg1)
