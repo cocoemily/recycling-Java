@@ -14,8 +14,8 @@ The following objects are masked from 'package:base':
 
     as.Date, as.Date.numeric
 
-[1] "11"
-[1] "min_suitable_flake_size"
+[1] "10"
+[1] "flake_preference"
 
 -- Column specification --------------------------------------------------------
 cols(
@@ -36,4 +36,13 @@ Warning: 1658850 parsing failures.
 .... .................. ........ .................. ...................................................................
 See problems(...) for more details.
 
-[1] "min_suitable_flake_size"
+[1] "flake_preference"
+Likelihood ratio test
+
+Model 1: s.total.RI ~ model_year + flake_preference
+Model 2: s.total.RI ~ model_year
+  #Df    LogLik Df   Chisq Pr(>Chisq)    
+1   4 367777080                          
+2   3 365679596 -1 4194969  < 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1

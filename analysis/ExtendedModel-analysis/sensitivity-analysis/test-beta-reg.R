@@ -18,7 +18,7 @@ alldata = alldata %>% filter(size != "size") %>%
   filter(!is.na(total.RI))
 
 u_alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
-#obreg = betareg(s.total.RI ~ model_year, data = u_alldata)
+obreg = betareg(s.total.RI ~ model_year, data = u_alldata)
 
 #beta regression function
 beta_regression = function(variable) {

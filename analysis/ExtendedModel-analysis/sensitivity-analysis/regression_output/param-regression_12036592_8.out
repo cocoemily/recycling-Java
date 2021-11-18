@@ -14,8 +14,8 @@ The following objects are masked from 'package:base':
 
     as.Date, as.Date.numeric
 
-[1] "2"
-[1] "max_artifact_carry"
+[1] "8"
+[1] "mu"
 
 -- Column specification --------------------------------------------------------
 cols(
@@ -36,7 +36,13 @@ Warning: 1658850 parsing failures.
 .... .................. ........ .................. ...................................................................
 See problems(...) for more details.
 
-[1] "max_artifact_carry"
-Error in lrtest.default(breg, obreg) : object 'obreg' not found
-Calls: beta_regression -> lrtest -> lrtest.default
-Execution halted
+[1] "mu"
+Likelihood ratio test
+
+Model 1: s.total.RI ~ model_year + mu
+Model 2: s.total.RI ~ model_year
+  #Df    LogLik Df  Chisq Pr(>Chisq)    
+1   4 366007019                         
+2   3 365679596 -1 654846  < 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
