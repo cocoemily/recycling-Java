@@ -30,22 +30,8 @@ y = as.matrix(u_alldata$s.total.RI)
 
 step.model = betaselect(x, y, method = "backward")
 
-
-# #backwards stepwise regression by hand
-# aicdata = data.frame(
-#   formula = character(), 
-#   AIC = numeric()
-# )
-# 
-# 
-# #leave one variable out
-# modelfun = paste("s.total.RI ~ model_year")
-# for(i in 1:length(parameters)) {
-#   if(i != args[1]) {
-#     modelfun = paste(modelfun, "+", parameters[i])
-#   }
-# }
-  
+print(step.model$variable)
+print(step.model$coefficient)  
   
 
 
