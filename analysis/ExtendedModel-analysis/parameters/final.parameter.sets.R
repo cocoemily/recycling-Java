@@ -94,7 +94,8 @@ for(s in size.values) {
 }
 
 fparameters = parameters %>% filter(!(minFS > maxFS)) %>%
-  filter(!(sizePref == "false" & maxFS != minFS))
+  filter(!(sizePref == "false" & maxFS != minFS)) %>% 
+  filter(!(sizePref == "false" & maxNS != minNS))
 fparameters = fparameters %>%
   mutate(of = seq(1, nrow(fparameters), by = 1))
 
@@ -105,9 +106,9 @@ write.csv(fparameters, file = "run-scripts/ExtendedModel-model-runs/parameters.c
 
 
 #split up parameters into smaller bit to be run on HPC
-for(i in c(1:18)) {
-  startrow = 1 + ((i*1000) - 1000)
-  endrow = i * 1000
+for(i in c(1:13)) {
+  startrow = 1 + ((i*935) - 935)
+  endrow = i * 935
   filename = paste0("run-scripts/ExtendedModel-model-runs/parameters", i, ".csv")
   write.csv(fparameters[startrow:endrow,], file = filename, row.names = F)
 }
