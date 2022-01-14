@@ -18,20 +18,53 @@ theme_set(theme_minimal())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
 
-alldata = read_csv("/Users/emilycoco/eclipse-workspace/recycling-Java/output/joined_model_data.csv")
-# alldata = as.data.frame(fread("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv"))
-# alldata = alldata %>% mutate(
-#   total.RI = as.numeric(total.RI),
-#   total.CR = as.numeric(total.CR)
-# )
-# 
-# alldata = alldata[1:50010,]
-# 
-# parameters = colnames(alldata[,c(1,4:9,11:17)])
-
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
+
+alldata = alldata %>% filter(size != "size") %>%
+  mutate(total.RI = as.numeric(total.RI), 
+         total.CR = as.numeric(total.CR), 
+         num.scav.events = as.numeric(num.scav.events), 
+         total.recycled = as.numeric(total.recycled), 
+         num.deposits = as.numeric(num.deposits), 
+         total.encounters = as.numeric(total.encounters), 
+         total.discards = as.numeric(total.discards), 
+         total.manu.events = as.numeric(total.manu.events), 
+         total.retouches = as.numeric(total.retouches))
+
+
 ```
+```{r checking-assumptions}
+plotNormalHistogram(alldata$total.RI)
+descdist(alldata$total.RI, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$total.CR)
+descdist(alldata$total.CR, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$num.scav.events)
+descdist(alldata$num.scav.events, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$total.recycled)
+descdist(alldata$total.recycled, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$num.deposits)
+descdist(alldata$num.deposits, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$total.encounters)
+descdist(alldata$total.encounters, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$total.discards)
+descdist(alldata$total.discards, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$total.manu.events)
+descdist(alldata$total.manu.events, discrete=F, boot=100)
+
+plotNormalHistogram(alldata$total.retouches)
+descdist(alldata$total.retouches, discrete=F, boot=100)
+
+```
+
+
 
 ## Where is there missing data for recycling intensity?
 Because of the way that recycling intensity is calculated
@@ -48,11 +81,8 @@ missing_counts = alldata %>% group_by_at(parameters) %>%
 
 lmdata = missing_counts %>% select(parameters, "missing.RI")
 m1 = lm(missing.RI ~ . , data = lmdata)
-summary(m1)
-plot(m1, which=2)
 
-m2 = lm(missing.RI ~ max_flake_size*max_nodules_size*size_preference*flake_preference*min_suitable_flake_size, data = lmdata)
-stargazer::stargazer(m2, type= "text")
+stargazer::stargazer(m1, type= "text")
 
 
 
