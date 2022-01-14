@@ -16,10 +16,10 @@ library(data.table)
 library(UpSetR)
 theme_set(theme_minimal())
 
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
 
-# alldata = read_csv("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv")
-alldata = as.data.frame(fread("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv"))
+alldata = read_csv("/Users/emilycoco/eclipse-workspace/recycling-Java/output/joined_model_data.csv")
+# alldata = as.data.frame(fread("/Users/emilycoco/eclipse-workspace/recycling-Java/output/sub_small.csv"))
 # alldata = alldata %>% mutate(
 #   total.RI = as.numeric(total.RI),
 #   total.CR = as.numeric(total.CR)
@@ -37,12 +37,6 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 Because of the way that recycling intensity is calculated
 
 ```{r missing-recycling-intensity}
-
-for(p in parameters) {
-  print(c(unique(alldata[p])))
-}
-
-
 output_data = alldata %>% select(outputs)
 gg_miss_var(output_data, show_pct = T)
 
