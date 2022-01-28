@@ -40,33 +40,33 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 
 ## What are the distributions of the output metrics?
 
-```{r checking-assumptions, eval=F, include=F }
+```{r checking-assumptions}
 plotNormalHistogram(alldata$total.RI)
-descdist(alldata$total.RI, discrete=F, boot=100)
+#descdist(alldata$total.RI, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$total.CR)
-descdist(alldata$total.CR, discrete=F, boot=100)
+#descdist(alldata$total.CR, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$num.scav.events)
-descdist(alldata$num.scav.events, discrete=F, boot=100)
+#descdist(alldata$num.scav.events, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$total.recycled)
-descdist(alldata$total.recycled, discrete=F, boot=100)
+#descdist(alldata$total.recycled, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$num.deposits)
-descdist(alldata$num.deposits, discrete=F, boot=100)
+#descdist(alldata$num.deposits, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$total.encounters)
-descdist(alldata$total.encounters, discrete=F, boot=100)
+#descdist(alldata$total.encounters, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$total.discards)
-descdist(alldata$total.discards, discrete=F, boot=100)
+#descdist(alldata$total.discards, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$total.manu.events)
-descdist(alldata$total.manu.events, discrete=F, boot=100)
+#descdist(alldata$total.manu.events, discrete=F, boot=20)
 
 plotNormalHistogram(alldata$total.retouches)
-descdist(alldata$total.retouches, discrete=F, boot=100)
+#descdist(alldata$total.retouches, discrete=F, boot=20)
 
 ```
 
