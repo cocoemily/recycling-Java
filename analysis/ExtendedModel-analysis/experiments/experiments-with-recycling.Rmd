@@ -75,8 +75,16 @@ plotNormalHistogram(alldata$total.retouches)
 ## Where is there missing data for recycling intensity?
 
 ```{r missing-recycling-intensity}
-output_data = alldata %>% select(outputs)
+
+outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+
+output_data = alldata[,c(outputs)]
 gg_miss_var(output_data, show_pct = T)
+
+# facet_data = alldata[,c(parameters, outputs)]
+# gg_miss_fct(facet_data, fct = as.factor(facet_data$overlap))
+
+
 
 
 # missing_counts = alldata %>% group_by_at(parameters) %>%
