@@ -42,31 +42,31 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 
 ```{r checking-assumptions}
 plotNormalHistogram(alldata$total.RI)
-descdist(alldata$total.RI, discrete=F, boot=10)
+descdist(alldata$total.RI, discrete=F)
 
 plotNormalHistogram(alldata$total.CR)
-descdist(alldata$total.CR, discrete=F, boot=10)
+descdist(alldata$total.CR, discrete=F)
 
 plotNormalHistogram(alldata$num.scav.events)
-descdist(alldata$num.scav.events, discrete=F, boot=10)
+descdist(alldata$num.scav.events, discrete=F)
 
 plotNormalHistogram(alldata$total.recycled)
-descdist(alldata$total.recycled, discrete=F, boot=10)
+descdist(alldata$total.recycled, discrete=F)
 
 plotNormalHistogram(alldata$num.deposits)
-descdist(alldata$num.deposits, discrete=F, boot=10)
+descdist(alldata$num.deposits, discrete=F)
 
 plotNormalHistogram(alldata$total.encounters)
-descdist(alldata$total.encounters, discrete=F, boot=10)
+descdist(alldata$total.encounters, discrete=F)
 
 plotNormalHistogram(alldata$total.discards)
-descdist(alldata$total.discards, discrete=F, boot=10)
+descdist(alldata$total.discards, discrete=F)
 
 plotNormalHistogram(alldata$total.manu.events)
-descdist(alldata$total.manu.events, discrete=F, boot=10)
+descdist(alldata$total.manu.events, discrete=F)
 
 plotNormalHistogram(alldata$total.retouches)
-descdist(alldata$total.retouches, discrete=F, boot=10)
+descdist(alldata$total.retouches, discrete=F)
 
 ```
 
