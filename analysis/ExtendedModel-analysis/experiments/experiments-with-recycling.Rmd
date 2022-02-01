@@ -42,31 +42,31 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 
 ```{r checking-assumptions}
 plotNormalHistogram(alldata$total.RI)
-#descdist(alldata$total.RI, discrete=F, boot=20)
+descdist(alldata$total.RI, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$total.CR)
-#descdist(alldata$total.CR, discrete=F, boot=20)
+descdist(alldata$total.CR, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$num.scav.events)
-#descdist(alldata$num.scav.events, discrete=F, boot=20)
+descdist(alldata$num.scav.events, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$total.recycled)
-#descdist(alldata$total.recycled, discrete=F, boot=20)
+descdist(alldata$total.recycled, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$num.deposits)
-#descdist(alldata$num.deposits, discrete=F, boot=20)
+descdist(alldata$num.deposits, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$total.encounters)
-#descdist(alldata$total.encounters, discrete=F, boot=20)
+descdist(alldata$total.encounters, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$total.discards)
-#descdist(alldata$total.discards, discrete=F, boot=20)
+descdist(alldata$total.discards, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$total.manu.events)
-#descdist(alldata$total.manu.events, discrete=F, boot=20)
+descdist(alldata$total.manu.events, discrete=F, boot=10)
 
 plotNormalHistogram(alldata$total.retouches)
-#descdist(alldata$total.retouches, discrete=F, boot=20)
+descdist(alldata$total.retouches, discrete=F, boot=10)
 
 ```
 
@@ -81,23 +81,13 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 output_data = alldata[,c(outputs)]
 gg_miss_var(output_data, show_pct = T)
 
-# facet_data = alldata[,c(parameters, outputs)]
-# gg_miss_fct(facet_data, fct = as.factor(facet_data$overlap))
 
+facet_data = alldata[,c(parameters, outputs)]
 
-
-
-# missing_counts = alldata %>% group_by_at(parameters) %>%
-#   summarize(missing.RI = sum(is.na(total.RI))/n(), 
-#             missing.CR = sum(is.na(total.CR))/n(), 
-#             total.discards = sum(total.discards))
-
-# lmdata = missing_counts %>% select(parameters, "missing.RI")
-# m1 = lm(missing.RI ~ . , data = lmdata)
-# 
-# stargazer::stargazer(m1, type= "text")
-
-
+for(p in parameters) {
+  facet_data %>% group_by_at(p) %>%
+    miss_var_summary()
+}
 
 ```
 
