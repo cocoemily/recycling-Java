@@ -42,31 +42,49 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 
 ```{r checking-assumptions}
 plotNormalHistogram(alldata$total.RI)
-descdist(alldata$total.RI, discrete=F)
+distRI = data.frame(total.RI = as.numeric(na.omit(alldata$total.RI)))
+descdist(distRI$total.RI, discrete=F)
+rm(distRI)
 
 plotNormalHistogram(alldata$total.CR)
-descdist(alldata$total.CR, discrete=F)
+distCR = data.frame(total.CR = as.numeric(na.omit(alldata$total.CR)))
+descdist(distCR$total.CR, discrete=F)
+rm(distCR)
 
 plotNormalHistogram(alldata$num.scav.events)
-descdist(alldata$num.scav.events, discrete=F)
+distSE = data.frame(num.scav.events = as.numeric(na.omit(alldata$num.scav.events)))
+descdist(distSE$num.scav.events, discrete=F)
+rm(distSE)
 
 plotNormalHistogram(alldata$total.recycled)
-descdist(alldata$total.recycled, discrete=F)
+distTR = data.frame(total.recycled = as.numeric(na.omit(alldata$total.recycled)))
+descdist(distTR$total.recycled, discrete=F)
+rm(distTR)
 
 plotNormalHistogram(alldata$num.deposits)
-descdist(alldata$num.deposits, discrete=F)
+distND = data.frame(num.deposits = as.numeric(na.omit(alldata$num.deposits)))
+descdist(distND$num.deposits, discrete=F)
+rm(distND)
 
 plotNormalHistogram(alldata$total.encounters)
-descdist(alldata$total.encounters, discrete=F)
+distTE = data.frame(total.encounters = as.numeric(na.omit(alldata$total.encounters)))
+descdist(distTE$total.encounters, discrete=F)
+rm(distTE)
 
 plotNormalHistogram(alldata$total.discards)
-descdist(alldata$total.discards, discrete=F)
+distTD = data.frame(total.discards = as.numeric(na.omit(alldata$total.discards)))
+descdist(distTD$total.discards, discrete=F)
+rm(distTD)
 
 plotNormalHistogram(alldata$total.manu.events)
-descdist(alldata$total.manu.events, discrete=F)
+distME = data.frame(total.manu.events = as.numeric(na.omit(alldata$total.manu.events)))
+descdist(distME$total.manu.events, discrete=F)
+rm(distME)
 
 plotNormalHistogram(alldata$total.retouches)
+distTR = data.frame(total.retouches = as.numeric(na.omit(alldata$total.retouches)))
 descdist(alldata$total.retouches, discrete=F)
+rm(distTR)
 
 ```
 
