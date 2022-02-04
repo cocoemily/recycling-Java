@@ -16,15 +16,16 @@ library(data.table)
 library(UpSetR)
 library(rcompanion)
 library(fitdistrplus)
+library(crunch)
 theme_set(theme_minimal())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
 
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
+alldata = alldata[alldata$size != "size",]
 
-alldata = alldata %>% filter(size != "size") 
-#%>%
+#alldata = alldata %>% filter(size != "size") %>%
 #   mutate(total.RI = as.numeric(total.RI), 
 #          total.CR = as.numeric(total.CR), 
 #          num.scav.events = as.numeric(num.scav.events), 
@@ -43,47 +44,47 @@ alldata = alldata %>% filter(size != "size")
 
 ```{r checking-assumptions}
 plotNormalHistogram(alldata$total.RI)
-distRI = data.frame(total.RI = as.numeric(na.omit(alldata$total.RI)))
+distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]
 descdist(distRI$total.RI, discrete=F)
 rm(distRI)
 
 plotNormalHistogram(alldata$total.CR)
-distCR = data.frame(total.CR = as.numeric(na.omit(alldata$total.CR)))
+distCR = alldata[!is.na(alldata$total.CR) & !is.nan(alldata$total.CR),]
 descdist(distCR$total.CR, discrete=F)
 rm(distCR)
 
 plotNormalHistogram(alldata$num.scav.events)
-distSE = data.frame(num.scav.events = as.numeric(na.omit(alldata$num.scav.events)))
+distSE = alldata[!is.na(alldata$num.scav.events) & !is.nan(alldata$num.scav.events),]
 descdist(distSE$num.scav.events, discrete=F)
 rm(distSE)
 
 plotNormalHistogram(alldata$total.recycled)
-distTR = data.frame(total.recycled = as.numeric(na.omit(alldata$total.recycled)))
+distTR = alldata[!is.na(alldata$total.recycled) & !is.nan(alldata$total.recycled),]
 descdist(distTR$total.recycled, discrete=F)
 rm(distTR)
 
 plotNormalHistogram(alldata$num.deposits)
-distND = data.frame(num.deposits = as.numeric(na.omit(alldata$num.deposits)))
+distND = alldata[!is.na(alldata$num.deposits) & !is.nan(alldata$num.deposits),]
 descdist(distND$num.deposits, discrete=F)
 rm(distND)
 
 plotNormalHistogram(alldata$total.encounters)
-distTE = data.frame(total.encounters = as.numeric(na.omit(alldata$total.encounters)))
+distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]
 descdist(distTE$total.encounters, discrete=F)
 rm(distTE)
 
 plotNormalHistogram(alldata$total.discards)
-distTD = data.frame(total.discards = as.numeric(na.omit(alldata$total.discards)))
+distTD = alldata[!is.na(alldata$total.discards) & !is.nan(alldata$total.discards),]
 descdist(distTD$total.discards, discrete=F)
 rm(distTD)
 
 plotNormalHistogram(alldata$total.manu.events)
-distME = data.frame(total.manu.events = as.numeric(na.omit(alldata$total.manu.events)))
+distME = alldata[!is.na(alldata$total.manu.events) & !is.nan(alldata$total.manu.events),]
 descdist(distME$total.manu.events, discrete=F)
 rm(distME)
 
 plotNormalHistogram(alldata$total.retouches)
-distTR = data.frame(total.retouches = as.numeric(na.omit(alldata$total.retouches)))
+distTR = alldata[!is.na(alldata$total.retouches) & !is.nan(alldata$total.retouches),]
 descdist(alldata$total.retouches, discrete=F)
 rm(distTR)
 
