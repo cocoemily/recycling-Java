@@ -44,48 +44,48 @@ alldata = alldata[alldata$size != "size",]
 
 ```{r checking-assumptions}
 plotNormalHistogram(alldata$total.RI)
-distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]
-descdist(distRI$total.RI, discrete=F)
+distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]$total.RI
+descdist(distRI, discrete=F)
 rm(distRI)
 
 plotNormalHistogram(alldata$total.CR)
-distCR = alldata[!is.na(alldata$total.CR) & !is.nan(alldata$total.CR),]
-descdist(distCR$total.CR, discrete=F)
+distCR = alldata[!is.na(alldata$total.CR) & !is.nan(alldata$total.CR),]$total.CR
+descdist(distCR, discrete=F)
 rm(distCR)
 
 plotNormalHistogram(alldata$num.scav.events)
-distSE = alldata[!is.na(alldata$num.scav.events) & !is.nan(alldata$num.scav.events),]
-descdist(distSE$num.scav.events, discrete=F)
+distSE = alldata[!is.na(alldata$num.scav.events) & !is.nan(alldata$num.scav.events),]$num.scav.events
+descdist(distSE, discrete=F)
 rm(distSE)
 
 plotNormalHistogram(alldata$total.recycled)
-distTR = alldata[!is.na(alldata$total.recycled) & !is.nan(alldata$total.recycled),]
-descdist(distTR$total.recycled, discrete=F)
+distTR = alldata[!is.na(alldata$total.recycled) & !is.nan(alldata$total.recycled),]$total.recycled
+descdist(distTR, discrete=F)
 rm(distTR)
 
 plotNormalHistogram(alldata$num.deposits)
-distND = alldata[!is.na(alldata$num.deposits) & !is.nan(alldata$num.deposits),]
-descdist(distND$num.deposits, discrete=F)
+distND = alldata[!is.na(alldata$num.deposits) & !is.nan(alldata$num.deposits),]$num.deposits
+descdist(distND, discrete=F)
 rm(distND)
 
 plotNormalHistogram(alldata$total.encounters)
-distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]
-descdist(distTE$total.encounters, discrete=F)
+distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]$total.encounters
+descdist(distTE, discrete=F)
 rm(distTE)
 
 plotNormalHistogram(alldata$total.discards)
-distTD = alldata[!is.na(alldata$total.discards) & !is.nan(alldata$total.discards),]
-descdist(distTD$total.discards, discrete=F)
+distTD = alldata[!is.na(alldata$total.discards) & !is.nan(alldata$total.discards),]$total.discards
+descdist(distTD, discrete=F)
 rm(distTD)
 
 plotNormalHistogram(alldata$total.manu.events)
-distME = alldata[!is.na(alldata$total.manu.events) & !is.nan(alldata$total.manu.events),]
-descdist(distME$total.manu.events, discrete=F)
+distME = alldata[!is.na(alldata$total.manu.events) & !is.nan(alldata$total.manu.events),]$total.manu.events
+descdist(distME, discrete=F)
 rm(distME)
 
 plotNormalHistogram(alldata$total.retouches)
-distTR = alldata[!is.na(alldata$total.retouches) & !is.nan(alldata$total.retouches),]
-descdist(alldata$total.retouches, discrete=F)
+distTR = alldata[!is.na(alldata$total.retouches) & !is.nan(alldata$total.retouches),]$total.retouches
+descdist(distTR, discrete=F)
 rm(distTR)
 
 ```
