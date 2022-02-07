@@ -3,8 +3,8 @@
 #SBATCH --job-name=step-br
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --mem=500GB
-#SBATCH --time=165:00:00
+#SBATCH --mem=800GB
+#SBATCH --time=167:00:00
 #SBATCH --output=regression_output/step-regression_%A.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ec3307@nyu.edu
