@@ -16,11 +16,15 @@ library(data.table)
 library(UpSetR)
 library(rcompanion)
 library(fitdistrplus)
+library(knitr)
+library(kableExtra)
 theme_set(theme_minimal())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
 
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+
+alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
 
 alldata = alldata[alldata$size != "size",]
 
@@ -41,7 +45,7 @@ alldata = alldata[alldata$size != "size",]
 
 ## What are the distributions of the output metrics?
 
-```{r checking-assumptions}
+```{r checking-assumptions, eval=F}
 plotNormalHistogram(alldata$total.RI)
 distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]$total.RI
 descdist(distRI, discrete=F)
@@ -103,10 +107,28 @@ gg_miss_var(output_data, show_pct = T)
 
 facet_data = alldata[,c(parameters, outputs)]
 
-for(p in parameters) {
-  facet_data %>% group_by_at(p) %>%
-    miss_var_summary()
+output_table = function(parameter) {
+  return(
+    facet_data %>% group_by_at(parameter) %>% miss_var_summary() %>%
+        filter(variable %in% outputs) %>% kbl(caption = paste("Missing output values for values of", parameter)) %>%
+      kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+  )
 }
+
+output_table(parameters[1])
+output_table(parameters[2])
+output_table(parameters[3])
+output_table(parameters[4])
+output_table(parameters[5])
+output_table(parameters[6])
+output_table(parameters[7])
+output_table(parameters[8])
+output_table(parameters[9])
+output_table(parameters[10])
+output_table(parameters[11])
+output_table(parameters[12])
+output_table(parameters[13])
+
 
 ```
 
