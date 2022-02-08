@@ -28,6 +28,9 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 
 alldata = alldata[alldata$size != "size",]
 
+alldata = alldata[!is.na(alldata$max_artifact_carry),]
+
+
 #alldata = alldata %>% filter(size != "size") %>%
 #   mutate(total.RI = as.numeric(total.RI), 
 #          total.CR = as.numeric(total.CR), 
@@ -45,7 +48,7 @@ alldata = alldata[alldata$size != "size",]
 
 ## What are the distributions of the output metrics?
 
-```{r checking-assumptions, eval=F}
+```{r checking-assumptions, eval=T}
 plotNormalHistogram(alldata$total.RI)
 distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]$total.RI
 descdist(distRI, discrete=F)
@@ -97,7 +100,7 @@ rm(distTR)
 
 ## Where is there missing data for recycling intensity?
 
-```{r missing-recycling-intensity}
+```{r missing-recycling-intensity, eval=T}
 
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
@@ -107,7 +110,7 @@ gg_miss_var(output_data, show_pct = T)
 
 facet_data = alldata[,c(parameters, outputs)]
 
-output_table = function(parameter) {
+output_table_by_param = function(parameter) {
   return(
     facet_data %>% group_by_at(parameter) %>% miss_var_summary() %>%
         filter(variable %in% outputs) %>% kbl(caption = paste("Missing output values for values of", parameter)) %>%
@@ -115,19 +118,30 @@ output_table = function(parameter) {
   )
 }
 
-output_table(parameters[1])
-output_table(parameters[2])
-output_table(parameters[3])
-output_table(parameters[4])
-output_table(parameters[5])
-output_table(parameters[6])
-output_table(parameters[7])
-output_table(parameters[8])
-output_table(parameters[9])
-output_table(parameters[10])
-output_table(parameters[11])
-output_table(parameters[12])
-output_table(parameters[13])
+output_table_by_param(parameters[1])
+output_table_by_param(parameters[2])
+output_table_by_param(parameters[3])
+output_table_by_param(parameters[4])
+output_table_by_param(parameters[5])
+output_table_by_param(parameters[6])
+output_table_by_param(parameters[7])
+output_table_by_param(parameters[8])
+output_table_by_param(parameters[9])
+output_table_by_param(parameters[10])
+output_table_by_param(parameters[11])
+output_table_by_param(parameters[12])
+output_table_by_param(parameters[13])
+
+
+output_table_by_exp = function() {
+  return(
+    facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
+    filter(variable %in% outputs) %>% kbl(caption = paste("Missing output values for each experiment")) %>%
+      kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+      )
+}
+
+output_table_by_exp()
 
 
 ```
