@@ -1,0 +1,211 @@
+---
+title: "where-why-recycling"
+author: "Emily Coco"
+date: "2/7/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggpubr)
+library(betareg)
+library(lmtest)
+
+theme_set(theme_minimal())
+
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+
+outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+
+move_outputs = c("num.deposits", "total.encounters")
+scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
+
+
+alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
+
+alldata = alldata[alldata$size != "size",]
+
+alldata = alldata[!is.na(alldata$max_artifact_carry),]
+
+
+```
+
+```{r function}
+
+basic_scatter_plot = function(data, output1, output2) {
+  p1 = ggscatter(data, x = output1, y = output2, 
+                 add = "reg.line", conf.int = TRUE, 
+                 cor.coef = TRUE, cor.method = "spearman",
+                 xlab = output1, ylab = output2)
+  
+  return(p1)
+  
+}
+
+
+scatter_plots_by_parameter = function(data, output1, output2, parameters) {
+  splots = list()
+  listitem = 1
+  
+  for(p in parameters) {
+    if(o %in% move_outputs & p != "mu") {
+      pl = ggscatter(data, x = output1, y = output2,
+                     add = "reg.line", conf.int = TRUE,
+                     cor.coef = TRUE, cor.method = "spearman",
+                     xlab = output1, ylab = output2) +
+        facet_grid(reformulate(p, "mu"), labeller = label_both)
+    } else if(o %in% scavenge_outputs & p != "scavenge_prob") {
+      pl = ggscatter(data, x = output1, y = output2,
+                     add = "reg.line", conf.int = TRUE,
+                     cor.coef = TRUE, cor.method = "spearman",
+                     xlab = output1, ylab = output2) +
+        facet_grid(reformulate(p, "scavenge_prob"), labeller = label_both)
+    } else {
+      pl = ggscatter(data, x = output1, y = output2,
+                     add = "reg.line", conf.int = TRUE,
+                     cor.coef = TRUE, cor.method = "spearman",
+                     xlab = output1, ylab = output2) +
+        facet_grid(reformulate(p), labeller = label_both)
+    }
+    
+    
+    splots[[listitem]] = pl
+    listitem = listitem + 1
+    
+  }
+  return(splots)
+}
+
+linear_corr_by_experiment = function(data, output1, output2) {
+  data = data %>% group_by_at(parameters) %>%
+    mutate(gnum = as.factor(cur_group_id()))
+  
+  return(
+    ggplot(data, aes_string(x =output1, y = output2, group = "gnum", color = "gnum"))+
+      geom_smooth(method = "lm", fullrange=T, se=F)
+  )
+  
+}
+
+
+
+```
+
+
+
+## End of model run analysis
+What is the resulting archaeological record look like at the last point in model run?
+
+How is recycling intensity correlated with the other output variables?
+```{r end-result, eval=T}
+
+endyear = alldata$start_year[1] + (alldata$timestep[1] * alldata$total_steps[1])
+
+enddata = alldata %>% filter(model_year == endyear) %>% filter(!is.na(total.RI))
+
+
+for(o in outputs) {
+  plot(basic_scatter_plot(enddata, outputs[9], o))
+}
+
+
+# for(o in outputs) {
+#   splots = scatter_plots_by_parameter(enddata, outputs[9], o, parameters)
+#   
+#   for(s in splots) {
+#     plot(s)
+#   }
+#   
+# }
+
+
+for(o in outputs) {
+  plot(linear_corr_by_experiment(enddata, outputs[9], o))
+}
+
+
+
+
+```
+
+How do the different parameter values affect the output values?
+```{r regressions, eval=F}
+
+## total.RI -- beta regression
+alldata = alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI))
+distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]
+
+breg1 = betareg(s.total.RI ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection , data=distRI)
+
+testbreg = betareg(s.total.RI ~ model_year, data=distRI)
+coeftest(testbreg)
+
+## total.CR -- beta regression
+
+## num.scav.events -- possible log normal, possible zero inflated negative binomial
+
+## total.recycled -- log normal, zero inflated negative binomial
+
+## num.deposits -- beta (right skew)
+
+## total.encounters -- uniform
+
+## total.discards -- log normal, zero inflated negative binomial
+
+## total.manu.events -- beta
+
+## total.retouches -- beta
+
+
+
+
+```
+
+```{r remove-end-data}
+
+rm(enddata)
+
+```
+
+
+
+## Middle of model run analysis
+What is the resulting archaeological record look like in the middle of model run?
+
+```{r mid-result, eval=F}
+
+midyear = alldata$start_year[1] + (alldata$timestep[1] * (alldata$total_steps[1]/2))
+
+middata = alldata %>% filter(model_year == midyear) %>% filter(!is.na(total.RI))
+
+for(o in outputs) {
+  plot(basic_scatter_plot(middata, outputs[9], o))
+}
+
+# for(o in outputs) {
+#   splots = scatter_plots_by_parameter(middata, outputs[9], o, parameters)
+#   
+#   for(s in splots) {
+#     plot(s)
+#   }
+#   
+# }
+
+
+for(o in outputs) {
+  plot(linear_corr_by_experiment(middata, outputs[9], o))
+}
+
+
+
+```
+
+
+```{r remove-mid-data}
+
+rm(middata)
+
+```
+
