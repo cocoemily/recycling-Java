@@ -23,7 +23,7 @@ move_outputs = c("num.deposits", "total.encounters")
 scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
 
-#alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
+alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
 
 alldata = alldata[alldata$size != "size",]
 
@@ -84,7 +84,8 @@ linear_corr_by_experiment = function(data, output1, output2) {
   
   return(
     ggplot(data, aes_string(x =output1, y = output2, group = "gnum", color = "gnum"))+
-      geom_smooth(method = "lm", fullrange=T, se=F)
+      geom_smooth(method = "lm", fullrange=T, se=F) +
+      theme(legend.position = "none")
   )
   
 }
@@ -174,7 +175,7 @@ rm(enddata)
 ## Middle of model run analysis
 What is the resulting archaeological record look like in the middle of model run?
 
-```{r mid-result, eval=F}
+```{r mid-result, eval=T}
 
 midyear = alldata$start_year[1] + (alldata$timestep[1] * (alldata$total_steps[1]/2))
 
