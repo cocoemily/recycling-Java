@@ -133,10 +133,12 @@ output_table_by_param(parameters[12])
 output_table_by_param(parameters[13])
 
 
+#need to fix -- group_by is causing errors
+#consider data.table
 output_table_by_exp = function() {
   return(
     facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
-    filter(variable %in% outputs) %>% kbl(caption = paste("Missing output values for each experiment")) %>%
+    filter(n_miss != 0) %>% kbl(caption = paste("Missing output values for each experiment")) %>%
       kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
       )
 }
