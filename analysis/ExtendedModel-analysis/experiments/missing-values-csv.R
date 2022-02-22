@@ -17,4 +17,4 @@ facet_data = alldata[,c(parameters, outputs)]
 missing = facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
   filter(n_miss != 0)
 
-write.csv(missing, file = "missing-values-by-experiment.csv")
+write_csv(missing, file = "missing-values-by-experiment.csv")

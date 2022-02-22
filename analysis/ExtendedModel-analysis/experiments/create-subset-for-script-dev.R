@@ -33,5 +33,5 @@ for(row in 1:nrow(exp)) {
   
 }
 
-write.csv(subset, file = "exp-data-subset.csv")
+write_csv(subset, file = "exp-data-subset.csv")
 
