@@ -1,0 +1,37 @@
+library(tidyverse)
+
+alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
+alldata = alldata[alldata$size != "size",]
+alldata = alldata[!is.na(alldata$max_artifact_carry),]
+
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+
+exp = alldata %>% group_by_at(parameters) %>% 
+  filter(row_number() == 1) %>%
+  select_at(parameters)
+
+subset = data.frame()
+
+for(row in 1:nrow(exp)) {
+  oneexp = (alldata %>% filter(
+    !!as.name(parameters[1]) == as.numeric(exp[row, 1]) & 
+      !!as.name(parameters[2]) == as.numeric(exp[row, 2]) &
+      !!as.name(parameters[3]) == as.numeric(exp[row, 3]) &
+      !!as.name(parameters[4]) == as.numeric(exp[row, 4]) & 
+      !!as.name(parameters[5]) == as.numeric(exp[row, 5]) &
+      !!as.name(parameters[6]) == as.numeric(exp[row, 6]) &
+      !!as.name(parameters[7]) == as.numeric(exp[row, 7]) &
+      !!as.name(parameters[8]) == as.numeric(exp[row, 8]) &
+      !!as.name(parameters[9]) == as.numeric(exp[row, 9]) &
+      !!as.name(parameters[10]) == as.numeric(exp[row, 10]) &
+      !!as.name(parameters[11]) == as.numeric(exp[row, 11]) &
+      !!as.name(parameters[12]) == as.numeric(exp[row, 12]) &
+      !!as.name(parameters[13]) == as.numeric(exp[row, 13])
+  ))[1:3001,]
+  
+  subset = rbind(subset, oneexp)
+  
+}
+
+write.csv(subset, file = "exp-data-subset.csv")
+
