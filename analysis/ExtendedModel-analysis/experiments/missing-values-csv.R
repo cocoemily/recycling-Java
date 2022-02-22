@@ -8,9 +8,13 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
+alldata = alldata[alldata$size != "size",]
+
+alldata = alldata[!is.na(alldata$max_artifact_carry),]
+
 facet_data = alldata[,c(parameters, outputs)]
 
 missing = facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
   filter(n_miss != 0)
 
-save(missing, file = "missing-values-by-experiment.csv")
+write.csv(missing, file = "missing-values-by-experiment.csv")
