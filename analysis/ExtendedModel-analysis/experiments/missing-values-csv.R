@@ -18,3 +18,12 @@ missing = facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
   filter(n_miss != 0)
 
 write_csv(missing, file = "missing-values-by-experiment.csv")
+rm(missing)
+
+missing_time = facet_data %>% 
+  group_by_at(c(parameters, "model_year")) %>% 
+  miss_var_summary %>% 
+  filter(n_miss != 0)
+
+write_csv(missing_time, file = "missing-values-by-model-year.csv")
+rm(missing_time)
