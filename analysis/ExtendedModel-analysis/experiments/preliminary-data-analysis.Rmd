@@ -53,46 +53,55 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 plotNormalHistogram(alldata$total.RI)
 distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]$total.RI
 descdist(distRI, discrete=F)
+descdist(distRI, discrete=T)
 rm(distRI)
 
 plotNormalHistogram(alldata$total.CR)
 distCR = alldata[!is.na(alldata$total.CR) & !is.nan(alldata$total.CR),]$total.CR
 descdist(distCR, discrete=F)
+descdist(distCR, discrete=T)
 rm(distCR)
 
 plotNormalHistogram(alldata$num.scav.events)
 distSE = alldata[!is.na(alldata$num.scav.events) & !is.nan(alldata$num.scav.events),]$num.scav.events
 descdist(distSE, discrete=F)
+descdist(distSE, discrete=T)
 rm(distSE)
 
 plotNormalHistogram(alldata$total.recycled)
 distTR = alldata[!is.na(alldata$total.recycled) & !is.nan(alldata$total.recycled),]$total.recycled
 descdist(distTR, discrete=F)
+descdist(distTR, discrete=T)
 rm(distTR)
 
 plotNormalHistogram(alldata$num.deposits)
 distND = alldata[!is.na(alldata$num.deposits) & !is.nan(alldata$num.deposits),]$num.deposits
 descdist(distND, discrete=F)
+descdist(distND, discrete=T)
 rm(distND)
 
 plotNormalHistogram(alldata$total.encounters)
 distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]$total.encounters
 descdist(distTE, discrete=F)
+descdist(distTE, discrete=T)
 rm(distTE)
 
 plotNormalHistogram(alldata$total.discards)
 distTD = alldata[!is.na(alldata$total.discards) & !is.nan(alldata$total.discards),]$total.discards
 descdist(distTD, discrete=F)
+descdist(distTD, discrete=T)
 rm(distTD)
 
 plotNormalHistogram(alldata$total.manu.events)
 distME = alldata[!is.na(alldata$total.manu.events) & !is.nan(alldata$total.manu.events),]$total.manu.events
 descdist(distME, discrete=F)
+descdist(distME, discrete=T)
 rm(distME)
 
 plotNormalHistogram(alldata$total.retouches)
 distTR = alldata[!is.na(alldata$total.retouches) & !is.nan(alldata$total.retouches),]$total.retouches
 descdist(distTR, discrete=F)
+descdist(distTR, discrete=T)
 rm(distTR)
 
 ```
@@ -119,19 +128,19 @@ output_table_by_param = function(parameter) {
   )
 }
 
-output_table_by_param(parameters[1])
-output_table_by_param(parameters[2])
-output_table_by_param(parameters[3])
-output_table_by_param(parameters[4])
-output_table_by_param(parameters[5])
-output_table_by_param(parameters[6])
-output_table_by_param(parameters[7])
-output_table_by_param(parameters[8])
-output_table_by_param(parameters[9])
-output_table_by_param(parameters[10])
-output_table_by_param(parameters[11])
-output_table_by_param(parameters[12])
-output_table_by_param(parameters[13])
+# output_table_by_param(parameters[1])
+# output_table_by_param(parameters[2])
+# output_table_by_param(parameters[3])
+# output_table_by_param(parameters[4])
+# output_table_by_param(parameters[5])
+# output_table_by_param(parameters[6])
+# output_table_by_param(parameters[7])
+# output_table_by_param(parameters[8])
+# output_table_by_param(parameters[9])
+# output_table_by_param(parameters[10])
+# output_table_by_param(parameters[11])
+# output_table_by_param(parameters[12])
+# output_table_by_param(parameters[13])
 
 
 # output_table_by_exp = function() {
