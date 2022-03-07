@@ -8,28 +8,29 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 
 exp = alldata %>% group_by_at(parameters) %>% 
   filter(row_number() == 1) %>%
-  select_at(parameters)
+  select_at(parameters) %>%
+  filter(!is.na(max_use_intensity))
 
 subset = data.frame()
 
 for(row in 1:nrow(exp)) {
-  oneexp = (alldata %>% filter(
-    !!as.name(parameters[1]) == as.numeric(exp[row, 1]) & 
-      !!as.name(parameters[2]) == as.numeric(exp[row, 2]) &
-      !!as.name(parameters[3]) == as.numeric(exp[row, 3]) &
-      !!as.name(parameters[4]) == as.numeric(exp[row, 4]) & 
-      !!as.name(parameters[5]) == as.numeric(exp[row, 5]) &
-      !!as.name(parameters[6]) == as.numeric(exp[row, 6]) &
-      !!as.name(parameters[7]) == as.numeric(exp[row, 7]) &
-      !!as.name(parameters[8]) == as.numeric(exp[row, 8]) &
-      !!as.name(parameters[9]) == as.numeric(exp[row, 9]) &
-      !!as.name(parameters[10]) == as.numeric(exp[row, 10]) &
-      !!as.name(parameters[11]) == as.numeric(exp[row, 11]) &
-      !!as.name(parameters[12]) == as.numeric(exp[row, 12]) &
-      !!as.name(parameters[13]) == as.numeric(exp[row, 13])
-  ))[1:3001,]
+  oneexp = alldata[ which( 
+    alldata[parameters[1]] == as.numeric(exp[row, 1]) & 
+      alldata[parameters[2]] == as.numeric(exp[row, 2]) &
+      alldata[parameters[3]] == as.numeric(exp[row, 3]) &
+      alldata[parameters[4]]== as.numeric(exp[row, 4]) & 
+      alldata[parameters[5]] == as.numeric(exp[row, 5]) &
+      alldata[parameters[6]] == as.numeric(exp[row, 6]) &
+      alldata[parameters[7]] == as.numeric(exp[row, 7]) &
+      alldata[parameters[8]] == as.numeric(exp[row, 8]) &
+      alldata[parameters[9]] == as.numeric(exp[row, 9]) &
+      alldata[parameters[10]] == as.numeric(exp[row, 10]) &
+      alldata[parameters[11]] == as.numeric(exp[row, 11]) &
+      alldata[parameters[12]] == as.numeric(exp[row, 12]) &
+      alldata[parameters[13]] == as.numeric(exp[row, 13])
+  ),]
   
-  subset = rbind(subset, oneexp)
+  subset = rbind(subset, oneexp[1:3001,])
   
 }
 
