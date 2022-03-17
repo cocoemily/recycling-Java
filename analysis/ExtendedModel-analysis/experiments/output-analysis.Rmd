@@ -1,0 +1,281 @@
+---
+title: "Output Analysis"
+author: "Emily Coco"
+date: "2/7/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggpubr)
+library(betareg)
+library(lmtest)
+library(MASS)
+library(bbmle)
+library(pscl)
+
+
+theme_set(theme_minimal())
+
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+
+outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+
+move_outputs = c("num.deposits", "total.encounters")
+scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
+
+
+#alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
+
+alldata = alldata[alldata$size != "size",]
+
+alldata = alldata[!is.na(alldata$max_artifact_carry),]
+
+
+```
+
+```{r plot-functions, include=F}
+
+basic_scatter_plot = function(data, output1, output2) {
+  p1 = ggscatter(data, x = output1, y = output2, 
+                 add = "reg.line", conf.int = TRUE, 
+                 cor.coef = TRUE, cor.method = "spearman",
+                 xlab = output1, ylab = output2)
+  
+  return(p1)
+  
+}
+
+
+scatter_plots_by_parameter = function(data, output1, output2, parameters) {
+  splots = list()
+  listitem = 1
+  
+  for(p in parameters) {
+    if(o %in% move_outputs & p != "mu") {
+      pl = ggscatter(data, x = output1, y = output2,
+                     add = "reg.line", conf.int = TRUE,
+                     cor.coef = TRUE, cor.method = "spearman",
+                     xlab = output1, ylab = output2) +
+        facet_grid(reformulate(p, "mu"), labeller = label_both)
+    } else if(o %in% scavenge_outputs & p != "scavenge_prob") {
+      pl = ggscatter(data, x = output1, y = output2,
+                     add = "reg.line", conf.int = TRUE,
+                     cor.coef = TRUE, cor.method = "spearman",
+                     xlab = output1, ylab = output2) +
+        facet_grid(reformulate(p, "scavenge_prob"), labeller = label_both)
+    } else {
+      pl = ggscatter(data, x = output1, y = output2,
+                     add = "reg.line", conf.int = TRUE,
+                     cor.coef = TRUE, cor.method = "spearman",
+                     xlab = output1, ylab = output2) +
+        facet_grid(reformulate(p), labeller = label_both)
+    }
+    
+    
+    splots[[listitem]] = pl
+    listitem = listitem + 1
+    
+  }
+  return(splots)
+}
+
+linear_corr_by_experiment = function(data, output1, output2) {
+  data = data %>% group_by_at(parameters) %>%
+    mutate(gnum = as.factor(cur_group_id()))
+  
+  return(
+    ggplot(data, aes_string(x =output1, y = output2, group = "gnum", color = "gnum"))+
+      geom_smooth(method = "lm", fullrange=T, se=F) +
+      theme(legend.position = "none")
+  )
+  
+}
+
+
+
+```
+
+
+
+## Output regressions
+
+How do the different parameter values affect the output values?
+```{r output-regressions, eval=T}
+
+## total.RI -- beta regression
+distRI = (alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI)))[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]
+
+bRI = betareg(s.total.RI ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection , data=distRI)
+qqnorm(residuals(bRI, type = "sweighted2"))
+qqline(residuals(bRI, type = "sweighted2"))
+
+coeftest(bRI)
+
+rm(distRI, bRI)
+
+## total.CR -- beta regression
+distCR = (alldata %>% mutate(s.total.CR = ifelse(total.CR == 0, (total.CR + 0.0001), total.CR)) %>% mutate(s.total.CR = ifelse(s.total.CR == 1, (s.total.CR - 0.0001), s.total.CR)))[!is.na(alldata$total.CR) & !is.nan(alldata$total.CR),]
+
+bCR = betareg(s.total.CR ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection , data=distCR)
+qqnorm(residuals(bCR, type = "sweighted2"))
+qqline(residuals(bCR, type = "sweighted2"))
+
+coeftest(bCR)
+
+rm(distCR, bCR)
+
+## num.deposits -- poisson
+distND = alldata[!is.na(alldata$num.deposits) & !is.nan(alldata$num.deposits),]
+
+pND = glm(num.deposits ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, family = "poisson", data=distND)
+qqnorm(residuals(pND))
+qqline(residuals(pND))
+
+coeftest(pND)
+
+rm(distND, pND)
+
+## total.manu.events -- poisson
+distME = alldata[!is.na(alldata$total.manu.events) & !is.nan(alldata$total.manu.events),]
+
+pME = glm(total.manu.events ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, family = "poisson", data=distME)
+qqnorm(residuals(pME))
+qqline(residuals(pME))
+
+coeftest(pME)
+
+rm(distME, pME)
+
+
+## total.retouches -- negative binomial vs poisson
+distTR = alldata[!is.na(alldata$total.retouches) & !is.nan(alldata$total.retouches),]
+
+pTR = glm(total.retouches ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, family = "poisson", data=distTR)
+qqnorm(residuals(pTR))
+qqline(residuals(pTR))
+coeftest(pTR)
+
+nbTR = glm.nb(total.retouches ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTR)
+qqnorm(residuals(nbTR))
+qqline(residuals(nbTR))
+coeftest(nbTR)
+
+AICtab(pTR, nbTR, base = T, weights = T)
+
+rm(distTR, pTR, nbTR)
+
+
+## total.encounters -- uniform
+distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]
+
+nTE = lm(total.encounters ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTD)
+qqnorm(residuals(nTE))
+qqline(residuals(nTE))
+coeftest(nTE)
+
+rm(distTE, nTE)
+
+
+## total.discards -- zero inflated negative binomial
+distTD = alldata[!is.na(alldata$total.discards) & !is.nan(alldata$total.discards),]
+
+znbTD = zeroinfl(total.discards ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTD, dist = "negbin", EM = TRUE)
+qqnorm(residuals(znbTD))
+qqline(residuals(znbTD))
+coeftest(znbTD)
+
+nbTD = glm.nb(total.discards ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTD)
+qqnorm(residuals(nbTD))
+qqline(residuals(nbTD))
+coeftest(nbTD)
+
+AICtab(znbTD, nbTD, base = T, weights = T)
+
+rm(distTD, znbTD, nbTD)
+
+## num.scav.events -- zero inflated negative binomial
+distSE = alldata[!is.na(alldata$num.scav.events) & !is.nan(alldata$num.scav.events),]
+
+znbSE = zeroinfl(num.scav.events ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distSE, dist = "negbin", EM = TRUE)
+qqnorm(residuals(znbSE))
+qqline(residuals(znbSE))
+coeftest(znbTD)
+
+nbSE = glm.nb(num.scav.events ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distSE)
+qqnorm(residuals(nbSE))
+qqline(residuals(nbSE))
+coeftest(nbSE)
+
+AICtab(znbSE, nbSE, base = T, weights = T)
+
+rm(distSE, znbSE, nbSE)
+
+## total.recycled -- zero inflated negative binomial
+distTR = alldata[!is.na(alldata$total.recycled) & !is.nan(alldata$total.recycled),]
+
+znbTR = zeroinfl(total.recycled ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTR, dist = "negbin", EM = TRUE)
+qqnorm(residuals(znbTR))
+qqline(residuals(znbTR))
+coeftest(znbTR)
+
+nbTD = glm.nb(total.recycled ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTR)
+qqnorm(residuals(nbTR))
+qqline(residuals(nbTR))
+coeftest(nbTR)
+
+AICtab(znbTR, nbTR, base = T, weights = T)
+
+rm(distTR, znbTR, nbTR)
+
+
+```
+
+## End of model run analysis
+What is the resulting archaeological record look like at the last point in model run?
+
+How is recycling intensity correlated with the other output variables?
+```{r end-result, eval=F}
+
+endyear = alldata$start_year[1] + (alldata$timestep[1] * alldata$total_steps[1])
+
+enddata = alldata %>% filter(model_year == endyear) %>% filter(!is.na(total.RI))
+
+
+for(o in outputs) {
+  plot(basic_scatter_plot(enddata, outputs[9], o))
+}
+
+
+for(o in outputs) {
+  plot(linear_corr_by_experiment(enddata, outputs[9], o))
+}
+
+
+
+rm(enddata)
+```
+
+
+## Middle of model run analysis
+What is the resulting archaeological record look like in the middle of model run?
+
+```{r mid-result, eval=F}
+
+midyear = alldata$start_year[1] + (alldata$timestep[1] * (alldata$total_steps[1]/2))
+
+middata = alldata %>% filter(model_year == midyear) %>% filter(!is.na(total.RI))
+
+for(o in outputs) {
+  plot(basic_scatter_plot(middata, outputs[9], o))
+}
+
+for(o in outputs) {
+  plot(linear_corr_by_experiment(middata, outputs[9], o))
+}
+
+
+rm(middata)
+```
