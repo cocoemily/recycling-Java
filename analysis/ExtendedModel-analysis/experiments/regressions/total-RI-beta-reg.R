@@ -27,6 +27,7 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 ## total.RI -- beta regression
 distRI = (alldata %>% mutate(s.total.RI = ifelse(total.RI == 0, (total.RI + 0.0001), total.RI)) %>% mutate(s.total.RI = ifelse(s.total.RI == 1, (s.total.RI - 0.0001), s.total.RI)))[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]
+rm(alldata)
 
 bRI = betareg(s.total.RI ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection , data=distRI)
 

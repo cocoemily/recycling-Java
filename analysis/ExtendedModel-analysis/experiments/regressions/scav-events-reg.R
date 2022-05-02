@@ -27,6 +27,7 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 ## num.scav.events -- zero inflated negative binomial vs negative binomial
 distSE = alldata[!is.na(alldata$num.scav.events) & !is.nan(alldata$num.scav.events),]
+rm(alldata)
 
 znbSE = zeroinfl(num.scav.events ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distSE, dist = "negbin")
 

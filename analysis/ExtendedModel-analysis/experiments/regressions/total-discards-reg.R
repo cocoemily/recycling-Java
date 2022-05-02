@@ -27,6 +27,7 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 ## total.discards -- zero inflated negative binomial
 distTD = alldata[!is.na(alldata$total.discards) & !is.nan(alldata$total.discards),]
+rm(alldata)
 
 znbTD = zeroinfl(total.discards ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTD, dist = "negbin")
 
