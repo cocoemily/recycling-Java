@@ -28,7 +28,7 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 ## total.encounters -- uniform
 distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]
 
-nTE = lm(total.encounters ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTD)
+nTE = lm(total.encounters ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTE)
 
 png(filename = "total-encounters-linear-reg.png")
 qqnorm(residuals(nTE))
