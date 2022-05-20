@@ -7,7 +7,7 @@ theme_set(theme_minimal())
 alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
 #alldata = readr::read_csv("~/eclipse-workspace/recycling-Java/output/ss_model_data.csv")
 
-parameters = readr::read_csv("../run-scripts/ExtendedModel-model-runs/parameters.csv")
+parameters = readr::read_csv("/scratch/ec3307/recycling-Java//run-scripts/ExtendedModel-model-runs/parameters.csv")
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
 alldata = alldata[alldata$size != "size",]
