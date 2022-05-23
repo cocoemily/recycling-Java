@@ -7,7 +7,9 @@ theme_set(theme_minimal())
 alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
 #alldata = readr::read_csv("~/eclipse-workspace/recycling-Java/output/ss_model_data.csv")
 
-parameters = readr::read_csv("/scratch/ec3307/recycling-Java//run-scripts/ExtendedModel-model-runs/parameters.csv")
+#parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+parameters = readr::read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
 alldata = alldata[alldata$size != "size",]
@@ -18,12 +20,14 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 start = 1
 end = 3001
 step = 3001
-allseq = alldata[0, c("model_year", outputs)] %>% mutate(exp = "none")
+allseq = alldata[0, c("model_year", outputs)]
+allseq$exp = NA
 
 for(i in 1:12096) {
   for(j in 1:50) {
     
-    oneexp = alldata[start:end,c("model_year", outputs)] %>% mutate(exp = paste0(i, "_", j))
+    oneexp = alldata[start:end,c("model_year", outputs)]
+    oneexp$exp = paste0(i, "_", j)
     
     allseq = rbind(allseq, oneexp)
     
@@ -63,7 +67,6 @@ sequence_psi = function(seq.dataset) {
     paired.samples = TRUE,
     transformation = "scale"
   )
-  
   psi = workflowPsi(
     sequences = as.data.frame(seq.dataset),
     grouping.column = "exp",
@@ -87,16 +90,17 @@ sequence_psi = function(seq.dataset) {
   return(mod.psi)
 }
 
-plot_psi_values = function(seq.dataset, name) {
-  mod.psi = sequence_psi(seq.dataset)
-  
-  ggplot(data=na.omit(mod.psi), aes(x=exp_A, y=exp_B, fill=psi)) + 
+#plotting dissimilarity scores
+plot_mod_psi = function(mod.psi, title) {
+  plot = ggplot(data=na.omit(mod.psi), aes(x=exp_A, y=exp_B, fill=psi)) + 
     geom_tile() +
     viridis::scale_fill_viridis(direction = -1) +
     guides(size = "none") +
     scale_x_continuous("exp_A", labels = as.character(mod.psi$exp_A), breaks = mod.psi$exp_A)+
     scale_y_continuous("exp_B", labels = as.character(mod.psi$exp_B), breaks = mod.psi$exp_B) +
-    ggtitle(name)
+    ggtitle(title)
+  
+  return(plot)
 }
 
 
