@@ -37,14 +37,13 @@ exp = alldata %>% group_by_at(parameters) %>%
 #   
 # }
 # 
-# write_csv(subset, file = "exp-data-subset.csv")
+# write_csv(subset, file = "/scratch/ec3307/recycling-Java/output/exp-data-subset.csv")
 
 
 ##CREATE LAYERS DATA SUBSET
 rm(alldata)
 
-layerdata = 
-readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_layers_data.csv", locale = locale(encoding = "ASCII"))
+layerdata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_layers_data.csv", locale = locale(encoding = "ASCII"))
 layerdata = layerdata[layerdata$size != "size",]
 layerdata = layerdata[!is.na(layerdata$max_artifact_carry),]
 
@@ -71,4 +70,4 @@ for(row in 1:nrow(exp)) {
   
 }
 
-write_csv(subset, file = "layer-data-subset.csv")
+write_csv(subset, file = "/scratch/ec3307/recycling-Java/output/layer-data-subset.csv")
