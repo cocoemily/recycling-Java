@@ -79,42 +79,42 @@ plot_psi_values = function(mod.psi, title) {
 # aseq.CR = allseq %>% select(model_year, exp, total.CR)
 # aseq.RI = allseq %>% select(model_year, exp, total.RI)
 
-# psi = sequence_psi(allseq %>% select(model_year, exp, num.scav.events))
-# psi = sequence_psi(allseq %>% select(model_year, exp, total.recycled))
-# psi = sequence_psi(allseq %>% select(model_year, exp, num.deposits))
-# psi = sequence_psi(allseq %>% select(model_year, exp, total.encounters))
-# psi = sequence_psi(allseq %>% select(model_year, exp, total.discards))
-# psi = sequence_psi(allseq %>% select(model_year, exp, total.manu.events))
-# psi = sequence_psi(allseq %>% select(model_year, exp, total.retouches))
-# psi = sequence_psi(allseq %>% select(model_year, exp, total.CR))
-# psi = sequence_psi(allseq %>% select(model_year, exp, total.RI))
+psi.NSE = sequence_psi(allseq %>% select(model_year, exp, num.scav.events))
+# psi.TR = sequence_psi(allseq %>% select(model_year, exp, total.recycled))
+# psi.ND = sequence_psi(allseq %>% select(model_year, exp, num.deposits))
+# psi.TE = sequence_psi(allseq %>% select(model_year, exp, total.encounters))
+# psi.TD = sequence_psi(allseq %>% select(model_year, exp, total.discards))
+# psi.TME = sequence_psi(allseq %>% select(model_year, exp, total.manu.events))
+# psi.TR = sequence_psi(allseq %>% select(model_year, exp, total.retouches))
+# psi.CR = sequence_psi(allseq %>% select(model_year, exp, total.CR))
+# psi.RI = sequence_psi(allseq %>% select(model_year, exp, total.RI))
 
 ggsave("psi_num-scav-events.png", 
-       plot = plot_psi_values((allseq %>% select(model_year, exp, num.scav.events)), "Number of scavenging events"), 
+       plot = plot_psi_values(psi.NSE, "Number of scavenging events"), 
        dpi = 300, height = 7, width = 7)
 # ggsave("psi_total-recycled.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, total.recycled)), "Number of recycled objects"), 
+#        plot = plot_psi_values(psi.TR, "Number of recycled objects"), 
 #        dpi = 300, height = 7, width = 7)
 # ggsave("psi_num-desposits.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, num.deposits)), "Number of assemblages"), 
+#        plot = plot_psi_values(psi.ND, "Number of assemblages"), 
 #        dpi = 300, height = 7, width = 7)
 # ggsave("psi_total-encounters.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, total.encounters)), "Number of encounters with grid squares"), 
+#        plot = plot_psi_values(psi.TE, "Number of encounters with grid squares"), 
 #        dpi = 300, height = 7, width = 7)
 # ggsave("psi_total-discards.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, total.discards)), "Number of discard events"), 
+#        plot = plot_psi_values(psi.TD, "Number of discard events"), 
 #        dpi = 300, height = 7, width = 7)
 # ggsave("psi_total-manu-events.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, total.manu.events)), "Number of manufacturing events"), 
+#        plot = plot_psi_values(psi.TME, "Number of manufacturing events"), 
 #        dpi = 300, height = 7, width = 7)
 # ggsave("psi_total-retouches.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, total.retouches)), "Number of retouch events"), 
+#        plot = plot_psi_values(psi.TR, "Number of retouch events"), 
 #        dpi = 300, height = 7, width = 7)
 # ggsave("psi_total-CR.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, total.CR)), "Cortex ratio values"), 
+#        plot = plot_psi_values(psi.CR, "Cortex ratio values"), 
 #        dpi = 300, height = 7, width = 7)
 # ggsave("psi_total-RI.png", 
-#        plot = plot_psi_values((allseq %>% select(model_year, exp, total.RI)), "Recycling intensity values"), 
+#        plot = plot_psi_values(psi.RI, "Recycling intensity values"), 
 #        dpi = 300, height = 7, width = 7)
 
 
