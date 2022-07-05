@@ -56,7 +56,7 @@ sequence_psi = function(seq.dataset) {
 }
 
 #plotting dissimilarity scores
-plot_mod_psi = function(mod.psi, title) {
+plot_psi_values = function(mod.psi, title) {
   plot = ggplot(data=na.omit(mod.psi), aes(x=exp_A, y=exp_B, fill=psi)) + 
     geom_tile() +
     viridis::scale_fill_viridis(direction = -1) +
