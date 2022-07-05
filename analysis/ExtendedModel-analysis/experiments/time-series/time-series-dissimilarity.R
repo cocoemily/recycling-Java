@@ -4,7 +4,7 @@ library(lmtest)
 
 theme_set(theme_minimal())
 
-readRDS("/scratch/ec3307/recycling-Java/analysis/ExtendedModel-analysis/experiments/time-series/allseq_ts.rds")
+allseq = readRDS("/scratch/ec3307/recycling-Java/analysis/ExtendedModel-analysis/experiments/time-series/allseq_ts.rds")
 
 #functions for comparing all sequences
 sequence_distances = function(seq.dataset) {
