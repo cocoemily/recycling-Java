@@ -16,7 +16,8 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 #   filter(!is.na(max_use_intensity))
 
 allruns = alldata[which(alldata$model_year == 500000),]
-exp2 = distinct(allruns[parameters])
+exp = distinct(allruns[parameters])
+print(nrow(exp2))
 
 #this gives all of the unique combinations of all of the parameters
 #but not all combinations are tested in my model
@@ -133,6 +134,7 @@ for(row in 1:nrow(exp)) {
       row, 
       modelyears[year]
     )
+    print(var)
     
     allvar[nrow(allvar) + 1, ] <- var
   }
