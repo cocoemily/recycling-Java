@@ -25,8 +25,10 @@ allseq = alldata[0, c("model_year", outputs)]
 allseq$exp = NA
 
 for(i in 1:12096) {
-  for(j in 1:50) {
-  
+  print(paste("experiment # ",i))
+  for(j in 1:2) {  
+  print(paste("run # ",j))
+ 
   oneexp = alldata[start:end,c("model_year", outputs)]
   oneexp$exp = paste0(i, "_", j)
   

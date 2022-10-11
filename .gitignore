@@ -6,7 +6,6 @@ run-scripts/OriginalModel/
 run-scripts/ExtendedModel-sensitivity/slurm*
 run-scripts/ExtendedModel-sensitivity/*.sbatch
 run-scripts/ExtendedModel-model-runs/slurm*
-run-scripts/ExtendedModel-model-runs/*.sbatch
 
 **/.DS_Store
 

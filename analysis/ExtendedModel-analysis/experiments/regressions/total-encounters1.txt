@@ -1,0 +1,135 @@
+> library(rmarkdown)
+> library(tidyverse)
+-- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+v ggplot2 3.3.5     v purrr   0.3.4
+v tibble  3.1.2     v dplyr   1.0.7
+v tidyr   1.1.3     v stringr 1.4.0
+v readr   1.4.0     v forcats 0.5.1
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Warning messages:
+1: replacing previous import 'lifecycle::last_warnings' by 'rlang::last_warnings' when loading 'pillar' 
+2: replacing previous import 'lifecycle::last_warnings' by 'rlang::last_warnings' when loading 'tibble' 
+3: replacing previous import 'lifecycle::last_warnings' by 'rlang::last_warnings' when loading 'hms' 
+> library(data.table)
+
+Attaching package: 'data.table'
+
+The following objects are masked from 'package:dplyr':
+
+    between, first, last
+
+The following object is masked from 'package:purrr':
+
+    transpose
+
+> library(readr)
+> library(ggpubr)
+> library(betareg)
+> library(lmtest)
+Loading required package: zoo
+
+Attaching package: 'zoo'
+
+The following objects are masked from 'package:base':
+
+    as.Date, as.Date.numeric
+
+> library(MASS)
+
+Attaching package: 'MASS'
+
+The following object is masked from 'package:dplyr':
+
+    select
+
+> library(bbmle)
+Loading required package: stats4
+
+Attaching package: 'bbmle'
+
+The following object is masked from 'package:dplyr':
+
+    slice
+
+> library(pscl)
+Classes and Methods for R developed in the
+Political Science Computational Laboratory
+Department of Political Science
+Stanford University
+Simon Jackman
+hurdle and zeroinfl functions by Achim Zeileis
+> 
+> alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
+
+-- Column specification --------------------------------------------------------
+cols(
+  .default = col_double(),
+  size_preference = col_logical(),
+  flake_preference = col_logical(),
+  strict_selection = col_logical()
+)
+i Use `spec()` for the full column specifications.
+
+Warning: 362850 parsing failures.
+   row                col expected             actual                                                          file
+150051 size               a double size               '/scratch/ec3307/recycling-Java/output/joined_model_data.csv'
+150051 start_year         a double start_year         '/scratch/ec3307/recycling-Java/output/joined_model_data.csv'
+150051 timestep           a double timestep           '/scratch/ec3307/recycling-Java/output/joined_model_data.csv'
+150051 max_use_intensity  a double max_use_intensity  '/scratch/ec3307/recycling-Java/output/joined_model_data.csv'
+150051 max_artifact_carry a double max_artifact_carry '/scratch/ec3307/recycling-Java/output/joined_model_data.csv'
+...... .................. ........ .................. .............................................................
+See problems(...) for more details.
+
+> 
+> parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+> 
+> outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+> 
+> move_outputs = c("num.deposits", "total.encounters")
+> scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
+> 
+> 
+> #alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
+> 
+> alldata = alldata[alldata$size != "size",]
+> 
+> alldata = alldata[!is.na(alldata$max_artifact_carry),]
+> 
+> ## total.encounters -- uniform
+> distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]
+> 
+> nTE = lm(total.encounters ~ model_year + max_use_intensity  + max_artifact_carry + max_flake_size + max_nodules_size + blank_prob + scavenge_prob + overlap + mu + size_preference + flake_preference + min_suitable_flake_size + min_suitable_nodule_size + strict_selection, data = distTE)
+> 
+> png(filename = "total-encounters-linear-reg.png")
+> qqnorm(residuals(nTE))
+> qqline(residuals(nTE))
+> dev.off()
+null device 
+          1 
+> 
+> coeftest(nTE)
+
+t test of coefficients:
+
+                            Estimate  Std. Error     t value  Pr(>|t|)    
+(Intercept)               4.0649e+03  1.3820e-02  2.9413e+05 < 2.2e-16 ***
+model_year               -8.5454e-03  1.5476e-08 -5.5217e+05 < 2.2e-16 ***
+max_use_intensity        -1.3584e-03  1.7876e-04 -7.5989e+00 2.988e-14 ***
+max_artifact_carry       -2.6341e-03  2.6814e-04 -9.8233e+00 < 2.2e-16 ***
+max_flake_size           -3.3547e-02  3.4574e-03 -9.7029e+00 < 2.2e-16 ***
+max_nodules_size          3.5427e-03  2.8963e-04  1.2232e+01 < 2.2e-16 ***
+blank_prob               -4.3365e-02  6.5682e-03 -6.6024e+00 4.047e-11 ***
+scavenge_prob             4.5440e-02  6.5682e-03  6.9182e+00 4.574e-12 ***
+overlap                  -4.9153e-02  2.6814e-03 -1.8331e+01 < 2.2e-16 ***
+mu                        1.0439e+02  1.6420e-03  6.3570e+04 < 2.2e-16 ***
+size_preferenceTRUE      -2.8987e-02  4.4635e-03 -6.4941e+00 8.351e-11 ***
+flake_preferenceTRUE      2.7204e-02  2.6814e-03  1.0145e+01 < 2.2e-16 ***
+min_suitable_flake_size   2.3932e-02  3.4574e-03  6.9219e+00 4.456e-12 ***
+min_suitable_nodule_size  2.8935e-03  5.7926e-04  4.9951e+00 5.880e-07 ***
+strict_selectionTRUE     -1.0444e-03  2.6814e-03 -3.8950e-01    0.6969    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+> 
