@@ -33,32 +33,36 @@ for(f in files) {
   
   mid_data = data[which(data$model_year == 350000), ]
   end_data = data[which(data$model_year == 200000), ]
-  
-  # hist(mid_data$initial_discard)
-  # hist(end_data$initial_discard)
-  # #suggest constant rates of discard
-  
-  # table(mid_data$obj_type, mid_data$recycled)
-  # table(end_data$obj_type, end_data$recycled)
-  
+
   #statistical differences between initial discard of recycled and non-recycled objects
   rcycl.mid = mid_data[which(mid_data$recycled == T), ]
   nrcycl.mid = mid_data[which(mid_data$recycled == F), ]
-  midresults = wilcox.test(rcycl.mid$initial_discard,
-                           nrcycl.mid$initial_discard,
-                           alternative = "greater")
   
-  #print(midresults$p.value)
-  mid.conf.val = ifelse(midresults$p.value < 0.05, TRUE, FALSE)
+  mid.con.val = NULL
+  
+  if(nrow(rcycl.mid) != 0 && nrow(nrcycl.mid) != 0) {
+    midresults = wilcox.test(rcycl.mid$initial_discard,
+                             nrcycl.mid$initial_discard,
+                             alternative = "greater")
+    
+    #print(midresults$p.value)
+    mid.conf.val = ifelse(midresults$p.value < 0.05, TRUE, FALSE)
+  }
   
   rcycl.end = end_data[which(end_data$recycled == T), ]
   nrcycl.end = end_data[which(end_data$recycled == F), ]
-  endresults = wilcox.test(rcycl.end$initial_discard,
-                           nrcycl.end$initial_discard,
-                           alternative = "greater")
   
-  #print(endresults$p.value)
-  end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
+  end.conf.val = NULL
+  
+  if(nrow(rcycl.end) != 0 && nrow(nrcycl.mid) != 0) {
+    endresults = wilcox.test(rcycl.end$initial_discard,
+                             nrcycl.end$initial_discard,
+                             alternative = "greater")
+    
+    #print(endresults$p.value)
+    end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
+    
+  }
   
   exposure_results[nrow(exposure_results) + 1, ] = c(exp_values[1,], mid.conf.val, end.conf.val)
   
