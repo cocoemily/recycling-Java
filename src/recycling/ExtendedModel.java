@@ -434,7 +434,11 @@ public class ExtendedModel {
 		int index = (int) (Math.random() * agent.getAgentNodules().size());
 		if(agent.getAgentNodules().get(index).getFlakes().size() != 0) {
 			Flake f = agent.getAgentNodules().get(index).removeFlake(agent);
+			f.addGroup(agent.getGroup());
+			f.addTech(agent.getTech());
 			agent.collectFlake(f);
+			agent.getAgentNodules().get(index).addGroup(agent.getGroup());
+			agent.getAgentArtifacts().get(index).addTech(agent.getTech());
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().manufactured();
 		}
 	}
