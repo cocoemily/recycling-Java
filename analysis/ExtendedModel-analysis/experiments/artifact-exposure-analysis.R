@@ -13,7 +13,7 @@ param_list = param_list[, c("exp", parameters)]
 
 
 #files = list.files("../output/test-artifact-data/")
-files = list.files("/archive/ec3307/recycling-archive/artifact-data/")
+files = list.files("/scratch/ec3307/recycling-Java/output/artifact-data/")
 
 exposure_results = param_list
 exposure_results$mid.exps.confirm = FALSE
@@ -25,7 +25,7 @@ for(f in files) {
   expnum = str_extract(f, "[0-9]+")
   
   #data = read_csv(paste0("../output/test-artifact-data/", f))
-  data = read_csv(paste0("/archive/ec3307/recycling-archive/artifact-data/", files[1]))
+  data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", f))
   
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
   
