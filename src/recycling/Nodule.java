@@ -17,6 +17,8 @@ public class Nodule {
 	private ArrayList<Integer> groups;
 	private ArrayList<Integer> techs;
 	
+	private boolean recycled;
+	
 	private int discardYear;
 	
 	
@@ -42,6 +44,7 @@ public class Nodule {
 			
 		}
 		
+		this.recycled = false;
 		this.discardYear = 0;
 	}
 	
@@ -87,6 +90,14 @@ public class Nodule {
 		} else {
 			return this.techs.get(this.techs.size()-1);
 		}
+	}
+	
+	public void setRecycled() {
+		this.recycled = true;
+	}
+	
+	public boolean checkWasRecycled() {
+		return this.recycled;
 	}
 	
 	public Flake removeFlake(Agent a) {

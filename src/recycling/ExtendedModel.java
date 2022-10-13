@@ -436,9 +436,18 @@ public class ExtendedModel {
 			Flake f = agent.getAgentNodules().get(index).removeFlake(agent);
 			f.addGroup(agent.getGroup());
 			f.addTech(agent.getTech());
+			if(f.getFirstTech() != f.getLastTech()) {
+				f.setRecycled();
+			}
+			
 			agent.collectFlake(f);
+			
 			agent.getAgentNodules().get(index).addGroup(agent.getGroup());
 			agent.getAgentArtifacts().get(index).addTech(agent.getTech());
+			if(agent.getAgentNodules().get(index).getFirstTech() != agent.getAgentNodules().get(index).getLastTech()) {
+				agent.getAgentNodules().get(index).setRecycled();
+			}
+			
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().manufactured();
 		}
 	}
@@ -704,8 +713,9 @@ public class ExtendedModel {
 							}
 						}
 						for(int n=0; n < layers.get(l).getNodules().size(); n++) {
-							Set<Integer> uniqueGroups = new HashSet<Integer>(layers.get(l).getNodules().get(n).getGroups());
-							if(uniqueGroups.size() > 1) {
+							//Set<Integer> uniqueGroups = new HashSet<Integer>(layers.get(l).getNodules().get(n).getGroups());
+							//if(uniqueGroups.size() > 1) {
+							if(layers.get(l).getNodules().get(n).checkWasRecycled()) {
 								recycledItems += 1;
 							}
 						}
@@ -736,7 +746,7 @@ public class ExtendedModel {
 							for(int y=0; y<nods.get(n).getFlakes().size(); y++) {
 								fleft += nods.get(n).getFlakes().get(y).getSize();
 							}
-							boolean nodRecycled = nods.get(n).getFirstTech() != nods.get(n).getLastTech();
+							//boolean nodRecycled = nods.get(n).getFirstTech() != nods.get(n).getLastTech();
 
 							toAddData.append(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
 									+ "nodule" + ","                                    //obj_type
@@ -748,7 +758,7 @@ public class ExtendedModel {
 									+ nods.get(n).getGroups().size() + ","				//numgroups
 									+ nods.get(n).getFirstTech() + ","					//first_tech
 									+ nods.get(n).getLastTech() + "," 					//last_tech
-									+ nodRecycled + "\n"									//recycled
+									+ nods.get(n).checkWasRecycled() + "\n"				//recycled
 									);
 
 						}
@@ -857,7 +867,7 @@ public class ExtendedModel {
 					//counter for recycled nodules
 					ArrayList<Nodule> nods = layer.getNodules();
 					for(int n=0; n<nods.size(); n++) {
-						if(nods.get(n).getFirstTech() != nods.get(n).getLastTech()){
+						if(nods.get(n).checkWasRecycled()){
 							totalRecycledItems++;
 						}
 					}
