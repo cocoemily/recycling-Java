@@ -443,7 +443,7 @@ public class ExtendedModel {
 			agent.collectFlake(f);
 			
 			agent.getAgentNodules().get(index).addGroup(agent.getGroup());
-			agent.getAgentArtifacts().get(index).addTech(agent.getTech());
+			agent.getAgentNodules().get(index).addTech(agent.getTech());
 			if(agent.getAgentNodules().get(index).getFirstTech() != agent.getAgentNodules().get(index).getLastTech()) {
 				agent.getAgentNodules().get(index).setRecycled();
 			}
