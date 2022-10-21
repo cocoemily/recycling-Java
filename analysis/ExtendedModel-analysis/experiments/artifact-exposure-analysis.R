@@ -1,7 +1,13 @@
-#something with artifacts
+#testing artifact exposure time for recycled and non-recycled artifacs
+
+##NEED TO FIGURE OUT A WAY TO MAKE THIS VIA PARALLEL PROCESSING ON HPC
+
 library(tidyverse)
 # library(fitdistrplus)
 # library(rcompanion)
+library(parallel)
+library(foreach)
+library(doParallel)
 
 #param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
@@ -21,10 +27,12 @@ exposure_results$end.exps.confirm = FALSE
 
 exposure_results = exposure_results[0,]
 
-for(f in files) {
+numCores = detectCores()
+
+foreach (f=1:length(files)) %dopar% {
   expnum = str_extract(f, "[0-9]+")
   
-  #data = read_csv(paste0("../output/test-artifact-data/", f))
+  #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
   data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", f))
   
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
