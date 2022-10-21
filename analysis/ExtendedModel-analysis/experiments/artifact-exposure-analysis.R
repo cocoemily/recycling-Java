@@ -27,15 +27,20 @@ exposure_results$end.exps.confirm = FALSE
 
 exposure_results = exposure_results[0,]
 
-numCores = detectCores()
-print(numCores)
-registerDoParallel(numCores)
+if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
+  ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
+} else {
+ ncores <- detectCores()
+}
+registerDoParallel(ncores)
+Sys.setenv(OMP_NUM_THREADS = "1")
+
 
 foreach (f=1:length(files)) %dopar% {
   expnum = str_extract(f, "[0-9]+")
   
   #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
-  data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]))
+  data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]), num_threads=1)
   
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
   

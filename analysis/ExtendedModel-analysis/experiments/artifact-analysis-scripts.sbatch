@@ -1,11 +1,11 @@
 #!/bin/bash
 #
 #SBATCH --job-name=a-analysis
-#SBATCH --nodes=2
-#SBATCH --tasks-per-node=5
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=5GB
-#SBATCH --time=48:00:00
+#SBATCH --nodes=1
+#SBATCH --tasks-per-node=1
+#SBATCH --cpus-per-task=31
+#SBATCH --mem=10GB
+#SBATCH --time=47:00:00
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ec3307@nyu.edu
 
