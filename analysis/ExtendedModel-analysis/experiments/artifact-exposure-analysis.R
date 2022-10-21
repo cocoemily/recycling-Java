@@ -27,6 +27,7 @@ if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
 } else {
  ncores <- detectCores()
 }
+print(ncores)
 registerDoParallel(ncores)
 Sys.setenv(OMP_NUM_THREADS = "1")
 
@@ -76,7 +77,7 @@ foreach (f=1:length(files)) %dopar% {
   
   exposure_results = data.frame(exp_values[1,], mid.conf.val, end.conf.val)
   filename = str_split(files[f], "_")[[1]][1]
-  write_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_results.csv"), num_threads=1)
+  write_csv(exposure_results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_results.csv"), num_threads=1)
   
 }
 
