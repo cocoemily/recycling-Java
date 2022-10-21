@@ -28,12 +28,14 @@ exposure_results$end.exps.confirm = FALSE
 exposure_results = exposure_results[0,]
 
 numCores = detectCores()
+print(numCores)
+registerDoParallel(numCores)
 
 foreach (f=1:length(files)) %dopar% {
   expnum = str_extract(f, "[0-9]+")
   
   #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
-  data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", f))
+  data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]))
   
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
   
