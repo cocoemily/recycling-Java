@@ -21,11 +21,6 @@ param_list = param_list[, c("exp", parameters)]
 #files = list.files("../output/test-artifact-data/")
 files = list.files("/scratch/ec3307/recycling-Java/output/artifact-data/")
 
-exposure_results = param_list
-exposure_results$mid.exps.confirm = FALSE
-exposure_results$end.exps.confirm = FALSE
-
-exposure_results = exposure_results[0,]
 
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
   ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
@@ -79,9 +74,9 @@ foreach (f=1:length(files)) %dopar% {
     
   }
   
-  exposure_results[nrow(exposure_results) + 1, ] = c(exp_values[1,], mid.conf.val, end.conf.val)
+  exposure_results = data.frame(exp_values[1,], mid.conf.val, end.conf.val)
+  filename = str_split(files[f], "_")[[1]][1]
+  write_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_results.csv"), num_threads=1)
   
 }
-
-write_csv(exposure_results, file = 'artifact-exposure-results.csv')
 
