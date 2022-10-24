@@ -35,6 +35,7 @@ foreach (f=1:length(files)) %dopar% {
   
   #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
   data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]), num_threads=1)
+  print(files[f])
   
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
   
