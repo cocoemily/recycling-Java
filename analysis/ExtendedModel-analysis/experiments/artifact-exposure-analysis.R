@@ -18,6 +18,7 @@ param_list = param_list[, c("exp", parameters)]
 
 #files = list.files("../output/test-artifact-data/")
 files = list.files("/scratch/ec3307/recycling-Java/output/artifact-data/")
+files = files[-length(files)]
 
 
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
