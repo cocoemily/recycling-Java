@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
 #SBATCH --mem=2000GB
-#SBATCH --time=48:00:00
+#SBATCH --time=47:00:00
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ec3307@nyu.edu
 
