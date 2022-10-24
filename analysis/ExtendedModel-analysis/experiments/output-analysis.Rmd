@@ -18,6 +18,9 @@ library(pscl)
 library(corrplot)
 library(reshape2)
 library(ggthemes)
+library(naniar)
+library(rcompanion)
+library(fitdistrplus)
 
 
 theme_set(theme_minimal())
@@ -30,7 +33,7 @@ move_outputs = c("num.deposits", "total.encounters")
 scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
 
-#alldata = read_csv("~/eclipse-workspace/recycling-Java/output/subset_model_data.csv")
+alldata = read_csv("~/eclipse-workspace/recycling-Java/output/subset_model_data.csv")
 
 alldata = alldata[alldata$size != "size",]
 
@@ -41,6 +44,29 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 ```{r plot-functions, include=F}
 
+
+```
+
+```{r missing-values-analysis, eval=F}
+facet_data = alldata[,c(parameters, outputs)]
+
+missing_exp = facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
+  filter(n_miss != 0)
+rm(missing_exp)
+miss.RI.val = missing_exp[which(missing_exp$variable == "total.RI"),-14]
+write_csv(miss.RI.val, file = "missing-RI-values-by-experiment.csv")
+
+descdist(miss.RI.val$pct_miss, discrete=F)
+
+brall = betareg::betareg(pct_miss ~ ., data = miss.RI.val[,-14])
+qqnorm(residuals(brall, type = "sweighted2"))
+qqline(residuals(brall, type = "sweighted2"))
+summary(brall)
+
+# missing_time = alldata %>% 
+#   group_by_at(c(parameters, "model_year")) %>% 
+#   miss_var_summary %>% 
+#   filter(n_miss != 0)
 
 ```
 
@@ -118,17 +144,21 @@ for(i in unique(alldata$model_year)){
 cor.time = do.call('rbind', cor.list)
 rm(cor.list)
 cor.time$signf.val = ifelse(cor.time$signf < 0.05, "signf.", "not signf.")
-rm(cor.time)
 plot.cor.time = cor.time[which(!is.na(cor.time$signf.val)),]
+plot.cor.time = plot.cor.time[which(plot.cor.time$output1 != plot.cor.time$output2),]
+rm(cor.time)
 
 ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
   geom_point(size = 0.1) +
   #geom_smooth(se = F) +
   facet_grid(output1 ~ output2) +
   scale_x_reverse(breaks = c(500000, midyear, endyear)) +
-  theme(axis.text.x = element_text(angle = 90), 
+  theme(axis.text.x = element_text(angle = 90, size = 3),
         strip.text = element_text(size = 5),
-        strip.text.y = element_text(angle = 360)) +
+        strip.text.y = element_text(angle = 360), 
+        strip.text.x = element_text(angle = 45), 
+        legend.title = element_blank()) +
+  labs(x = "model year") +
   scale_color_colorblind()
 
 ```
