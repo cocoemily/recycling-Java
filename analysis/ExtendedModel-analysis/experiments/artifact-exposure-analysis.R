@@ -49,7 +49,7 @@ foreach (f=1:length(files)) %dopar% {
   rcycl.mid = mid_data[which(mid_data$recycled == T), ]
   nrcycl.mid = mid_data[which(mid_data$recycled == F), ]
   
-  mid.con.val = NULL
+  mid.conf.val = NULL
   
   if(nrow(rcycl.mid) != 0 && nrow(nrcycl.mid) != 0) {
     midresults = wilcox.test(rcycl.mid$initial_discard,
