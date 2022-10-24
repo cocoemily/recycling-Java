@@ -1,7 +1,5 @@
 #testing artifact exposure time for recycled and non-recycled artifacs
 
-##NEED TO FIGURE OUT A WAY TO MAKE THIS VIA PARALLEL PROCESSING ON HPC
-
 library(tidyverse)
 # library(fitdistrplus)
 # library(rcompanion)
@@ -33,7 +31,7 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 
 
 foreach (f=1:length(files)) %dopar% {
-  expnum = str_extract(f, "[0-9]+")
+  expnum = str_extract(files[f], "[0-9]+")
   
   #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
   data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]), num_threads=1)
@@ -56,7 +54,7 @@ foreach (f=1:length(files)) %dopar% {
                              nrcycl.mid$initial_discard,
                              alternative = "greater")
     
-    #print(midresults$p.value)
+    print(midresults$p.value)
     mid.conf.val = ifelse(midresults$p.value < 0.05, TRUE, FALSE)
   }
   
@@ -70,7 +68,7 @@ foreach (f=1:length(files)) %dopar% {
                              nrcycl.end$initial_discard,
                              alternative = "greater")
     
-    #print(endresults$p.value)
+    print(endresults$p.value)
     end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
     
   }
