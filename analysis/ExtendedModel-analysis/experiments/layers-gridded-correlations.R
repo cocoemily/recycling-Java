@@ -94,6 +94,8 @@ foreach (d=1:length(dirs)) %dopar% {
     end_grid$time = "end"
     
     results = rbind(mid_grid, end_grid)
+    
+    filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
     write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-gridded-cor.csv"), num_threads=1)
     
 }
