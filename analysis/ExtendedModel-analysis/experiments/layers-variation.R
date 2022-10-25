@@ -39,6 +39,7 @@ foreach (d=1:length(dirs)) %dopar% {
   
   expnum = str_extract(dirs[d], "[0-9]+")
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
+  print(exp_values)
   
   variation_vals = data.frame(
     nodule.count.sd = NA, 

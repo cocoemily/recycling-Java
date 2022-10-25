@@ -1,5 +1,5 @@
 ## ANALYSIS OF ASSOCIATION BETWEEN OUTPUT VARIABLES WITHIN LAYER GRID SQUARES
-
+library(readr)
 library(parallel)
 library(foreach)
 library(doParallel)
@@ -31,7 +31,8 @@ foreach (d=1:length(dirs)) %dopar% {
   print(dirs[d])
   expnum = str_extract(dirs[d], "[0-9]+")
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
-  
+  print(expnum)
+  print(exp_values)
   end_data = data[which(data$model_year == 200000), ]
   mid_data = data[which(data$model_year == 350000), ]
   
