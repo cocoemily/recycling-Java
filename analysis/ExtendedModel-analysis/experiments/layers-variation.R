@@ -31,7 +31,7 @@ foreach (d=1:length(dirs)) %dopar% {
   print(dirs[d])
   
   end_data = data[which(data$model_year == 200000), ]
-  #rm(data)
+  rm(data)
   
   #analysis of variation at each grid square over the 50 runs
   grid = expand.grid(0:9, 0:9)
