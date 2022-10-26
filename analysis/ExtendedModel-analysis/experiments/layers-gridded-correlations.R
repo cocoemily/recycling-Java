@@ -29,7 +29,6 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 foreach (d=1:length(dirs)) %dopar% { 
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1, show_col_types = F)
   print(dirs[d])
-  print(as.data.frame(head(data[parameters[1:2]])))
   gc()
   
   dirsplit = str_split(dirs[d], "\\/")[[1]]
