@@ -1,5 +1,5 @@
 ## TESTING DATA REQUIREMENTS FOR LAYERS ANALYSIS
-library(readr)
+library(tidyverse)
 
 param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 

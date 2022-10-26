@@ -29,9 +29,10 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 foreach (d=1:length(dirs)) %dopar% { 
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1, show_col_types = F)
   print(dirs[d])
-  gc()
+  #gc()
   
   dirsplit = str_split(dirs[d], "\\/")[[1]]
+  print(dirsplit)
   expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
   print(expnum)
@@ -39,7 +40,8 @@ foreach (d=1:length(dirs)) %dopar% {
   
   end_data = data[which(data$model_year == 200000), ]
   mid_data = data[which(data$model_year == 350000), ]
-  
+  rm(data)
+ 
   grid = expand.grid(0:9, 0:9)
   colnames(grid) = c("row", "col")
   
@@ -61,7 +63,7 @@ foreach (d=1:length(dirs)) %dopar% {
   for(i in 1:nrow(end_grid)){
     square_data = end_data[which(end_data$row == grid$row[i] & end_data$col == grid$col[i]),] 
     square_data$obj.cnt = square_data$nodule.count + square_data$flake.count
-    
+    print("gets here")
     end_grid[i, cor_outputs] = c(
       cor(square_data$cortex.ratio, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
       cor(square_data$recycling.intensity, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
