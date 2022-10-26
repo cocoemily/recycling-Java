@@ -27,13 +27,16 @@ registerDoParallel(ncores)
 Sys.setenv(OMP_NUM_THREADS = "1")
 
 foreach (d=1:length(dirs)) %dopar% { 
-  data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1)
+  data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1, show_col_types = F)
   print(dirs[d])
+  print(as.data.frame(head(data[parameters[1:2]])))
+  
   dirsplit = str_split(dirs[d], "\\/")[[1]]
   expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
   print(expnum)
   print(exp_values)
+  
   end_data = data[which(data$model_year == 200000), ]
   mid_data = data[which(data$model_year == 350000), ]
   
