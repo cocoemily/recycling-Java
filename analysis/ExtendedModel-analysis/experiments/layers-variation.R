@@ -37,7 +37,8 @@ foreach (d=1:length(dirs)) %dopar% {
   grid = expand.grid(0:9, 0:9)
   colnames(grid) = c("row", "col")
   
-  expnum = str_extract(dirs[d], "[0-9]+")
+  dirsplit = str_split(dirs[d], "\\/")[[1]]
+  expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
   print(exp_values)
   
