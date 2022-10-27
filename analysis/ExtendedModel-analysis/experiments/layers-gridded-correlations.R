@@ -29,8 +29,6 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 
 foreach (d=1:length(dirs)) %dopar% { 
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1, show_col_types = F)
-  print(dirs[d])
-  print(head(data))
   
   dirsplit = str_split(dirs[d], "\\/")[[1]]
   print(dirsplit)
@@ -64,7 +62,7 @@ foreach (d=1:length(dirs)) %dopar% {
   for(i in 1:nrow(end_grid)){
     square_data = end_data[which(end_data$row == grid$row[i] & end_data$col == grid$col[i]),] 
     square_data$obj.cnt = square_data$nodule.count + square_data$flake.count
-    print("gets here")
+    
     end_grid[i, cor_outputs] = c(
       cor(square_data$cortex.ratio, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
       cor(square_data$recycling.intensity, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
