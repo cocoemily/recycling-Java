@@ -33,7 +33,7 @@ move_outputs = c("num.deposits", "total.encounters")
 scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
 
-alldata = read_csv("~/eclipse-workspace/recycling-Java/output/subset_model_data.csv")
+#alldata = read_csv("~/eclipse-workspace/recycling-Java/output/subset_model_data.csv")
 
 alldata = alldata[alldata$size != "size",]
 
