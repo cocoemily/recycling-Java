@@ -1,5 +1,6 @@
 ## ANALYSIS OF ASSOCIATION BETWEEN OUTPUT VARIABLES WITHIN LAYER GRID SQUARES
 library(readr)
+library(tidyverse)
 library(parallel)
 library(foreach)
 library(doParallel)
@@ -12,7 +13,7 @@ colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", paramet
 param_list = param_list[, c("exp", parameters)]
 
 #dirs = list.dirs("../output/test-layer-data/")
-dirs = list.dirs("/scratch/ec3307/recycling-Java/output/")
+dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 ##remove folders refering to artifact data
 dirs = dirs[-c(1:3)]
 dirs = dirs[-length(dirs)]
@@ -29,7 +30,7 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 foreach (d=1:length(dirs)) %dopar% { 
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1, show_col_types = F)
   print(dirs[d])
-  #gc()
+  print(head(data))
   
   dirsplit = str_split(dirs[d], "\\/")[[1]]
   print(dirsplit)
