@@ -1,5 +1,8 @@
 #Retouch intensity analysis
 library(tidyverse)
+library(parallel)
+library(foreach)
+library(doParallel)
 
 #param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
