@@ -1,7 +1,6 @@
 ---
 title: "Output Analysis"
 author: "Emily Coco"
-date: "2/7/2022"
 output: html_document
 ---
 
@@ -39,6 +38,8 @@ alldata = alldata[alldata$size != "size",]
 
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
+two.tech = alldata[which(alldata$overlap == 1),]
+multi.tech = alldata[which(alldata$overlap == 2),]
 
 ```
 
@@ -75,12 +76,13 @@ summary(brall)
 ## End of model run analysis
 What is the resulting archaeological record look like at the last point in model run?
 
+#### Two technology types
 How is recycling intensity correlated with the other output variables?
-```{r end-result, eval=T}
+```{r end-result-two, eval=T}
 
-endyear = alldata$start_year[1] + (alldata$timestep[1] * alldata$total_steps[1])
+endyear = two.tech$start_year[1] + (two.tech$timestep[1] * two.tech$total_steps[1])
 
-enddata = alldata[which(alldata$model_year == endyear),]
+enddata = two.tech[which(two.tech$model_year == endyear),]
 endoutputs = enddata[,outputs]
 rm(enddata)
 M = cor(endoutputs)
@@ -91,16 +93,51 @@ corrplot(M, type = "upper", method="color", addCoef.col = "black", p.mat = p.mat
 rm(endoutputs)
 ```
 
+#### Many technology types
+How is recycling intensity correlated with the other output variables?
+```{r end-result-many, eval=T}
+
+endyear = multi.tech$start_year[1] + (multi.tech$timestep[1] * multi.tech$total_steps[1])
+
+enddata = multi.tech[which(multi.tech$model_year == endyear),]
+endoutputs = enddata[,outputs]
+rm(enddata)
+M = cor(endoutputs)
+p.mat = cor.mtest(endoutputs)
+corrplot(M, type = "upper", method="color", addCoef.col = "black", p.mat = p.mat$p, sig.level = 0.01, tl.col="black", tl.srt=45, number.cex=0.75)
+
+
+rm(endoutputs)
+```
 
 ## Middle of model run analysis
 What is the resulting archaeological record look like in the middle of model run?
 
+#### Two technology types
 How is recycling intensity correlated with the other output variables?
-```{r mid-result, eval=T, warning=F}
+```{r mid-result-two, eval=T, warning=F}
 
-midyear = alldata$start_year[1] + (alldata$timestep[1] * (alldata$total_steps[1]/2))
+midyear = two.tech$start_year[1] + (two.tech$timestep[1] * (two.tech$total_steps[1]/2))
 
-middata = alldata[which(alldata$model_year == midyear),]
+middata = two.tech[which(two.tech$model_year == midyear),]
+midoutputs = middata[,outputs]
+rm(middata)
+
+M = cor(midoutputs)
+p.mat = cor.mtest(midoutputs)
+corrplot(M, type = "upper", method="color", addCoef.col = "black", p.mat = p.mat$p, sig.level = 0.01, tl.col="black", tl.srt=45, number.cex=0.75)
+
+
+rm(midoutputs)
+```
+
+#### Many technology types
+How is recycling intensity correlated with the other output variables?
+```{r mid-result-many, eval=T, warning=F}
+
+midyear = multi.tech$start_year[1] + (multi.tech$timestep[1] * (multi.tech$total_steps[1]/2))
+
+middata = multi.tech[which(multi.tech$model_year == midyear),]
 midoutputs = middata[,outputs]
 rm(middata)
 
@@ -113,11 +150,13 @@ rm(midoutputs)
 ```
 
 ## Change in correlations between outputs over time
-```{r cor-change, warning=F}
+
+#### Two technology types
+```{r cor-change-two, warning=F}
 cor.list = list()
 l = 1
-for(i in unique(alldata$model_year)){
-  yeardata = alldata[which(alldata$model_year == i),]
+for(i in unique(two.tech$model_year)){
+  yeardata = two.tech[which(two.tech$model_year == i),]
   yearoutputs = yeardata[,outputs]
   
   M = cor(yearoutputs)
@@ -163,3 +202,53 @@ ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
 
 ```
 
+#### Many technology types
+```{r cor-change-many, warning=F}
+cor.list = list()
+l = 1
+for(i in unique(multi.tech$model_year)){
+  yeardata = multi.tech[which(multi.tech$model_year == i),]
+  yearoutputs = yeardata[,outputs]
+  
+  M = cor(yearoutputs)
+  M.df = as.data.frame(melt(M))
+  if(sum(is.na(M.df$value)) != 72) {
+    p.mat = cor.mtest(yearoutputs)
+    p.mat.df = as.data.frame(melt(p.mat$p))
+  } else {
+    p.mat = cor(yearoutputs)
+    p.mat.df = as.data.frame(melt(p.mat))
+    p.mat.df$value = NA
+  }
+  
+  ##combine M and p.mat
+  comb = cbind(M.df, p.mat.df)[,c(1:3, 6)]
+  colnames(comb) = c("output1", "output2", "correlation", "signf")
+  final = comb %>% distinct(output1, output2, .keep_all = T)
+  final$model_year = i
+  
+  cor.list[[l]] = final
+  l = l+1
+}
+
+cor.time = do.call('rbind', cor.list)
+rm(cor.list)
+cor.time$signf.val = ifelse(cor.time$signf < 0.05, "signf.", "not signf.")
+plot.cor.time = cor.time[which(!is.na(cor.time$signf.val)),]
+plot.cor.time = plot.cor.time[which(plot.cor.time$output1 != plot.cor.time$output2),]
+rm(cor.time)
+
+ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
+  geom_point(size = 0.1) +
+  #geom_smooth(se = F) +
+  facet_grid(output1 ~ output2) +
+  scale_x_reverse(breaks = c(500000, midyear, endyear)) +
+  theme(axis.text.x = element_text(angle = 90, size = 3),
+        strip.text = element_text(size = 5),
+        strip.text.y = element_text(angle = 360), 
+        strip.text.x = element_text(angle = 45), 
+        legend.title = element_blank()) +
+  labs(x = "model year") +
+  scale_color_colorblind()
+
+```
