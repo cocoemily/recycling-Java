@@ -1,7 +1,6 @@
 ---
 title: "Preliminary Data Analysis"
 author: "Emily Coco"
-date: "9/24/2021"
 output: html_document
 ---
 
@@ -19,6 +18,9 @@ library(fitdistrplus)
 library(knitr)
 library(kableExtra)
 library(PerformanceAnalytics)
+library(MASS)
+library(pscl)
+
 theme_set(theme_minimal())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
@@ -31,17 +33,8 @@ alldata = alldata[alldata$size != "size",]
 
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-
-#alldata = alldata %>% filter(size != "size") %>%
-#   mutate(total.RI = as.numeric(total.RI), 
-#          total.CR = as.numeric(total.CR), 
-#          num.scav.events = as.numeric(num.scav.events), 
-#          total.recycled = as.numeric(total.recycled), 
-#          num.deposits = as.numeric(num.deposits), 
-#          total.encounters = as.numeric(total.encounters), 
-#          total.discards = as.numeric(total.discards), 
-#          total.manu.events = as.numeric(total.manu.events), 
-#          total.retouches = as.numeric(total.retouches))
+two.tech = alldata[which(alldata$overlap == 1),]
+multi.tech = alldata[which(alldata$overlap == 2),]
 
 
 
@@ -49,64 +42,102 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 ## What are the distributions of the output metrics?
 
-```{r checking-assumptions, eval=T}
-plotNormalHistogram(alldata$total.RI)
-distRI = alldata[!is.na(alldata$total.RI) & !is.nan(alldata$total.RI),]$total.RI
+#### Two technology types
+```{r checking-assumptions-two, eval=T, warning=F}
+plotNormalHistogram(two.tech$total.RI)
+distRI = two.tech[!is.na(two.tech$total.RI) & !is.nan(two.tech$total.RI),]$total.RI
 descdist(distRI, discrete=F)
-descdist(distRI, discrete=T)
 rm(distRI)
 
-plotNormalHistogram(alldata$total.CR)
-distCR = alldata[!is.na(alldata$total.CR) & !is.nan(alldata$total.CR),]$total.CR
+plotNormalHistogram(two.tech$total.CR)
+distCR = two.tech[!is.na(two.tech$total.CR) & !is.nan(two.tech$total.CR),]$total.CR
 descdist(distCR, discrete=F)
-descdist(distCR, discrete=T)
 rm(distCR)
 
-plotNormalHistogram(alldata$num.scav.events)
-distSE = alldata[!is.na(alldata$num.scav.events) & !is.nan(alldata$num.scav.events),]$num.scav.events
-descdist(distSE, discrete=F)
+plotNormalHistogram(two.tech$num.scav.events)
+distSE = two.tech[!is.na(two.tech$num.scav.events) & !is.nan(two.tech$num.scav.events),]$num.scav.events
 descdist(distSE, discrete=T)
 rm(distSE)
 
-plotNormalHistogram(alldata$total.recycled)
-distTR = alldata[!is.na(alldata$total.recycled) & !is.nan(alldata$total.recycled),]$total.recycled
-descdist(distTR, discrete=F)
+plotNormalHistogram(two.tech$total.recycled)
+distTR = two.tech[!is.na(two.tech$total.recycled) & !is.nan(two.tech$total.recycled),]$total.recycled
 descdist(distTR, discrete=T)
 rm(distTR)
 
-plotNormalHistogram(alldata$num.deposits)
-distND = alldata[!is.na(alldata$num.deposits) & !is.nan(alldata$num.deposits),]$num.deposits
-descdist(distND, discrete=F)
+plotNormalHistogram(two.tech$num.deposits)
+distND = two.tech[!is.na(two.tech$num.deposits) & !is.nan(two.tech$num.deposits),]$num.deposits
 descdist(distND, discrete=T)
 rm(distND)
 
-plotNormalHistogram(alldata$total.encounters)
-distTE = alldata[!is.na(alldata$total.encounters) & !is.nan(alldata$total.encounters),]$total.encounters
-descdist(distTE, discrete=F)
+plotNormalHistogram(two.tech$total.encounters)
+distTE = two.tech[!is.na(two.tech$total.encounters) & !is.nan(two.tech$total.encounters),]$total.encounters
 descdist(distTE, discrete=T)
 rm(distTE)
 
-plotNormalHistogram(alldata$total.discards)
-distTD = alldata[!is.na(alldata$total.discards) & !is.nan(alldata$total.discards),]$total.discards
-descdist(distTD, discrete=F)
+plotNormalHistogram(two.tech$total.discards)
+distTD = two.tech[!is.na(two.tech$total.discards) & !is.nan(two.tech$total.discards),]$total.discards
 descdist(distTD, discrete=T)
 rm(distTD)
 
-plotNormalHistogram(alldata$total.manu.events)
-distME = alldata[!is.na(alldata$total.manu.events) & !is.nan(alldata$total.manu.events),]$total.manu.events
-descdist(distME, discrete=F)
+plotNormalHistogram(two.tech$total.manu.events)
+distME = two.tech[!is.na(two.tech$total.manu.events) & !is.nan(two.tech$total.manu.events),]$total.manu.events
 descdist(distME, discrete=T)
 rm(distME)
 
-plotNormalHistogram(alldata$total.retouches)
-distTR = alldata[!is.na(alldata$total.retouches) & !is.nan(alldata$total.retouches),]$total.retouches
-descdist(distTR, discrete=F)
+plotNormalHistogram(two.tech$total.retouches)
+distTR = two.tech[!is.na(two.tech$total.retouches) & !is.nan(two.tech$total.retouches),]$total.retouches
 descdist(distTR, discrete=T)
 rm(distTR)
 
 ```
+#### Many technology types
+```{r checking-assumptions-multi, eval=T, warning=F}
+plotNormalHistogram(multi.tech$total.RI)
+distRI = multi.tech[!is.na(multi.tech$total.RI) & !is.nan(multi.tech$total.RI),]$total.RI
+descdist(distRI, discrete=F)
+rm(distRI)
 
+plotNormalHistogram(multi.tech$total.CR)
+distCR = multi.tech[!is.na(multi.tech$total.CR) & !is.nan(multi.tech$total.CR),]$total.CR
+descdist(distCR, discrete=F)
+rm(distCR)
 
+plotNormalHistogram(multi.tech$num.scav.events)
+distSE = multi.tech[!is.na(multi.tech$num.scav.events) & !is.nan(multi.tech$num.scav.events),]$num.scav.events
+descdist(distSE, discrete=T)
+rm(distSE)
+
+plotNormalHistogram(multi.tech$total.recycled)
+distTR = multi.tech[!is.na(multi.tech$total.recycled) & !is.nan(multi.tech$total.recycled),]$total.recycled
+descdist(distTR, discrete=T)
+rm(distTR)
+
+plotNormalHistogram(multi.tech$num.deposits)
+distND = multi.tech[!is.na(multi.tech$num.deposits) & !is.nan(multi.tech$num.deposits),]$num.deposits
+descdist(distND, discrete=T)
+rm(distND)
+
+plotNormalHistogram(multi.tech$total.encounters)
+distTE = multi.tech[!is.na(multi.tech$total.encounters) & !is.nan(multi.tech$total.encounters),]$total.encounters
+descdist(distTE, discrete=T)
+rm(distTE)
+
+plotNormalHistogram(multi.tech$total.discards)
+distTD = multi.tech[!is.na(multi.tech$total.discards) & !is.nan(multi.tech$total.discards),]$total.discards
+descdist(distTD, discrete=T)
+rm(distTD)
+
+plotNormalHistogram(multi.tech$total.manu.events)
+distME = multi.tech[!is.na(multi.tech$total.manu.events) & !is.nan(multi.tech$total.manu.events),]$total.manu.events
+descdist(distME, discrete=T)
+rm(distME)
+
+plotNormalHistogram(multi.tech$total.retouches)
+distTR = multi.tech[!is.na(multi.tech$total.retouches) & !is.nan(multi.tech$total.retouches),]$total.retouches
+descdist(distTR, discrete=T)
+rm(distTR)
+
+```
 
 ## Where is there missing data for recycling intensity?
 
@@ -114,9 +145,11 @@ rm(distTR)
 
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
 
-output_data = alldata[,c(outputs)]
-gg_miss_var(output_data, show_pct = T)
-
+# output.two = two.tech[,c(outputs)]
+# gg_miss_var(output.two, show_pct = T)
+# 
+# output.multi = multi.tech[,c(outputs)]
+# gg_miss_var(output.multi, show_pct = T)
 
 facet_data = alldata[,c(parameters, outputs)]
 
@@ -134,7 +167,7 @@ output_table_by_param = function(parameter) {
 # output_table_by_param(parameters[4])
 # output_table_by_param(parameters[5])
 # output_table_by_param(parameters[6])
-# output_table_by_param(parameters[7])
+output_table_by_param(parameters[7])
 # output_table_by_param(parameters[8])
 # output_table_by_param(parameters[9])
 # output_table_by_param(parameters[10])
@@ -153,10 +186,30 @@ output_table_by_param = function(parameter) {
 # 
 # output_table_by_exp()
 
-missing = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI") %>% filter(!is.na(mu)))[,c(1:13, 15)]
+missing.two = (facet_data[which(facet_data$overlap == 1), ] %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
 
-names(missing) <- gsub("_", "\n", names(missing))
-chart.Correlation(missing, histogram=F, pch=2, method = "spearman", exact=F, cex.labels = 0.5)
+descdist(missing.two$n_miss, discrete = T)
+p1.two = glm.nb(n_miss ~ . , data = missing.two)
+plot(p1.two, which = 2)
+#summary(p1.two)
+
+missing.multi = (facet_data[which(facet_data$overlap == 2), ] %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
+
+descdist(missing.multi$n_miss, discrete = T)
+p1.multi = glm.nb(n_miss ~ . , data = missing.two)
+plot(p1.multi, which = 2)
+#summary(p1.multi)
+
+
+plot_summs(p1.two, p1.multi, model.names = c("Two technologies", "Many technologies"))
+export_summs(p1.two, p1.multi, scale = T, error_format = "[{conf.low}, {conf.high}]", 
+             model.names = c("Two technologies", "Many technologies"))
+
+
+# missing = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI") %>% filter(!is.na(mu)))[,c(1:13, 15)]
+# 
+# names(missing) <- gsub("_", "\n", names(missing))
+# chart.Correlation(missing, histogram=F, pch=2, method = "spearman", exact=F, cex.labels = 0.5)
 
 
 ```

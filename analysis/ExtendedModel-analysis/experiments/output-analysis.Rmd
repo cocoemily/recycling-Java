@@ -48,31 +48,6 @@ multi.tech = alldata[which(alldata$overlap == 2),]
 
 ```
 
-```{r missing-values-analysis, eval=F}
-facet_data = alldata[,c(parameters, outputs)]
-
-missing_exp = facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
-  filter(n_miss != 0)
-rm(missing_exp)
-miss.RI.val = missing_exp[which(missing_exp$variable == "total.RI"),-14]
-write_csv(miss.RI.val, file = "missing-RI-values-by-experiment.csv")
-
-descdist(miss.RI.val$pct_miss, discrete=F)
-
-brall = betareg::betareg(pct_miss ~ ., data = miss.RI.val[,-14])
-qqnorm(residuals(brall, type = "sweighted2"))
-qqline(residuals(brall, type = "sweighted2"))
-summary(brall)
-
-# missing_time = alldata %>% 
-#   group_by_at(c(parameters, "model_year")) %>% 
-#   miss_var_summary %>% 
-#   filter(n_miss != 0)
-
-```
-
-
-
 ## End of model run analysis
 What is the resulting archaeological record look like at the last point in model run?
 
