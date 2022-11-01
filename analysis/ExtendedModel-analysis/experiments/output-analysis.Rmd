@@ -162,7 +162,7 @@ plot.cor.time = cor.time[which(!is.na(cor.time$signf.val)),]
 plot.cor.time = plot.cor.time[which(plot.cor.time$output1 != plot.cor.time$output2),]
 rm(cor.time)
 
-ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
+plot1 = ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
   geom_point(size = 0.1) +
   #geom_smooth(se = F) +
   facet_grid(output1 ~ output2) +
@@ -213,7 +213,7 @@ plot.cor.time = cor.time[which(!is.na(cor.time$signf.val)),]
 plot.cor.time = plot.cor.time[which(plot.cor.time$output1 != plot.cor.time$output2),]
 rm(cor.time)
 
-ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
+plot2 = ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
   geom_point(size = 0.1) +
   #geom_smooth(se = F) +
   facet_grid(output1 ~ output2) +
@@ -227,3 +227,11 @@ ggplot(plot.cor.time, aes(x = model_year, y = correlation, color = signf.val)) +
   scale_color_colorblind()
 
 ```
+
+#### Comparison of two technologies and multiple technologies
+```{r cor-compare, include = T, warning=F}
+
+cowplot::plot_grid(plot1, plot2)
+
+```
+
