@@ -75,6 +75,6 @@ foreach (f=1:length(files)) %dopar% {
   
   ri_results = data.frame(exp_values[1,], mid.signf, end.signf)
   filename = str_split(files[f], "_")[[1]][1]
-  write_csv(exposure_results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_ri-results.csv"), num_threads=1)
+  write_csv(ri_results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_ri-results.csv"), num_threads=1)
   
 }
