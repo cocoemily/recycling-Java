@@ -102,19 +102,19 @@ for(row in 1:nrow(exp)) {
   for(year in 1:length(modelyears)) {
     oneyear = oneexp[which(oneexp$model_year == modelyears[year]),]
     var = c(
-      var(oneyear$num.scav.events), 
-      var(oneyear$total.recycled), 
-      var(oneyear$num.deposits), 
-      var(oneyear$total.encounters), 
-      var(oneyear$total.discards), 
-      var(oneyear$total.manu.events), 
-      var(oneyear$total.retouches), 
-      var(oneyear$total.CR), 
-      var(oneyear$total.RI), 
+      var(oneyear$num.scav.events, na.rm = T), 
+      var(oneyear$total.recycled, na.rm = T), 
+      var(oneyear$num.deposits, na.rm = T), 
+      var(oneyear$total.encounters, na.rm = T), 
+      var(oneyear$total.discards, na.rm = T), 
+      var(oneyear$total.manu.events, na.rm = T), 
+      var(oneyear$total.retouches, na.rm = T), 
+      var(oneyear$total.CR, na.rm = T), 
+      var(oneyear$total.RI, na.rm = T), 
       row, 
       modelyears[year]
     )
-    print(var)
+    #print(var)
     
     allvar[nrow(allvar) + 1, ] <- var
   }
