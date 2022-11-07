@@ -36,6 +36,8 @@ foreach (d=1:length(dirs)) %dopar% {
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1)
   print(dirs[d])
   
+  filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+  
   years = unique(data$model_year)
   #plist = list()
   glist = list()
@@ -108,7 +110,7 @@ foreach (d=1:length(dirs)) %dopar% {
   
   results = rbind(midgrid, endgrid)
   results$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-  filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+  
   write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
   
 }
