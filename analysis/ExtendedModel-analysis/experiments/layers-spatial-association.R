@@ -34,9 +34,10 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 
 foreach (d=1:length(dirs)) %dopar% { 
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1)
-  print(dirs[d])
+  #print(dirs[d])
   
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+  print(filename)
   
   years = unique(data$model_year)
   #plist = list()
