@@ -112,6 +112,7 @@ foreach (d=1:length(dirs)) %dopar% {
   results = rbind(midgrid, endgrid)
   results$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
   
-  write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
-  
+  if(nrow(results) != 0) {
+    write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
+  }
 }
