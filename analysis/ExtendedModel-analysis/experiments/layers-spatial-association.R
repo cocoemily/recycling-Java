@@ -79,9 +79,9 @@ foreach (d=1:length(dirs)) %dopar% {
   
   localG.df = as.data.frame(localGresults)
   
-  write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
+  #write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
   
-  ##some sort of built in analysis here?
+  
   
   #### CHANGE IN VALUES FROM START TO MID AND FROM MID TO FINISH ####
   startgrid = glist[[2]]
