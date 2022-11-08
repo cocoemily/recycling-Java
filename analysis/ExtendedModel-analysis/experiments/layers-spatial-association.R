@@ -87,6 +87,9 @@ foreach (d=1:length(dirs)) %dopar% {
   startgrid = glist[[2]]
   midgrid = glist[[151]]
   endgrid = glist[[301]]
+  
+  head(midgrid)
+  head(endgrid)
 
   midgrid$change.RI = midgrid$recycling.intensity2 - startgrid$recycling.intensity2
   midgrid$change.CR = midgrid$cortex.ratio2 - startgrid$cortex.ratio2
