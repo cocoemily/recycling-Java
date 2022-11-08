@@ -85,8 +85,11 @@ foreach (d=1:length(dirs)) %dopar% {
   
   #### CHANGE IN VALUES FROM START TO MID AND FROM MID TO FINISH ####
   startgrid = glist[[2]]
+  print("gets past start grid")
   midgrid = glist[[151]]
+  print("gets past mid grid")
   endgrid = glist[[301]]
+  print("gets past end grid")
   
   head(midgrid)
   head(endgrid)
