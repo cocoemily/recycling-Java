@@ -43,6 +43,7 @@ foreach (d=1:length(dirs)) %dopar% {
   #plist = list()
   glist = list()
   for(y in 2:length(years)) {
+    print(y)
     grid = data[which(data$model_year == years[y]),]
     grid = grid[1:100,]
     
