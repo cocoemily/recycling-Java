@@ -43,7 +43,6 @@ foreach (d=1:length(dirs)) %dopar% {
   #plist = list()
   glist = list()
   for(y in 2:length(years)) {
-    print(y)
     grid = data[which(data$model_year == years[y]),]
     grid = grid[1:100,]
     
@@ -75,10 +74,10 @@ foreach (d=1:length(dirs)) %dopar% {
     
   }
   
-  localGresults = do.call("rbind", glist[2:length(glist)])
-  localGresults$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-  
-  localG.df = as.data.frame(localGresults)
+  # localGresults = do.call("rbind", glist[2:length(glist)])
+  # localGresults$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+  # 
+  # localG.df = as.data.frame(localGresults)
   
   #write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
   
