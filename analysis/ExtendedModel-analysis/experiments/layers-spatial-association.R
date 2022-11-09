@@ -85,14 +85,11 @@ foreach (d=1:length(dirs)) %dopar% {
   
   #### CHANGE IN VALUES FROM START TO MID AND FROM MID TO FINISH ####
   startgrid = glist[[2]]
-  print("gets past start grid")
   midgrid = glist[[151]]
-  print("gets past mid grid")
   endgrid = glist[[301]]
-  print("gets past end grid")
   
-  head(midgrid)
-  head(endgrid)
+  #head(midgrid)
+  #head(endgrid)
 
   midgrid$change.RI = midgrid$recycling.intensity2 - startgrid$recycling.intensity2
   midgrid$change.CR = midgrid$cortex.ratio2 - startgrid$cortex.ratio2
@@ -115,12 +112,10 @@ foreach (d=1:length(dirs)) %dopar% {
   endgrid$timeperiod = "endgrid"
   midgrid$timeperiod = "midgrid"
   
-  results = rbind(midgrid, endgrid)
-  results$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+  results = as.data.frame(rbind(midgrid, endgrid))
+  results$exp = filename
   
-  head(results)
+  #head(results)
   
-  if(nrow(results) != 0) {
-    write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
-  }
+  write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
 }
