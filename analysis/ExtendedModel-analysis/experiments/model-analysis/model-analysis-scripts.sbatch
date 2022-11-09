@@ -12,4 +12,5 @@ module purge
 module load r/gcc/4.1.0
 module load pandoc/2.11.3.2
 
-R --no-save -q -f variation-analysis.R
+R --no-save -q -f model-variation-analysis.R
+R --no-save -q -f model-mobility-analysis.R
