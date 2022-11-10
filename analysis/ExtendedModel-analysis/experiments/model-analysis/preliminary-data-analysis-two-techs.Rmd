@@ -1,0 +1,150 @@
+---
+title: "Preliminary Data Analysis"
+subtitle: "TWO TECHNOLOGY TYPES"
+author: "Emily Coco"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(naniar)
+library(rpart)
+library(rpart.plot)
+library(data.table)
+library(UpSetR)
+library(rcompanion)
+library(fitdistrplus)
+library(knitr)
+library(kableExtra)
+library(PerformanceAnalytics)
+
+theme_set(theme_minimal())
+
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap", "mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+
+outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+
+#alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
+
+alldata = alldata[alldata$size != "size",]
+
+alldata = alldata[!is.na(alldata$max_artifact_carry),]
+
+two.tech = alldata[which(alldata$overlap == 1),]
+
+rm(alldata)
+
+```
+
+## What are the distributions of the output metrics?
+```{r checking-assumptions-two, eval=T, warning=F}
+plotNormalHistogram(two.tech$total.RI)
+distRI = two.tech[!is.na(two.tech$total.RI) & !is.nan(two.tech$total.RI),]$total.RI
+descdist(distRI, discrete=F)
+rm(distRI)
+
+plotNormalHistogram(two.tech$total.CR)
+distCR = two.tech[!is.na(two.tech$total.CR) & !is.nan(two.tech$total.CR),]$total.CR
+descdist(distCR, discrete=F)
+rm(distCR)
+
+plotNormalHistogram(two.tech$num.scav.events)
+distSE = two.tech[!is.na(two.tech$num.scav.events) & !is.nan(two.tech$num.scav.events),]$num.scav.events
+descdist(distSE, discrete=T)
+rm(distSE)
+
+plotNormalHistogram(two.tech$total.recycled)
+distTR = two.tech[!is.na(two.tech$total.recycled) & !is.nan(two.tech$total.recycled),]$total.recycled
+descdist(distTR, discrete=T)
+rm(distTR)
+
+plotNormalHistogram(two.tech$num.deposits)
+distND = two.tech[!is.na(two.tech$num.deposits) & !is.nan(two.tech$num.deposits),]$num.deposits
+descdist(distND, discrete=T)
+rm(distND)
+
+plotNormalHistogram(two.tech$total.encounters)
+distTE = two.tech[!is.na(two.tech$total.encounters) & !is.nan(two.tech$total.encounters),]$total.encounters
+descdist(distTE, discrete=T)
+rm(distTE)
+
+plotNormalHistogram(two.tech$total.discards)
+distTD = two.tech[!is.na(two.tech$total.discards) & !is.nan(two.tech$total.discards),]$total.discards
+descdist(distTD, discrete=T)
+rm(distTD)
+
+plotNormalHistogram(two.tech$total.manu.events)
+distME = two.tech[!is.na(two.tech$total.manu.events) & !is.nan(two.tech$total.manu.events),]$total.manu.events
+descdist(distME, discrete=T)
+rm(distME)
+
+plotNormalHistogram(two.tech$total.retouches)
+distTR = two.tech[!is.na(two.tech$total.retouches) & !is.nan(two.tech$total.retouches),]$total.retouches
+descdist(distTR, discrete=T)
+rm(distTR)
+
+```
+
+## Where is there missing data for recycling intensity?
+
+```{r missing-recycling-intensity, eval=T, warning=F, message=F}
+
+outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+
+# output.two = two.tech[,c(outputs)]
+# gg_miss_var(output.two, show_pct = T)
+# 
+# output.multi = multi.tech[,c(outputs)]
+# gg_miss_var(output.multi, show_pct = T)
+
+facet_data = two.tech[,c(parameters, outputs)]
+
+output_table_by_param = function(parameter) {
+  return(
+    facet_data %>% group_by_at(parameter) %>% miss_var_summary() %>%
+        filter(variable %in% outputs) %>% kbl(caption = paste("Missing output values for values of", parameter)) %>%
+      kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+  )
+}
+
+# output_table_by_param(parameters[1])
+# output_table_by_param(parameters[2])
+# output_table_by_param(parameters[3])
+# output_table_by_param(parameters[4])
+# output_table_by_param(parameters[5])
+# output_table_by_param(parameters[6])
+output_table_by_param(parameters[7])
+# output_table_by_param(parameters[8])
+# output_table_by_param(parameters[9])
+# output_table_by_param(parameters[10])
+# output_table_by_param(parameters[11])
+# output_table_by_param(parameters[12])
+# output_table_by_param(parameters[13])
+
+
+# output_table_by_exp = function() {
+#   return(
+#     facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
+#     filter(n_miss != 0) %>% kbl(caption = paste("Missing output values for each experiment")) %>%
+#       kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+#       )
+# }
+# 
+# output_table_by_exp()
+
+missing.two = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
+
+descdist(missing.two$n_miss, discrete = T)
+p1.two = glm.nb(n_miss ~ . , data = missing.two)
+plot(p1.two, which = 2)
+#summary(p1.two)
+plot_summs(p1.two)
+export_summs(p1.two, scale = T, error_format = "[{conf.low}, {conf.high}]")
+
+
+
+```
+
+

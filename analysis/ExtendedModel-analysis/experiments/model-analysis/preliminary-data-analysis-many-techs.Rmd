@@ -33,64 +33,13 @@ alldata = alldata[alldata$size != "size",]
 
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-two.tech = alldata[which(alldata$overlap == 1),]
 multi.tech = alldata[which(alldata$overlap == 2),]
 
-
+rm(alldata)
 
 ```
 
 ## What are the distributions of the output metrics?
-
-#### Two technology types
-```{r checking-assumptions-two, eval=T, warning=F}
-plotNormalHistogram(two.tech$total.RI)
-distRI = two.tech[!is.na(two.tech$total.RI) & !is.nan(two.tech$total.RI),]$total.RI
-descdist(distRI, discrete=F)
-rm(distRI)
-
-plotNormalHistogram(two.tech$total.CR)
-distCR = two.tech[!is.na(two.tech$total.CR) & !is.nan(two.tech$total.CR),]$total.CR
-descdist(distCR, discrete=F)
-rm(distCR)
-
-plotNormalHistogram(two.tech$num.scav.events)
-distSE = two.tech[!is.na(two.tech$num.scav.events) & !is.nan(two.tech$num.scav.events),]$num.scav.events
-descdist(distSE, discrete=T)
-rm(distSE)
-
-plotNormalHistogram(two.tech$total.recycled)
-distTR = two.tech[!is.na(two.tech$total.recycled) & !is.nan(two.tech$total.recycled),]$total.recycled
-descdist(distTR, discrete=T)
-rm(distTR)
-
-plotNormalHistogram(two.tech$num.deposits)
-distND = two.tech[!is.na(two.tech$num.deposits) & !is.nan(two.tech$num.deposits),]$num.deposits
-descdist(distND, discrete=T)
-rm(distND)
-
-plotNormalHistogram(two.tech$total.encounters)
-distTE = two.tech[!is.na(two.tech$total.encounters) & !is.nan(two.tech$total.encounters),]$total.encounters
-descdist(distTE, discrete=T)
-rm(distTE)
-
-plotNormalHistogram(two.tech$total.discards)
-distTD = two.tech[!is.na(two.tech$total.discards) & !is.nan(two.tech$total.discards),]$total.discards
-descdist(distTD, discrete=T)
-rm(distTD)
-
-plotNormalHistogram(two.tech$total.manu.events)
-distME = two.tech[!is.na(two.tech$total.manu.events) & !is.nan(two.tech$total.manu.events),]$total.manu.events
-descdist(distME, discrete=T)
-rm(distME)
-
-plotNormalHistogram(two.tech$total.retouches)
-distTR = two.tech[!is.na(two.tech$total.retouches) & !is.nan(two.tech$total.retouches),]$total.retouches
-descdist(distTR, discrete=T)
-rm(distTR)
-
-```
-#### Many technology types
 ```{r checking-assumptions-multi, eval=T, warning=F}
 plotNormalHistogram(multi.tech$total.RI)
 distRI = multi.tech[!is.na(multi.tech$total.RI) & !is.nan(multi.tech$total.RI),]$total.RI
@@ -151,7 +100,7 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 # output.multi = multi.tech[,c(outputs)]
 # gg_miss_var(output.multi, show_pct = T)
 
-facet_data = alldata[,c(parameters, outputs)]
+facet_data = multi.tech[,c(parameters, outputs)]
 
 output_table_by_param = function(parameter) {
   return(
@@ -186,30 +135,14 @@ output_table_by_param(parameters[7])
 # 
 # output_table_by_exp()
 
-missing.two = (facet_data[which(facet_data$overlap == 1), ] %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
-
-descdist(missing.two$n_miss, discrete = T)
-p1.two = glm.nb(n_miss ~ . , data = missing.two)
-plot(p1.two, which = 2)
-#summary(p1.two)
-
-missing.multi = (facet_data[which(facet_data$overlap == 2), ] %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
+missing.multi = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
 
 descdist(missing.multi$n_miss, discrete = T)
 p1.multi = glm.nb(n_miss ~ . , data = missing.two)
 plot(p1.multi, which = 2)
-#summary(p1.multi)
+plot_summs(p1.multi)
+export_summs(p1.multi, scale = T, error_format = "[{conf.low}, {conf.high}]")
 
-
-plot_summs(p1.two, p1.multi, model.names = c("Two technologies", "Many technologies"))
-export_summs(p1.two, p1.multi, scale = T, error_format = "[{conf.low}, {conf.high}]", 
-             model.names = c("Two technologies", "Many technologies"))
-
-
-# missing = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI") %>% filter(!is.na(mu)))[,c(1:13, 15)]
-# 
-# names(missing) <- gsub("_", "\n", names(missing))
-# chart.Correlation(missing, histogram=F, pch=2, method = "spearman", exact=F, cex.labels = 0.5)
 
 
 ```
