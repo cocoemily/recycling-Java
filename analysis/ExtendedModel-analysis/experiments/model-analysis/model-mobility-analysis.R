@@ -33,7 +33,7 @@ mu.1 = alldata[which(alldata$mu == 1),]
 mu.2 = alldata[which(alldata$mu == 2),]
 mu.3 = alldata[which(alldata$mu == 3),]
 
-#rm(alldata)
+rm(alldata)
 
 # alldata = alldata %>% group_by(model_year) %>%
 #   mutate(RI.lower = min(total.RI, na.rm = T), 
@@ -47,6 +47,23 @@ mu.3 = alldata[which(alldata$mu == 3),]
 #   scale_x_reverse(), 
 #   dpi = 300
 # )
+
+p1 = ggplot(mu.1, aes(x = model_year, y = total.RI)) +
+  geom_smooth(color = "grey") +
+  facet_grid(~overlap, labeller = label_both) +
+  scale_x_reverse()
+
+p2 = ggplot(mu.2, aes(x = model_year, y = total.RI)) +
+  geom_smooth(color = "orange") +
+  facet_grid(~overlap, labeller = label_both) +
+  scale_x_reverse()
+
+p3 = ggplot(mu.3, aes(x = model_year, y = total.RI)) +
+  geom_smooth(color = "blue") +
+  facet_grid(~overlap, labeller = label_both) +
+  scale_x_reverse()
+
+cowplot::plot_grid(p1, p2, p3, labels = "auto")
 
 
 ###need to know distributions to do regressions
