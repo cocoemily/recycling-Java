@@ -3,7 +3,7 @@
 #SBATCH --job-name=render
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
-#SBATCH --mem=1600GB
+#SBATCH --mem=2500GB
 #SBATCH --time=24:00:00
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ec3307@nyu.edu
