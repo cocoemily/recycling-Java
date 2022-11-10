@@ -3,6 +3,9 @@ library(tidyverse)
 library(ggpubr)
 library(ggplot2)
 library(ggthemes)
+library(parallel)
+library(foreach)
+library(doParallel)
 
 alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
 alldata = alldata[alldata$size != "size",]
@@ -22,67 +25,33 @@ move_outputs = c("num.deposits", "total.encounters")
 scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
 
-# oneexp = alldata[ which(
-#   alldata[parameters[1]] == as.numeric(exp[1, 1]) &
-#     alldata[parameters[2]] == as.numeric(exp[1, 2]) &
-#     alldata[parameters[3]] == as.numeric(exp[1, 3]) &
-#     alldata[parameters[4]]== as.numeric(exp[1, 4]) &
-#     alldata[parameters[5]] == as.numeric(exp[1, 5]) &
-#     alldata[parameters[6]] == as.numeric(exp[1, 6]) &
-#     alldata[parameters[7]] == as.numeric(exp[1, 7]) &
-#     alldata[parameters[8]] == as.numeric(exp[1, 8]) &
-#     alldata[parameters[9]] == as.numeric(exp[1, 9]) &
-#     alldata[parameters[10]] == as.numeric(exp[1, 10]) &
-#     alldata[parameters[11]] == as.numeric(exp[1, 11]) &
-#     alldata[parameters[12]] == as.numeric(exp[1, 12]) &
-#     alldata[parameters[13]] == as.numeric(exp[1, 13])
-# ),]
-
-
-# allvar = oneexp %>% group_by(model_year) %>%
-#   summarize(num.scav.events.var = var(num.scav.events), 
-#             total.recycled.var = var(total.recycled), 
-#             num.deposits.var = var(num.deposits), 
-#             total.encounters.var = var(total.encounters), 
-#             total.discards.var = var(total.discards), 
-#             total.manu.events.var = var(total.manu.events), 
-#             total.retouches.var = var(total.retouches), 
-#             total.CR.var = var(total.CR), 
-#             total.RI.var = var(total.RI)) %>%
-#   mutate(exp = 1)
-
-allvar = data.frame(
-  num.scav.events.var = numeric(), 
-  total.recycled.var = numeric(), 
-  num.deposits.var = numeric(), 
-  total.encounters.var = numeric(), 
-  total.discards.var = numeric(), 
-  total.manu.events.var = numeric(), 
-  total.retouches.var = numeric(), 
-  total.CR.var = numeric(), 
-  total.RI.var = numeric(), 
-  exp = numeric(), 
-  model_year = numeric()
-)
 
 modelyears = unique(alldata$model_year)
-# oneyear = oneexp[which(oneexp$model_year == modelyears[1]),]
-# var = c(
-#   var(oneyear$num.scav.events), 
-#   var(oneyear$total.recycled), 
-#   var(oneyear$num.deposits), 
-#   var(oneyear$total.encounters), 
-#   var(oneyear$total.discards), 
-#   var(oneyear$total.manu.events), 
-#   var(oneyear$total.retouches), 
-#   var(oneyear$total.CR), 
-#   var(oneyear$total.RI)
-# )
-# 
-# allvar[nrow(allvar) + 1, ] <- var
 
+if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
+  ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
+} else {
+  ncores <- detectCores()
+}
+print(ncores)
+registerDoParallel(ncores)
+Sys.setenv(OMP_NUM_THREADS = "1")
 
-for(row in 1:nrow(exp)) {
+foreach (row=1:nrow(exp)) %dopar% { 
+  allvar = data.frame(
+    num.scav.events.var = numeric(), 
+    total.recycled.var = numeric(), 
+    num.deposits.var = numeric(), 
+    total.encounters.var = numeric(), 
+    total.discards.var = numeric(), 
+    total.manu.events.var = numeric(), 
+    total.retouches.var = numeric(), 
+    total.CR.var = numeric(), 
+    total.RI.var = numeric(), 
+    exp = numeric(), 
+    model_year = numeric()
+  )
+  
   oneexp = alldata[which(
     alldata[parameters[1]] == c(exp[row, parameters[1]]) &
       alldata[parameters[2]] == c(exp[row, parameters[2]]) &
@@ -116,12 +85,15 @@ for(row in 1:nrow(exp)) {
     )
     #print(var)
     
-    allvar[nrow(allvar) + 1, ] <- var
+    allvar[nrow(allvar) + 1, ] = var
   }
+  
+  write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/exp", row, "_variation.csv"), num_threads=1)
+  
 }
 
-ggsave(filename = "total-RI-variation.png", 
-       plot = ggplot(allvar, aes(x = model_year, y = total.RI.var, group = exp, color = exp)) +
-         geom_line() +
-         scale_color_colorblind()
-)
+# ggsave(filename = "total-RI-variation.png", 
+#        plot = ggplot(allvar, aes(x = model_year, y = total.RI.var, group = exp, color = exp)) +
+#          geom_line() +
+#          scale_color_colorblind()
+# )
