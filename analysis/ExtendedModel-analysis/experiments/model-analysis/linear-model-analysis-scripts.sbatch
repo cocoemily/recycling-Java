@@ -1,9 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=test-m-analysis
+#SBATCH --job-name=m-analysis
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
-#SBATCH --cpus-per-task=10
 #SBATCH --mem=500GB
 #SBATCH --time=48:00:00
 #SBATCH --mail-type=END
@@ -13,5 +12,5 @@ module purge
 module load r/gcc/4.1.0
 module load pandoc/2.11.3.2
 
-R --no-save -q -f model-variation-analysis.R
-#R --no-save -q -f model-mobility-analysis.R
+R --no-save -q -f model-mobility-analysis.R
+
