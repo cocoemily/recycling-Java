@@ -19,6 +19,7 @@ library(fitdistrplus)
 library(knitr)
 library(kableExtra)
 library(PerformanceAnalytics)
+library(jtools)
 
 theme_set(theme_minimal())
 

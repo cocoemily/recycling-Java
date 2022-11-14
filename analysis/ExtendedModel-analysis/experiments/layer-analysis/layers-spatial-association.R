@@ -19,6 +19,7 @@ param_list = param_list[, c("exp", parameters)]
 
 #dirs = list.dirs("../output/test-layer-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
+print(dirs)
 ##remove folders refering to artifact data
 dirs = dirs[-c(1:3)]
 dirs = dirs[-length(dirs)]
