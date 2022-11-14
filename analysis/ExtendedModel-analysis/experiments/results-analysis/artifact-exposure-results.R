@@ -44,33 +44,65 @@ ggplot(up.exposure.plot) +
 
 
 #examine what happens under strict choices
-strict.exp = exposure.data %>% filter(strict_selection == TRUE)
+strict.exp = exposure.data %>% filter(strict_selection == TRUE) 
 
 two.tech.strict = strict.exp %>% filter(overlap == 1)
+tt.strict.plot = two.tech.strict %>% gather(key = "time", value = "signif", mid.conf.val, end.conf.val)
+ggplot(tt.strict.plot) +
+  geom_bar(aes(x = time, fill = signif), position = "dodge2") +
+  facet_grid(flake_preference~size_preference, labeller = label_both) +
+  scale_x_discrete(labels = c("end of model run", "middle of model run"))
+
 many.tech.strict = strict.exp %>% filter(overlap == 2)
+mt.strict.plot = many.tech.strict %>% gather(key = "time", value = "signif", mid.conf.val, end.conf.val)
+ggplot(mt.strict.plot) +
+  geom_bar(aes(x = time, fill = signif), position = "dodge2") +
+  facet_grid(flake_preference~size_preference, labeller = label_both) +
+  scale_x_discrete(labels = c("end of model run", "middle of model run"))
+
+#what is happening when size_preference is true and flake_preference is false
+check.data = exposure.data %>% filter(flake_preference == F & size_preference == T & strict_selection == T)
+#when there is size preferences on the nodules -- no recycling of artifacts happens
 
 #results will be likelihood of TRUE values
-two.tech.fit = glm(mid.conf.val ~ as.factor(max_use_intensity) + as.factor(max_artifact_carry) + 
-                     as.factor(max_flake_size) + as.factor(max_nodules_size) + 
-                     as.factor(blank_prob) + as.factor(scavenge_prob) + 
-                     as.factor(mu) + as.factor(size_preference) + as.factor(flake_preference) + 
-                     as.factor(min_suitable_flake_size) + as.factor(min_suitable_nodule_size), 
-                   data = two.tech.strict, family = binomial)
-summary(two.tech.fit)
+mid.two.tech.fit = glm(mid.conf.val ~ max_use_intensity + max_artifact_carry + 
+                         max_flake_size + max_nodules_size + 
+                         blank_prob + scavenge_prob + as.factor(flake_preference) + 
+                         mu + as.factor(size_preference) + min_suitable_flake_size + 
+                         min_suitable_nodule_size, 
+                       data = two.tech.strict, family = binomial)
+summary(mid.two.tech.fit)
 
+end.two.tech.fit = glm(end.conf.val ~ max_use_intensity + max_artifact_carry + 
+                         max_flake_size + max_nodules_size + 
+                         blank_prob + scavenge_prob + as.factor(flake_preference) + 
+                         mu + as.factor(size_preference) + min_suitable_flake_size + 
+                         min_suitable_nodule_size, 
+                       data = two.tech.strict, family = binomial)
+summary(end.two.tech.fit)
 
-many.tech.fit = glm(mid.conf.val ~ as.factor(max_use_intensity) + as.factor(max_artifact_carry) + 
-                     as.factor(max_flake_size) + as.factor(max_nodules_size) + 
-                     as.factor(blank_prob) + as.factor(scavenge_prob) + 
-                     as.factor(mu) + as.factor(size_preference) + as.factor(flake_preference) +
-                     as.factor(min_suitable_flake_size) + as.factor(min_suitable_nodule_size), 
-                   data = many.tech.strict, family = binomial)
+plot_summs(mid.two.tech.fit, end.two.tech.fit, model.names = c("Middle of model run", "End of model run"), 
+           scale = T)
+export_summs(mid.two.tech.fit, end.two.tech.fit, model.names = c("Middle of model run", "End of model run"), 
+             scale = T, error_format = "[{conf.low}, {conf.high}]")
+
+many.tech.fit = glm(mid.conf.val ~ max_use_intensity + max_artifact_carry + 
+                      max_flake_size + max_nodules_size + 
+                      blank_prob + scavenge_prob + as.factor(flake_preference) + 
+                      mu + as.factor(size_preference)*min_suitable_flake_size*min_suitable_nodule_size, 
+                    data = many.tech.strict, family = binomial)
 summary(many.tech.fit)
 
 
 plot_summs(two.tech.fit, many.tech.fit, model.names = c("Two technologies", "Many technologies"))
 export_summs(two.tech.fit, many.tech.fit, scale = T, error_format = "[{conf.low}, {conf.high}]", 
              model.names = c("Two technologies", "Many technologies"))
+
+
+
+
+
+
 
 ##NOT SPLIT BY OVERLAP
 bilog = glm(mid.conf.val ~ as.factor(max_use_intensity) + as.factor(max_artifact_carry) + 

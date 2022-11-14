@@ -1,0 +1,59 @@
+#Counts of recycled nodules and flakes
+library(tidyverse)
+library(parallel)
+library(foreach)
+library(doParallel)
+
+#param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+
+colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
+param_list = param_list[, c("exp", parameters)]
+
+
+#files = list.files("../output/test-artifact-data/")
+files = list.files("/scratch/ec3307/recycling-Java/output/artifact-data/")
+files = files[-length(files)]
+
+
+if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
+  ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
+} else {
+  ncores <- detectCores()
+}
+print(ncores)
+registerDoParallel(ncores)
+Sys.setenv(OMP_NUM_THREADS = "1")
+
+
+foreach (f=1:length(files)) %dopar% {
+  expnum = str_extract(files[f], "[0-9]+")
+  
+  #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
+  data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]), num_threads=1)
+  print(files[f])
+  
+  exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
+  
+  mid_data = data[which(data$model_year == 350000), ]
+  end_data = data[which(data$model_year == 200000), ]
+  
+  rcycl.mid = mid_data[which(mid_data$recycled == T), ]
+  rcycl.end = end_data[which(end_data$recycled == T), ]
+  
+  
+  
+  results = data.frame(exp_values[1,], 
+                       nrow(rcycl.mid[which(rcycl.mid$obj_type == "flake"),]), 
+                       nrow(rcycl.mid[which(rcycl.mid$obj_type == "nodule"),]), 
+                       nrow(rcycl.end[which(rcycl.end$obj_type == "flake"),]), 
+                       nrow(rcycl.end[which(rcycl.end$obj_type == "nodule"),]))
+  colnames(results) <- c(colnames(exp_values), 
+                         "recycled.flakes.mid", "recycled.nodules.mid", 
+                         "recycled.flakes.end", "recycled.nodules.end")
+  filename = str_split(files[f], "_")[[1]][1]
+  write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_recycled-object-counts.csv"), num_threads=1)
+  
+}
