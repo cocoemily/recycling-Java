@@ -31,11 +31,11 @@ foreach (d=1:length(dirs)) %dopar% {
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1, show_col_types = F)
   
   dirsplit = str_split(dirs[d], "\\/")[[1]]
-  print(dirsplit)
+  #print(dirsplit)
   expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
   exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
-  print(expnum)
-  print(exp_values)
+  #print(expnum)
+  #print(exp_values)
   
   end_data = data[which(data$model_year == 200000), ]
   mid_data = data[which(data$model_year == 350000), ]
