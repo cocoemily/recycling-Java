@@ -57,7 +57,7 @@ foreach (d=1:length(dirs)) %dopar% {
   )
   cor_outputs = colnames(cor_vals)
   
-  end_grid = cbind(grid, rep(exp_values), rep(cor_vals))
+  end_grid = cbind(grid, rep(exp_values), rep(cor_vals), row = 0, col = 0)
   
   for(i in 1:nrow(end_grid)){
     square_data = end_data[which(end_data$row == grid$row[i] & end_data$col == grid$col[i]),] 
@@ -74,9 +74,12 @@ foreach (d=1:length(dirs)) %dopar% {
       cor(square_data$recycling.intensity, square_data$num.retouch, use = "complete.obs", method = "spearman"), 
       cor(square_data$recycling.intensity, square_data$num.occupation, use = "complete.obs", method = "spearman")
     )
+    
+    end_grid[i, 26:27] = c(square_data$row[1], square_data$col[1])
+    
   }
     
-    mid_grid = cbind(grid, rep(exp_values), rep(cor_vals))
+    mid_grid = cbind(grid, rep(exp_values), rep(cor_vals), row = 0, col = 0)
     
     for(i in 1:nrow(mid_grid)){
       square_data = mid_data[which(mid_data$row == grid$row[i] & mid_data$col == grid$col[i]),] 
@@ -93,6 +96,8 @@ foreach (d=1:length(dirs)) %dopar% {
         cor(square_data$recycling.intensity, square_data$num.retouch, use = "complete.obs", method = "spearman"), 
         cor(square_data$recycling.intensity, square_data$num.occupation, use = "complete.obs", method = "spearman")
       )
+      
+      mid_grid[i, 26:27] = c(square_data$row[1], square_data$col[1])
     
     }
     mid_grid$time = "mid"
