@@ -9,8 +9,7 @@
 #SBATCH --mail-user=ec3307@nyu.edu
 
 module purge
-module load r/gcc/4.1.0
-module load pandoc/2.11.3.2
+module load r/gcc/4.2.0
 
 R --no-save -q -f model-mobility-analysis.R
 #R --no-save -q -f model-selection-analysis.R
