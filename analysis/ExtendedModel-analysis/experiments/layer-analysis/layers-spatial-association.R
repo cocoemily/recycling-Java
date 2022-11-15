@@ -53,24 +53,24 @@ foreach (d=1:length(dirs)) %dopar% {
     gridded(grid.spat) = TRUE
     grid.spat = as(grid.spat, "SpatialPolygonsDataFrame") 
     
-    grid.spat$recycling.intensity2 = ifelse(is.nan(grid.spat$recycling.intensity), 0, grid.spat$recycling.intensity)
-    grid.spat$cortex.ratio2 = ifelse(is.nan(grid.spat$cortex.ratio), 0, grid.spat$cortex.ratio)
+    #grid.spat$recycling.intensity2 = ifelse(is.nan(grid.spat$recycling.intensity), 0, grid.spat$recycling.intensity)
+    #grid.spat$cortex.ratio2 = ifelse(is.nan(grid.spat$cortex.ratio), 0, grid.spat$cortex.ratio)
     
-    nb = poly2nb(grid.spat, queen = T)
-    lw = nb2listw(nb, zero.policy = T)
+    #nb = poly2nb(grid.spat, queen = T)
+    #lw = nb2listw(nb, zero.policy = T)
     
     #grid.spat$moran = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["statistic"]]
     #grid.spatgrid$moran.p = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["p.value"]]
     
     #endgrid$localG.cluster = attr(localG_perm(endgrid$recycling.intensity2, lw, nsim = 100, zero.policy = T), "cluster")
-    grid.spat$Gi.stat.RI = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.CR = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.flk.count = localG_perm(grid.spat$flake.count, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.nod.count = localG_perm(grid.spat$nodule.count, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.discard = localG_perm(grid.spat$num.discards, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.scavenge = localG_perm(grid.spat$num.scavenge, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.encounters = localG_perm(grid.spat$num.encounters, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.retouch = localG_perm(grid.spat$num.retouch, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.RI = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.CR = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.flk.count = localG_perm(grid.spat$flake.count, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.nod.count = localG_perm(grid.spat$nodule.count, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.num.discard = localG_perm(grid.spat$num.discards, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.num.scavenge = localG_perm(grid.spat$num.scavenge, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.num.encounters = localG_perm(grid.spat$num.encounters, lw, nsim = 100, zero.policy = T)
+    #grid.spat$Gi.stat.num.retouch = localG_perm(grid.spat$num.retouch, lw, nsim = 100, zero.policy = T)
     
     glist[[y]] = grid.spat
     
