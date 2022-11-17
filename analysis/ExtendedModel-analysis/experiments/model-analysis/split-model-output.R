@@ -20,19 +20,19 @@ scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "tot
 
 for(i in 1:nrow(exp)) {
   oneexp = alldata[which(
-    alldata[parameters[1]] == c(exp[row, parameters[1]]) &
-      alldata[parameters[2]] == c(exp[row, parameters[2]]) &
-      alldata[parameters[3]] == c(exp[row, parameters[3]]) &
-      alldata[parameters[4]] == c(exp[row, parameters[4]]) &
-      alldata[parameters[5]] == c(exp[row, parameters[5]]) &
-      alldata[parameters[6]] == c(exp[row, parameters[6]]) &
-      alldata[parameters[7]] == c(exp[row, parameters[7]]) &
-      alldata[parameters[8]] == c(exp[row, parameters[8]]) &
-      alldata[parameters[9]] == c(exp[row, parameters[9]]) &
-      alldata[parameters[10]] == c(exp[row, parameters[10]]) &
-      alldata[parameters[11]] == c(exp[row, parameters[11]]) &
-      alldata[parameters[12]] == c(exp[row, parameters[12]]) &
-      alldata[parameters[13]] == c(exp[row, parameters[13]])
+    alldata[parameters[1]] == c(exp[i, parameters[1]]) &
+      alldata[parameters[2]] == c(exp[i, parameters[2]]) &
+      alldata[parameters[3]] == c(exp[i, parameters[3]]) &
+      alldata[parameters[4]] == c(exp[i, parameters[4]]) &
+      alldata[parameters[5]] == c(exp[i, parameters[5]]) &
+      alldata[parameters[6]] == c(exp[i, parameters[6]]) &
+      alldata[parameters[7]] == c(exp[i, parameters[7]]) &
+      alldata[parameters[8]] == c(exp[i, parameters[8]]) &
+      alldata[parameters[9]] == c(exp[i, parameters[9]]) &
+      alldata[parameters[10]] == c(exp[i, parameters[10]]) &
+      alldata[parameters[11]] == c(exp[i, parameters[11]]) &
+      alldata[parameters[12]] == c(exp[i, parameters[12]]) &
+      alldata[parameters[13]] == c(exp[i, parameters[13]])
   ),]
   
   write_csv(oneexp, paste0("/scratch/ec3307/recycling-Java/output/model-output/exp", i, "-model-output.csv"))
