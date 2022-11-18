@@ -1,5 +1,12 @@
 ### Analysis of model outcomes by mobility
 
+if(!require(emmeans)){install.packages("emmeans")}
+if(!require(jtools)){install.packages("jtools")}
+if(!require(pscl)){install.packages("pscl")}
+if(!require(MASS)){install.packages("MASS")}
+if(!require(rstatix)){install.packages("rstatix")}
+if(!require(sandwich)){install.packages("sandwich")}
+
 library(tidyverse)
 library(ggthemes)
 library(betareg)

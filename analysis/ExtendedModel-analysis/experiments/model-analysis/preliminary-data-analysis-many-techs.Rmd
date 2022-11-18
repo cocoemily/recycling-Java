@@ -7,6 +7,12 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+if(!require(fitdistrplus)){install.packages("fitdistrplus")}
+if(!require(knitr)){install.packages("knitr")}
+if(!require(kableExtra)){install.packages("kableExtra")}
+if(!require(PerformanceAnalytics)){install.packages("PerformanceAnalytics")}
+if(!require(jtools)){install.packages("jtools")}
+
 library(tidyverse)
 library(naniar)
 library(rpart)
