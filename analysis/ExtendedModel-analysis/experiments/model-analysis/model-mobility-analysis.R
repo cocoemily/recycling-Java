@@ -1,11 +1,11 @@
 ### Analysis of model outcomes by mobility
 
-if(!require(emmeans)){install.packages("emmeans")}
-if(!require(jtools)){install.packages("jtools")}
-if(!require(pscl)){install.packages("pscl")}
-if(!require(MASS)){install.packages("MASS")}
-if(!require(rstatix)){install.packages("rstatix")}
-if(!require(sandwich)){install.packages("sandwich")}
+if(!require(emmeans)){install.packages("emmeans", repos = "https://cran.wustl.edu/")}
+if(!require(jtools)){install.packages("jtools", repos = "https://cran.wustl.edu/")}
+if(!require(pscl)){install.packages("pscl", repos = "https://cran.wustl.edu/")}
+if(!require(MASS)){install.packages("MASS", repos = "https://cran.wustl.edu/")}
+if(!require(rstatix)){install.packages("rstatix", repos = "https://cran.wustl.edu/")}
+if(!require(sandwich)){install.packages("sandwich", repos = "https://cran.wustl.edu/")}
 
 library(tidyverse)
 library(ggthemes)
