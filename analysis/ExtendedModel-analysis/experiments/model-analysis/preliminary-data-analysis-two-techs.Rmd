@@ -13,6 +13,9 @@ if(!require(knitr)){install.packages("knitr", repos = "https://cran.wustl.edu/")
 if(!require(kableExtra)){install.packages("kableExtra", repos = "https://cran.wustl.edu/")}
 if(!require(PerformanceAnalytics)){install.packages("PerformanceAnalytics", repos = "https://cran.wustl.edu/")}
 if(!require(jtools)){install.packages("jtools", repos = "https://cran.wustl.edu/")}
+if(!require(broom.mixed)){install.packages("broom.mixed", repos = "https://cran.wustl.edu/")}
+if(!require(ggstance)){install.packages("ggstance", repos = "https://cran.wustl.edu/")}
+if(!require(huxtable)){install.packages("huxtable", repos = "https://cran.wustl.edu/")}
 
 library(tidyverse)
 library(naniar)
@@ -26,6 +29,9 @@ library(knitr)
 library(kableExtra)
 library(PerformanceAnalytics)
 library(jtools)
+library(broom.mixed)
+library(ggstance)
+library(huxtable)
 
 theme_set(theme_minimal())
 
