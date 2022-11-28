@@ -6,6 +6,8 @@ if(!require(pscl)){install.packages("pscl", repos = "https://cran.wustl.edu/")}
 if(!require(MASS)){install.packages("MASS", repos = "https://cran.wustl.edu/")}
 if(!require(rstatix)){install.packages("rstatix", repos = "https://cran.wustl.edu/")}
 if(!require(sandwich)){install.packages("sandwich", repos = "https://cran.wustl.edu/")}
+if(!require(faux)){install.packages("faux", repos = "https://cran.wustl.edu/")}
+if(!require(AICcmodavg)){install.packages("AICcmodavg", repos = "https://cran.wustl.edu/")}
 
 library(tidyverse)
 library(ggthemes)
@@ -18,6 +20,8 @@ library(pscl)
 library(MASS)
 library(rstatix)
 library(sandwich)
+library(faux)
+library(AICcmodavg)
 
 theme_set(theme_bw())
 
@@ -55,22 +59,22 @@ rm(alldata)
 #   dpi = 300
 # )
 
-p1 = ggplot(mu.1, aes(x = model_year, y = total.RI)) +
-  geom_smooth(color = "grey") +
-  facet_grid(~overlap, labeller = label_both) +
-  scale_x_reverse()
-
-p2 = ggplot(mu.2, aes(x = model_year, y = total.RI)) +
-  geom_smooth(color = "orange") +
-  facet_grid(~overlap, labeller = label_both) +
-  scale_x_reverse()
-
-p3 = ggplot(mu.3, aes(x = model_year, y = total.RI)) +
-  geom_smooth(color = "blue") +
-  facet_grid(~overlap, labeller = label_both) +
-  scale_x_reverse()
-
-cowplot::plot_grid(p1, p2, p3, labels = "auto")
+# p1 = ggplot(mu.1, aes(x = model_year, y = total.RI)) +
+#   geom_smooth(color = "grey") +
+#   facet_grid(~overlap, labeller = label_both) +
+#   scale_x_reverse()
+# 
+# p2 = ggplot(mu.2, aes(x = model_year, y = total.RI)) +
+#   geom_smooth(color = "orange") +
+#   facet_grid(~overlap, labeller = label_both) +
+#   scale_x_reverse()
+# 
+# p3 = ggplot(mu.3, aes(x = model_year, y = total.RI)) +
+#   geom_smooth(color = "blue") +
+#   facet_grid(~overlap, labeller = label_both) +
+#   scale_x_reverse()
+# 
+# cowplot::plot_grid(p1, p2, p3, labels = "auto")
 
 
 ###need to know distributions to do regressions
@@ -81,13 +85,20 @@ get_beta_fit = function(mu.data) {
   mu.br.data$total.RI = ifelse(mu.br.data$total.RI == 1, mu.br.data$total.RI - 0.00001, mu.br.data$total.RI)
   mu.br.data$total.RI = ifelse(mu.br.data$total.RI == 0, mu.br.data$total.RI + 0.00001, mu.br.data$total.RI)
   
+  mu.br.data$norm.RI = beta2norm(mu.br.data$total.RI)
+  
   # beta distribution of recycling intensity
-  fit1 = betareg(total.RI ~ ., data =mu.br.data)
-  #joint_tests(fit1)
-  # lrtest(fit1)
+  fit1 = betareg(total.RI ~ ., data =mu.br.data[,c(1:11, 12)])
+  # fit2 = lm(norm.RI ~ ., data = mu.br.data[,c(1:11, 13)])
   # 
-  # plot_coefs(fit1)
+  # AICc(fit1)
+  # #plot(fit1, which = 2)
+  # AICc(fit2)
+  # #plot(fit2, which = 2)
+  
+  # summary(fit2)
   coeftest(fit1, vcov = sandwich)
+  
   fit1.coef = exp(coeftest(fit1, vcov = sandwich)[,1])
   fit1.pval = as.numeric(coeftest(fit1, vcov = sandwich)[,4])
   fit1.terms = rownames(coeftest(fit1, vcov = sandwich))
