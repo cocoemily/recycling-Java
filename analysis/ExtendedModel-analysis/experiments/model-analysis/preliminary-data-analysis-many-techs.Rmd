@@ -149,7 +149,7 @@ output_table_by_param(parameters[7])
 missing.multi = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
 
 descdist(missing.multi$n_miss, discrete = T)
-p1.multi = glm.nb(n_miss ~ . , data = missing.two)
+p1.multi = glm.nb(n_miss ~ . , data = missing.multi)
 plot(p1.multi, which = 2)
 plot_summs(p1.multi)
 export_summs(p1.multi, scale = T, error_format = "[{conf.low}, {conf.high}]")
