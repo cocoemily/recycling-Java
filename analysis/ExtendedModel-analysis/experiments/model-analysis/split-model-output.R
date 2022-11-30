@@ -33,6 +33,7 @@ move_outputs = c("num.deposits", "total.encounters")
 scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
 for(i in 1:nrow(exp)) {
+  print(i)
   oneexp = alldata[which(
     alldata[parameters[1]] == c(exp[i, parameters[1]]) &
       alldata[parameters[2]] == c(exp[i, parameters[2]]) &
