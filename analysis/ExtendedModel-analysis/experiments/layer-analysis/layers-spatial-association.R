@@ -20,7 +20,6 @@ param_list = param_list[, c("exp", parameters)]
 
 #dirs = list.dirs("../output/test-layer-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
-print(dirs)
 ##remove folders refering to artifact data
 dirs = dirs[-c(1:3)]
 dirs = dirs[-length(dirs)]
@@ -83,7 +82,8 @@ foreach (d=1:length(dirs)) %dopar% {
 
   localG.df = as.data.frame(localGresults)
   
-  write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
+  print("writing local Gi results")
+  readr::write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
   
   
   
@@ -122,5 +122,6 @@ foreach (d=1:length(dirs)) %dopar% {
   # writeOGR(obj = results, dsn = "/scratch/ec3307/recycling-Java/output/layer-output/", 
   #          layer = "layer-spatial-change", driver = "ESRI Shapefile")
   
-  write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
+  print("writing change results")
+  readr::write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
 }
