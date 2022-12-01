@@ -66,3 +66,23 @@ plot_summs(mid.many.tech.fit, end.many.tech.fit, model.names = c("Middle of mode
 #significant values do not overlap 0 on estimates
 export_summs(mid.many.tech.fit, end.many.tech.fit, model.names = c("Middle of model run", "End of model run"), 
              scale = T, error_format = "[{conf.low}, {conf.high}]")
+
+
+#### looking at artifact count data ####
+artifact.counts = read_csv("~/eclipse-workspace/recycling-Java/results/all-recycled-object-counts.csv")
+
+strict_counts = artifact.counts %>% filter(strict_selection == TRUE)
+summary(strict_counts$recycled.nodules.end)
+summary(strict_counts$recycled.nodules.mid)
+
+counts = artifact.counts %>%
+  gather(key = "objects.time", value = "count", 
+         recycled.flakes.mid, recycled.nodules.mid, recycled.flakes.end, recycled.nodules.end) %>%
+  filter(strict_selection == TRUE)
+
+ggplot(counts) +
+  geom_col(aes(x = objects.time, y = count), position = "dodge2") +
+  facet_grid(size_preference ~ flake_preference, 
+             labeller = label_both, 
+             scales = "free_y") 
+

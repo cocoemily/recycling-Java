@@ -7,48 +7,12 @@ library(betareg)
 library(jtools)
 library(VGAM)
 library(lme4)
+library(leaps)
 
 #### ANALYSIS OF VARIATION OF OUTPUT VARIABLES BETWEEN GRID SQUARES ACROSS MODEL RUNS ####
 layer.var = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-variation-output.csv")
 two.tech.layers = layer.var %>% filter(overlap == 1)
 many.tech.layers = layer.var %>% filter(overlap == 2)
-
-summary(layer.var$nod.cnt.avg.sd)
-summary(layer.var$flk.cnt.avg.sd)
-summary(layer.var$cr.avg.sd)
-summary(layer.var$ri.avg.sd)
-summary(layer.var$num.dis.avg.sd)
-summary(layer.var$num.enc.avg.sd)
-summary(layer.var$num.manu.avg.sd)
-summary(layer.var$num.occp.avg.sd)
-summary(layer.var$num.ret.avg.sd)
-summary(layer.var$num.scvg.avg.sd)
-##number of discard and scavenging events are very highly variably between model runs of same experiment
-##recycling intensity has low variation between model runs of same experiment, same with cortex ratios
-##flake counts and nodule counts are fairly variable as well between model runs
-
-#### Overall analysis ####
-# plotNormalHistogram(layer.var$nod.cnt.avg.sd)
-# plotNormalHistogram(log(layer.var$flk.cnt.avg.sd))
-# plotNormalHistogram(log(layer.var$cr.avg.sd))
-# plotNormalHistogram(layer.var$ri.avg.sd)
-# plotNormalHistogram(log(layer.var$num.dis.avg.sd))
-# plotNormalHistogram(layer.var$num.enc.avg.sd) #multimodal
-# plotNormalHistogram(layer.var$num.manu.avg.sd) #bimodal
-# plotNormalHistogram(layer.var$num.occp.avg.sd) #multimodal
-# plotNormalHistogram(layer.var$num.ret.avg.sd) #uniform-ish
-# plotNormalHistogram(layer.var$num.scvg.avg.sd)
-
-# 
-# flk.cnt.reg = glm(log(flk.cnt.avg.sd) ~ . , data = layer.var[,c(2:14, 18)])
-# summary(flk.cnt.reg)
-# 
-# nod.cnt.reg = lm(nod.cnt.avg.sd ~ . , data = layer.var[,c(2:14, 16)])
-# summary(nod.cnt.reg)
-# 
-# 
-# ri.reg = vglm(ri.avg.sd ~ ., tobit(Lower = 0), data = layer.var[,c(2:14, 22)])
-# summary(ri.reg)
 
 
 #### Two technology types ####
@@ -68,7 +32,24 @@ summary(two.tech.layers$num.scvg.avg.sd)
 flk.cnt.reg = glm(log(flk.cnt.avg.sd) ~ . , data = two.tech.layers[,c(2:7, 9:14, 18)])
 plot(flk.cnt.reg, which = 2)
 summary(flk.cnt.reg)
-drop1(flk.cnt.reg, test = "F")
+nagelkerke(flk.cnt.reg)$Pseudo.R.squared.for.model.vs.null
+
+#total model still performs better
+# best.flk.cnt = regsubsets(log(flk.cnt.avg.sd) ~ . , 
+#                           data = two.tech.layers[,c(2:7, 9:14, 18)],
+#                           nbest = 1,
+#                           nmax = NULL,
+#                           force.in = NULL, force.out = NULL,
+#                           method = "exhaustive")
+# summary_best_subset <- summary(best.flk.cnt)
+# which.max(summary_best_subset$adjr2)
+# summary_best_subset$which[8,]
+# 
+# r.flk.cnt.reg = glm(log(flk.cnt.avg.sd) ~ max_use_intensity + max_artifact_carry +
+#                       max_flake_size + max_nodules_size + blank_prob +
+#                       mu + size_preference:min_suitable_flake_size, data = two.tech.layers)
+# summary(r.flk.cnt.reg)
+# nagelkerke(r.flk.cnt.reg)$Pseudo.R.squared.for.model.vs.null
 
 nd.cnt.reg = lm(sqrt(nod.cnt.avg.sd) ~ . , data = two.tech.layers[,c(2:7, 9:14, 16)])
 plot(nd.cnt.reg, which = 2)
