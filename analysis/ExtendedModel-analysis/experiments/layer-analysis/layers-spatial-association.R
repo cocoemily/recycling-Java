@@ -49,12 +49,14 @@ foreach (d=1:length(dirs)) %dopar% {
     grid = grid[1:100,]
     
     grid.spat = grid
-    coordinates(grid.spat) = ~row+col
+    coordinates(grid.spat) = ~col+row
     gridded(grid.spat) = TRUE
     grid.spat = as(grid.spat, "SpatialPolygonsDataFrame") 
     
-    #grid.spat$recycling.intensity2 = ifelse(is.nan(grid.spat$recycling.intensity), 0, grid.spat$recycling.intensity)
-    #grid.spat$cortex.ratio2 = ifelse(is.nan(grid.spat$cortex.ratio), 0, grid.spat$cortex.ratio)
+    grid.spat$recycling.intensity2 = ifelse(is.nan(grid.spat$recycling.intensity), 0, grid.spat$recycling.intensity)
+    grid.spat$cortex.ratio2 = ifelse(is.nan(grid.spat$cortex.ratio), 0, grid.spat$cortex.ratio)
+    grid.spat$row = grid$row
+    grid.spat$col = grid$col
     
     #nb = poly2nb(grid.spat, queen = T)
     #lw = nb2listw(nb, zero.policy = T)
@@ -117,8 +119,8 @@ foreach (d=1:length(dirs)) %dopar% {
   results = rbind(midgrid, endgrid)
   results$exp = filename
   
-  writeOGR(obj = results, dsn = "/scratch/ec3307/recycling-Java/output/layer-output/", 
-           layer = "layer-spatial-change", driver = "ESRI Shapefile")
+  # writeOGR(obj = results, dsn = "/scratch/ec3307/recycling-Java/output/layer-output/", 
+  #          layer = "layer-spatial-change", driver = "ESRI Shapefile")
   
-  #write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
+  write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
 }
