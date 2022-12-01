@@ -59,10 +59,6 @@ foreach (d=1:length(dirs)) %dopar% {
     nb = poly2nb(grid.spat, queen = T)
     lw = nb2listw(nb, zero.policy = T)
 
-    grid.spat$moran = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["statistic"]]
-    grid.spatgrid$moran.p = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["p.value"]]
-
-    endgrid$localG.cluster = attr(localG_perm(endgrid$recycling.intensity2, lw, nsim = 100, zero.policy = T), "cluster")
     grid.spat$Gi.stat.RI = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
     grid.spat$Gi.stat.CR = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
     grid.spat$Gi.stat.flk.count = localG_perm(grid.spat$flake.count, lw, nsim = 100, zero.policy = T)
@@ -83,8 +79,6 @@ foreach (d=1:length(dirs)) %dopar% {
   
   print("writing local Gi results")
   readr::write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
-  
-  
   
   #### CHANGE IN VALUES FROM START TO MID AND FROM MID TO FINISH ####
   startgrid = glist[[2]]
@@ -117,9 +111,6 @@ foreach (d=1:length(dirs)) %dopar% {
   
   results = rbind(midgrid, endgrid)
   results$exp = filename
-  
-  # writeOGR(obj = results, dsn = "/scratch/ec3307/recycling-Java/output/layer-output/", 
-  #          layer = "layer-spatial-change", driver = "ESRI Shapefile")
   
   print("writing change results")
   readr::write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
