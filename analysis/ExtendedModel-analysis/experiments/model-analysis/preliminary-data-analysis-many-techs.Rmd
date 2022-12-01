@@ -1,5 +1,6 @@
 ---
 title: "Preliminary Data Analysis"
+subtitle: "MANY TECHNOLOGY TYPES"
 author: "Emily Coco"
 output: html_document
 ---
