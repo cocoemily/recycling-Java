@@ -51,8 +51,8 @@ for(y in 2:length(years)) {
   nb = poly2nb(grid.spat, queen = T)
   lw = nb2listw(nb, zero.policy = T)
   
-  grid.spat$moran = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["statistic"]]
-  grid.spatgrid$moran.p = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["p.value"]]
+  #grid.spat$moran = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["statistic"]]
+  #grid.spatgrid$moran.p = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["p.value"]]
   
   endgrid$localG.cluster = attr(localG_perm(endgrid$recycling.intensity2, lw, nsim = 100, zero.policy = T), "cluster")
   grid.spat$Gi.stat.RI = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
