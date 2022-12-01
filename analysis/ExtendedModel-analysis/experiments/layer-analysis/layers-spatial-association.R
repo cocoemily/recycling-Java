@@ -58,32 +58,32 @@ foreach (d=1:length(dirs)) %dopar% {
     grid.spat$row = grid$row
     grid.spat$col = grid$col
     
-    #nb = poly2nb(grid.spat, queen = T)
-    #lw = nb2listw(nb, zero.policy = T)
-    
-    #grid.spat$moran = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["statistic"]]
-    #grid.spatgrid$moran.p = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["p.value"]]
-    
-    #endgrid$localG.cluster = attr(localG_perm(endgrid$recycling.intensity2, lw, nsim = 100, zero.policy = T), "cluster")
-    #grid.spat$Gi.stat.RI = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
-    #grid.spat$Gi.stat.CR = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
-    #grid.spat$Gi.stat.flk.count = localG_perm(grid.spat$flake.count, lw, nsim = 100, zero.policy = T)
-    #grid.spat$Gi.stat.nod.count = localG_perm(grid.spat$nodule.count, lw, nsim = 100, zero.policy = T)
-    #grid.spat$Gi.stat.num.discard = localG_perm(grid.spat$num.discards, lw, nsim = 100, zero.policy = T)
-    #grid.spat$Gi.stat.num.scavenge = localG_perm(grid.spat$num.scavenge, lw, nsim = 100, zero.policy = T)
-    #grid.spat$Gi.stat.num.encounters = localG_perm(grid.spat$num.encounters, lw, nsim = 100, zero.policy = T)
-    #grid.spat$Gi.stat.num.retouch = localG_perm(grid.spat$num.retouch, lw, nsim = 100, zero.policy = T)
+    nb = poly2nb(grid.spat, queen = T)
+    lw = nb2listw(nb, zero.policy = T)
+
+    grid.spat$moran = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["statistic"]]
+    grid.spatgrid$moran.p = moran.mc(grid.spat$recycling.intensity, lw, nsim = 100, na.action = na.exclude, zero.policy = TRUE)[["p.value"]]
+
+    endgrid$localG.cluster = attr(localG_perm(endgrid$recycling.intensity2, lw, nsim = 100, zero.policy = T), "cluster")
+    grid.spat$Gi.stat.RI = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
+    grid.spat$Gi.stat.CR = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
+    grid.spat$Gi.stat.flk.count = localG_perm(grid.spat$flake.count, lw, nsim = 100, zero.policy = T)
+    grid.spat$Gi.stat.nod.count = localG_perm(grid.spat$nodule.count, lw, nsim = 100, zero.policy = T)
+    grid.spat$Gi.stat.num.discard = localG_perm(grid.spat$num.discards, lw, nsim = 100, zero.policy = T)
+    grid.spat$Gi.stat.num.scavenge = localG_perm(grid.spat$num.scavenge, lw, nsim = 100, zero.policy = T)
+    grid.spat$Gi.stat.num.encounters = localG_perm(grid.spat$num.encounters, lw, nsim = 100, zero.policy = T)
+    grid.spat$Gi.stat.num.retouch = localG_perm(grid.spat$num.retouch, lw, nsim = 100, zero.policy = T)
     
     glist[[y]] = grid.spat
     
   }
   
-  # localGresults = do.call("rbind", glist[2:length(glist)])
-  # localGresults$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-  # 
-  # localG.df = as.data.frame(localGresults)
+  localGresults = do.call("rbind", glist[2:length(glist)])
+  localGresults$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+
+  localG.df = as.data.frame(localGresults)
   
-  #write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
+  write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
   
   
   
