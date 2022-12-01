@@ -105,6 +105,7 @@ midgrid$timeperiod = "midgrid"
 
 results = rbind(midgrid, endgrid)
 results$exp = filename
+results.df = as.data.frame(results)
 
 # writeOGR(obj = results, dsn = "/scratch/ec3307/recycling-Java/output/layer-output/", 
 #          layer = "layer-spatial-change", driver = "ESRI Shapefile")

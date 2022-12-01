@@ -111,6 +111,7 @@ foreach (d=1:length(dirs)) %dopar% {
   
   results = rbind(midgrid, endgrid)
   results$exp = filename
+  results.df = as.data.frame(results)
   
   print("writing change results")
   readr::write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
