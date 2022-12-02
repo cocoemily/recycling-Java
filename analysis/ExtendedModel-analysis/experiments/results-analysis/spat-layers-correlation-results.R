@@ -3,7 +3,6 @@ library(rcompanion)
 library(fitdistrplus)
 library(betareg)
 library(jtools)
-library(groupedstats)
 library(rstatix)
 
 source("ExtendedModel-analysis/experiments/results-analysis/helper-functions.R")
@@ -193,143 +192,184 @@ for(i in 1:length(cor.names)) {
 overlap.test.less = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.obj.cnt.cor, .x$overlap, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
-table(overlap.test.less$signf)
+#null hypothesis group1 >= group2
+table(overlap.test.less$signf) #group1 is less than group2
 
 overlap.test.greater = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.obj.cnt.cor, .x$overlap, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
+table(overlap.test.greater$signf) #group1 is less than group2
 
 mu.test.less = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.obj.cnt.cor, .x$mu, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
 mu.less.overlap1 = mu.test.less %>% filter(overlap == 1)
+table(mu.less.overlap1$signf) #for some, group1 < group2
 mu.less.overlap2 = mu.test.less %>% filter(overlap == 2)
+table(mu.less.overlap2$signf) #for all, cannot reject null
 
 mu.test.greater = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.obj.cnt.cor, .x$mu, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
 mu.greater.overlap1 = mu.test.greater %>% filter(overlap == 1)
+table(mu.greater.overlap1$signf) #for some, group1 > group2
 mu.greater.overlap2 = mu.test.greater %>% filter(overlap == 2)
+table(mu.greater.overlap2$signf) #for some, group1 > group2
 
 ###### recycling intensity and cortex ratio ######
 overlap.test.less = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.cr.cor, .x$overlap, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
-table(overlap.test.less$signf)
+#null hypothesis group1 >= group2
+table(overlap.test.less$signf) #for all cannot reject null
 
 overlap.test.greater = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.cr.cor, .x$overlap, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
-table(overlap.test.greater$signf)
+#null hypothesis group1 <= group2
+table(overlap.test.greater$signf) #for all, group1 > group2
 
 mu.test.less = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.cr.cor, .x$mu, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
 mu.less.overlap1 = mu.test.less %>% filter(overlap == 1)
-table(mu.less.overlap1$signf)
+table(mu.less.overlap1$signf) #for all cannot reject null
 mu.less.overlap2 = mu.test.less %>% filter(overlap == 2)
-table(mu.less.overlap2$signf)
+table(mu.less.overlap2$signf) #for all cannot reject null
 
 mu.test.greater = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.cr.cor, .x$mu, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
 mu.greater.overlap1 = mu.test.greater %>% filter(overlap == 1)
-table(mu.greater.overlap1$signf)
+table(mu.greater.overlap1$signf) #for all, group1 > group2
 mu.greater.overlap2 = mu.test.greater %>% filter(overlap == 2)
-table(mu.greater.overlap2$signf)
+table(mu.greater.overlap2$signf) #for all, group1 > group2
 
 ###### recycling intensity and number of discards ######
 overlap.test.less = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.disc.cor, .x$overlap, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
-table(overlap.test.less$signf)
+#null hypothesis group1 >= group2
+table(overlap.test.less$signf) #for majority, group1 < group2
 
 overlap.test.greater = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.disc.cor, .x$overlap, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
-table(overlap.test.greater$signf)
+#null hypothesis group1 <= group2
+table(overlap.test.greater$signf) # for all, cannot reject null
 
 mu.test.less = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.disc.cor, .x$mu, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
 mu.less.overlap1 = mu.test.less %>% filter(overlap == 1)
-table(mu.less.overlap1$signf)
+table(mu.less.overlap1$signf) #for majority, cannot reject null
 mu.less.overlap2 = mu.test.less %>% filter(overlap == 2)
-table(mu.less.overlap2$signf)
+table(mu.less.overlap2$signf) #for all, cannot reject null
 
 mu.test.greater = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.disc.cor, .x$mu, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
 mu.greater.overlap1 = mu.test.greater %>% filter(overlap == 1)
-table(mu.greater.overlap1$signf)
+table(mu.greater.overlap1$signf) #for some, group1 > group2
 mu.greater.overlap2 = mu.test.greater %>% filter(overlap == 2)
-table(mu.greater.overlap2$signf)
+table(mu.greater.overlap2$signf) #for some, group1 > group2
 
 ###### recycling intensity and number of scavenging events ######
 overlap.test.less = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.scvg.cor, .x$overlap, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
-table(overlap.test.less$signf)
+#null hypothesis group1 >= group2
+table(overlap.test.less$signf) #for all, cannot reject null
 
 overlap.test.greater = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.scvg.cor, .x$overlap, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
-table(overlap.test.greater$signf)
+#null hypothesis group1 <= group2
+table(overlap.test.greater$signf) #for most, group1 > group2
 
 mu.test.less = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.scvg.cor, .x$mu, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
 mu.less.overlap1 = mu.test.less %>% filter(overlap == 1)
-table(mu.less.overlap1$signf)
+table(mu.less.overlap1$signf) #for majority, cannot reject the null
 mu.less.overlap2 = mu.test.less %>% filter(overlap == 2)
-table(mu.less.overlap2$signf)
+table(mu.less.overlap2$signf) #for all but 1, cannot reject null
 
 mu.test.greater = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.scvg.cor, .x$mu, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
 mu.greater.overlap1 = mu.test.greater %>% filter(overlap == 1)
-table(mu.greater.overlap1$signf)
+table(mu.greater.overlap1$signf) #for some, group1 > group2
 mu.greater.overlap2 = mu.test.greater %>% filter(overlap == 2)
-table(mu.greater.overlap2$signf)
+table(mu.greater.overlap2$signf) #for about half, group1 > group2
 
 ###### recycling intensity and number of encounters ######
 overlap.test.less = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.enct.cor, .x$overlap, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
+table(overlap.test.less$signf) #for most, group1 < group2
 
 overlap.test.greater = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.enct.cor, .x$overlap, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
+table(overlap.test.greater$signf) #for all, cannot reject the null
 
 mu.test.less = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.enct.cor, .x$mu, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
 mu.less.overlap1 = mu.test.less %>% filter(overlap == 1)
+table(mu.less.overlap1$signf) #for all, cannot reject the null
 mu.less.overlap2 = mu.test.less %>% filter(overlap == 2)
+table(mu.less.overlap2$signf) #for all, cannot reject null
 
 mu.test.greater = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.enct.cor, .x$mu, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
 mu.greater.overlap1 = mu.test.greater %>% filter(overlap == 1)
+table(mu.greater.overlap1$signf) #for most, group1 > group2
 mu.greater.overlap2 = mu.test.greater %>% filter(overlap == 2)
+table(mu.greater.overlap2$signf) #for most, group1 > group2
 
 ###### recycling intensity and number of manufacture events ######
 overlap.test.less = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.manu.cor, .x$overlap, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
+table(overlap.test.less$signf) #for most, group1 < group2
 
 overlap.test.greater = layer.cor %>% group_by(row, col) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.manu.cor, .x$overlap, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
+table(overlap.test.greater$signf) #for none, cannot reject the null
 
 mu.test.less = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.manu.cor, .x$mu, alternative = c("less")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 >= group2
 mu.less.overlap1 = mu.test.less %>% filter(overlap == 1)
+table(mu.less.overlap1$signf) #for most, cannot reject the null
 mu.less.overlap2 = mu.test.less %>% filter(overlap == 2)
+table(mu.less.overlap2$signf) #for most, cannot reject the null
 
 mu.test.greater = layer.cor %>% group_by(row, col, overlap) %>%
   group_modify(~ broom::tidy(pairwise.wilcox.test(.x$ri.num.manu.cor, .x$mu, alternative = c("greater")))) %>%
   mutate(signf = p.value < 0.05)
+#null hypothesis group1 <= group2
 mu.greater.overlap1 = mu.test.greater %>% filter(overlap == 1)
+table(mu.greater.overlap1$signf) #for majority, cannot reject null
 mu.greater.overlap2 = mu.test.greater %>% filter(overlap == 2)
+table(mu.greater.overlap2$signf) #for majority cannot reject null

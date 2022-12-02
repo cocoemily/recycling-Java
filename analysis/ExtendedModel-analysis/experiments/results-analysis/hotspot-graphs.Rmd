@@ -1,0 +1,119 @@
+---
+title: "Hotspot Analysis by experiment"
+author: "Emily Coco"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(rcompanion)
+
+theme_set(theme_bw())
+
+#Gi stat analysis
+#Greater values represent a greater intensity of clustering and 
+#the direction (positive or negative) indicates high or low clusters. 
+
+layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/all-local-G-results.csv", n_max = 600000)
+#layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-local-G-results.csv")
+exp = unique(layers.Gi$exp)
+
+```
+
+## Hotspots for each experiment
+
+```{r hotspots}
+
+for(e in 1:length(exp)) {
+  Gi = layers.Gi[which(layers.Gi$exp == exp[e]),]
+  
+  #heatmaps at end of model run
+  p1 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.RI)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Recycling intensity") +
+    theme(legend.position = "none", title = element_text(size = 4))
+  
+  p2 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.CR)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Cortex ratio") +
+    theme(legend.position = "none", title = element_text(size = 4))
+  
+  p3 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.flk.count)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Flake count") +
+    theme(legend.position = "none", title = element_text(size = 4))
+  
+  p4 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.nod.count)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Nodule count") +
+    theme(legend.position = "none", title = element_text(size = 4))
+    
+  p5 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.num.discard)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Number of discard events") +
+    theme(legend.position = "none", title = element_text(size = 4))
+  
+  p6 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.num.scavenge)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Number of scavenging events") +
+    theme(legend.position = "none", title = element_text(size = 4))
+  
+  p7 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.num.encounters)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Number of encounter events") +
+    theme(legend.position = "none", title = element_text(size = 4))
+  
+  p8 = ggplot(Gi[which(Gi$model_year == 200000),], aes(x = col, y = row, fill = Gi.stat.num.retouch)) +
+    geom_tile() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000") +
+    coord_fixed() +
+    labs(title = "Number of retouch events") +
+    theme(legend.position = "none", title = element_text(size = 4))
+  
+  plotgrid = cowplot::plot_grid(p1, p2, p3, p4, p5, p6, p7, p8, 
+                     nrow = 2)
+  
+  title = ggdraw() +
+    draw_label(exp[e], 
+               fontface = "bold", 
+               x = 0, hjust = 0) +
+    theme(plot.margin = margin(0,0,0,7))
+  
+  plot_grid(title, plotgrid, ncol = 1, 
+            rel_heights = c(0.1,1))
+  
+}
+
+```
