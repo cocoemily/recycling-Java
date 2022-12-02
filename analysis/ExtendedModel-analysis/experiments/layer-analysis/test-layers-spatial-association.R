@@ -111,4 +111,4 @@ results.df = as.data.frame(results)
 #          layer = "layer-spatial-change", driver = "ESRI Shapefile")
 
 print("writing change results")
-readr::write_csv(results, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)
+readr::write_csv(results.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-spatial-change.csv"), num_threads=1)

@@ -11,8 +11,8 @@
 module purge
 module load r/gcc/4.2.0
 
-R --no-save -q -f model-mobility-analysis.R
+#R --no-save -q -f model-mobility-analysis.R
 #R --no-save -q -f model-overlap-analysis.R
 #R --no-save -q -f model-selection-analysis.R
 
-#R --no-save -q -f change-over-time-RI.R
+R --no-save -q -f change-over-time-RI.R
