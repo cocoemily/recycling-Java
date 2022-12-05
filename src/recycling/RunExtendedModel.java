@@ -194,6 +194,10 @@ public class RunExtendedModel {
 				
 				model.getModelData();
 				model.resetScavengeEventCounter();
+				model.resetDiscardEventCounter();
+				model.resetRecycledObjectCounter();
+				model.resetRetouchEventCounter();
+				model.resetBlankCounter();
 			}
 
 			outputModelData(model);

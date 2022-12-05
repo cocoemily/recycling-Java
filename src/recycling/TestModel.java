@@ -17,8 +17,8 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"test-file-create",	//outputFile
-				"run_0", 	//name
+				"test-preferences",	//outputFile
+				"run_2", 	//name
 				10, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
@@ -34,7 +34,7 @@ public class TestModel {
 				false, 		//flakePref
 				1, 			//minFS
 				10, 		//minNS
-				false, 		//strict
+				true, 		//strict
 				0.5, 		//ED
 				0, 			//GF
 				3000		//totalSteps

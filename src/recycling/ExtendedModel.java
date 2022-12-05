@@ -46,6 +46,10 @@ public class ExtendedModel {
 	public boolean strictSelect; //determine whether or not random collection after things meeting selection criteria are selected
 
 	public int numberScavengingEvents; 
+	public int numberDiscardEvents;
+	public int numberRecycledObjectsMade;
+	public int numberRetouchEvents;
+	public int numberBlankProduced;
 
 	//output data 
 	StringBuilder layerdata;
@@ -115,7 +119,7 @@ public class ExtendedModel {
 				+ "recycling.intensity,num.discards,num.scavenge,num.encounters,num.manufacture,num.retouch,num.occupation";
 		this.layerdata.append(cols + "\n");
 		this.modeldata = new StringBuilder();
-		String mcols = this.getParameterData().get(0) + ",model_year,num.scav.events,total.recycled,num.deposits,total.encounters,total.discards,total.manu.events,total.retouches,total.CR,total.RI"; 
+		String mcols = this.getParameterData().get(0) + ",model_year,num.scav.events,num.discard.events,num.rcycl.obj.made,num.retouch.events,num.blank.events,total.recycled,cum.deposits,cum.encounters,cum.discards,cum.manu.events,cum.retouches,total.CR,total.RI"; 
 		this.modeldata.append(mcols + "\n");
 		this.artifactdata = new StringBuilder();
 		this.artifactdata.append("row,col,model_year,layer_year,obj_type,initial_discard,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
@@ -425,6 +429,38 @@ public class ExtendedModel {
 		this.numberScavengingEvents = 0;
 
 	}
+	
+	/**
+	 * Resets discard event counters to zero to track number of events per model step
+	 */
+	public void resetDiscardEventCounter() {
+		this.numberDiscardEvents = 0;
+
+	}
+	
+	/**
+	 * Resets recycled objects produced counters to zero to track number of events per model step
+	 */
+	public void resetRecycledObjectCounter() {
+		this.numberRecycledObjectsMade = 0;
+
+	}
+	
+	/**
+	 * Resets retouch event counters to zero to track number of events per model step
+	 */
+	public void resetRetouchEventCounter() {
+		this.numberRetouchEvents = 0;
+
+	}
+	
+	/**
+	 * Resets blank production event counters to zero to track number of events per model step
+	 */
+	public void resetBlankCounter() {
+		this.numberBlankProduced = 0;
+
+	}
 
 	/**
 	 * Agent removes a flake from a random nodule it is holding
@@ -438,6 +474,7 @@ public class ExtendedModel {
 			f.addTech(agent.getTech());
 			if(f.getFirstTech() != f.getLastTech()) {
 				f.setRecycled();
+				this.numberRecycledObjectsMade++;
 			}
 			
 			agent.collectFlake(f);
@@ -446,9 +483,11 @@ public class ExtendedModel {
 			agent.getAgentNodules().get(index).addTech(agent.getTech());
 			if(agent.getAgentNodules().get(index).getFirstTech() != agent.getAgentNodules().get(index).getLastTech()) {
 				agent.getAgentNodules().get(index).setRecycled();
+				this.numberRecycledObjectsMade++;
 			}
 			
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().manufactured();
+			this.numberBlankProduced++;
 		}
 	}
 
@@ -464,7 +503,9 @@ public class ExtendedModel {
 		f.addTech(agent.getTech());
 		if(f.getFirstTech() != f.getLastTech()) {
 			f.setRecycled();
+			this.numberRecycledObjectsMade++;
 		}
+		this.numberRetouchEvents++;
 	}
 
 	/**
@@ -503,12 +544,14 @@ public class ExtendedModel {
 		if(dropN.size() != 0) {
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
+			this.numberDiscardEvents += dropN.size();
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositNodules(dropN);
 			System.out.println("\t agent dropped nodules");
 		}
 		if(dropF.size() != 0) {
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
+			this.numberDiscardEvents += dropF.size();
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
 			System.out.println("\t agent dropped flakes");
 		}
@@ -631,12 +674,14 @@ public class ExtendedModel {
 				if(dropN.size() != 0) {
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropN.size());
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropN.size());
+					this.numberDiscardEvents += dropN.size();
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositNodules(dropN);
 					System.out.println("\t agent dropped nodules");
 				}
 				if(dropF.size() != 0) {
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).discards(dropF.size());
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().discards(dropF.size());
+					this.numberDiscardEvents += dropF.size();
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().depositFlakes(dropF);
 					System.out.println("\t agent dropped flakes");
 
@@ -842,13 +887,17 @@ public class ExtendedModel {
 
 		String datastring = params.get(1);
 		datastring += this.currentYear + "," + this.numberScavengingEvents + "," ;
+		datastring += this.numberDiscardEvents + ",";
+		datastring += this.numberRecycledObjectsMade + ",";
+		datastring += this.numberRetouchEvents + ",";
+		datastring += this.numberBlankProduced + ",";
 
 		int totalRecycledItems = 0;
-		int numDeposits = 0;
-		int totalEncounters = 0;
-		int totalDiscards = 0;
-		int totalManufactures = 0;
-		int totalRetouches = 0;
+		int cumNumDeposits = 0;
+		int cumEncounters = 0;
+		int cumDiscards = 0;
+		int cumManufactures = 0;
+		int cumRetouches = 0;
 		double totalCR = 0;
 		double totalRI = 0;
 
@@ -873,19 +922,19 @@ public class ExtendedModel {
 					}
 
 					if(layer.hasFlakes() || layer.hasNodules()) {
-						numDeposits++;
+						cumNumDeposits++;
 					}
-					totalEncounters += layer.getEncounters();
-					totalDiscards += layer.getDiscardEvents();
-					totalManufactures += layer.getManufactureEvents();
-					totalRetouches += layer.getRetouchEvents();
+					cumEncounters += layer.getEncounters();
+					cumDiscards += layer.getDiscardEvents();
+					cumManufactures += layer.getManufactureEvents();
+					cumRetouches += layer.getRetouchEvents();
 
 					totalCR = this.calculateTotalCortexRatio(layer.getYear());
 					totalRI = this.calculateTotalRecyclingIntensity(layer.getYear());
 				}
 			}
 		}
-		datastring += totalRecycledItems + "," + numDeposits + "," + totalEncounters + "," + totalDiscards + "," + totalManufactures + "," + totalRetouches + ",";
+		datastring += totalRecycledItems + "," + cumNumDeposits + "," + cumEncounters + "," + cumDiscards + "," + cumManufactures + "," + cumRetouches + ",";
 		datastring += totalCR + "," + totalRI;
 		data.append(datastring + "\n");
 		this.modeldata.append(data.toString());
