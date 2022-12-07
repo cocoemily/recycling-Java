@@ -20,9 +20,11 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 move_outputs = c("num.deposits", "total.encounters")
 scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
-#files = list.files("../output/test-model-data/")
-files = list.files("/scratch/ec3307/recycling-Java/output/model-output/")
-files = files[-length(files)]
+#dirs = list.dirs("../output/test-layer-data")
+dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
+##remove folders refering to artifact data
+dirs = dirs[-c(1:3)]
+dirs = dirs[-length(dirs)]
 
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
   ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
@@ -33,7 +35,12 @@ print(ncores)
 registerDoParallel(ncores)
 Sys.setenv(OMP_NUM_THREADS = "1")
 
-foreach (f=1:length(files)) %dopar% { 
+foreach (d=1:length(dirs)) %dopar% { 
+  data = read_csv(paste0(dirs[d], "/model-data.csv"), num_threads=1)
+  
+  filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+  print(filename)
+  
   allvar = data.frame(
     num.scav.events.var = numeric(), 
     total.recycled.var = numeric(), 
@@ -48,9 +55,6 @@ foreach (f=1:length(files)) %dopar% {
     model_year = numeric()
   )
   
-  expnum = str_extract(files[f], "[0-9]+")
-  #data = read_csv(paste0("../output/test-model-data/", files[f]))
-  data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/model-output/", files[f]), num_threads=1)
   modelyears = unique(data$model_year)
   
   for(year in 1:length(modelyears)) {
@@ -73,6 +77,6 @@ foreach (f=1:length(files)) %dopar% {
     allvar[nrow(allvar) + 1, ] = var
   }
   
-  write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/model-output/exp", row, "_variation.csv"), num_threads=1)
+  write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/model-output/", filename, "_variation.csv"), num_threads=1)
   
 }
