@@ -31,77 +31,77 @@ nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
 rm(alldata)
 
 ###OVERLAP####
-# avg.two.tech = two.tech %>%
-#   group_by(model_year) %>%
-#   summarize(mean.RI = mean(total.RI), 
-#             sd.RI = sd(total.RI), 
-#             n.RI = n()) %>%
-#   mutate(overlap = 1, 
-#          se.RI = sd.RI / sqrt(n.RI),
-#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI, 
-#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-# avg.multi.tech = multi.tech %>%
-#   group_by(model_year) %>%
-#   summarize(mean.RI = mean(total.RI), 
-#             sd.RI = sd(total.RI), 
-#             n.RI = n()) %>%
-#   mutate(overlap = 2, 
-#          se.RI = sd.RI / sqrt(n.RI),
-#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI, 
-#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-# 
-# oplot = ggplot() +
-#   geom_line(data = avg.two.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) + 
-#   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-#   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
-#   geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-#   scale_x_reverse() +
-#   scale_color_colorblind() +
-#   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
-# 
-# ggsave(filename = "recycling-intensity-trend-by-overlap.png", oplot, dpi = 300)
+avg.two.tech = two.tech %>%
+  group_by(model_year) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(overlap = 1,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+avg.multi.tech = multi.tech %>%
+  group_by(model_year) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(overlap = 2,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+
+oplot = ggplot() +
+  geom_line(data = avg.two.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  scale_x_reverse() +
+  scale_color_colorblind() +
+  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
+
+ggsave(filename = "recycling-intensity-trend-by-overlap.png", oplot, dpi = 300)
 
 ####MU####
-# avg.mu.1 = mu.1 %>%
-#   group_by(model_year) %>%
-#   summarize(mean.RI = mean(total.RI), 
-#             sd.RI = sd(total.RI), 
-#             n.RI = n()) %>%
-#   mutate(mu = 1, 
-#          se.RI = sd.RI / sqrt(n.RI),
-#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI, 
-#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-# avg.mu.2 = mu.2 %>%
-#   group_by(model_year) %>%
-#   summarize(mean.RI = mean(total.RI), 
-#             sd.RI = sd(total.RI), 
-#             n.RI = n()) %>%
-#   mutate(mu = 2, 
-#          se.RI = sd.RI / sqrt(n.RI),
-#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI, 
-#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-# avg.mu.3 = mu.3 %>%
-#   group_by(model_year) %>%
-#   summarize(mean.RI = mean(total.RI), 
-#             sd.RI = sd(total.RI), 
-#             n.RI = n()) %>%
-#   mutate(mu = 3, 
-#          se.RI = sd.RI / sqrt(n.RI),
-#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI, 
-#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-# 
-# mplot = ggplot() +
-#   geom_line(data = avg.mu.1, aes(x = model_year, y = mean.RI, color = as.factor(mu))) + 
-#   geom_ribbon(data = avg.mu.1, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-#   geom_line(data = avg.mu.2, aes(x = model_year, y = mean.RI, color = as.factor(mu))) +
-#   geom_ribbon(data = avg.mu.2, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-#   geom_line(data = avg.mu.3, aes(x = model_year, y = mean.RI, color = as.factor(mu))) +
-#   geom_ribbon(data = avg.mu.3, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-#   scale_x_reverse() +
-#   scale_color_colorblind() +
-#   labs(color = "mu parameter", x = "model year", y = "average recycling intensity")
-# 
-# ggsave(filename = "recycling-intensity-trend-by-mu.png", mplot, dpi = 300)
+avg.mu.1 = mu.1 %>%
+  group_by(model_year) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(mu = 1,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+avg.mu.2 = mu.2 %>%
+  group_by(model_year) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(mu = 2,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+avg.mu.3 = mu.3 %>%
+  group_by(model_year) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(mu = 3,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+
+mplot = ggplot() +
+  geom_line(data = avg.mu.1, aes(x = model_year, y = mean.RI, color = as.factor(mu))) +
+  geom_ribbon(data = avg.mu.1, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = avg.mu.2, aes(x = model_year, y = mean.RI, color = as.factor(mu))) +
+  geom_ribbon(data = avg.mu.2, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = avg.mu.3, aes(x = model_year, y = mean.RI, color = as.factor(mu))) +
+  geom_ribbon(data = avg.mu.3, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  scale_x_reverse() +
+  scale_color_colorblind() +
+  labs(color = "mu parameter", x = "model year", y = "average recycling intensity")
+
+ggsave(filename = "recycling-intensity-trend-by-mu.png", mplot, dpi = 300)
 
 
 ####SELECTION####
