@@ -17,3 +17,7 @@ module load r/gcc/4.2.0
 
 R --no-save -q -f change-over-time-RI.R
 R --no-save -q -f change-over-time-scavenging.R
+R --no-save -q -f change-over-time-discards.R
+R --no-save -q -f change-over-time-recycling-events.R
+R --no-save -q -f change-over-time-retouches.R
+R --no-save -q -f change-over-time-blanks.R
