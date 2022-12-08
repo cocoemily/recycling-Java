@@ -57,7 +57,7 @@ foreach (d=1:length(dirs)) %dopar% {
   )
   var_outputs = colnames(variation_vals)
   
-  grid = cbind(grid, rep(exp_values), rep(variation_vals))
+  grid = cbind(grid, rep(exp_values), rep(variation_vals), row = 0, col = 0)
   
   for(i in 1:nrow(grid)){
     square_data = end_data[which(end_data$row == grid$row[i] & end_data$col == grid$col[i]),]
@@ -76,32 +76,12 @@ foreach (d=1:length(dirs)) %dopar% {
       sd(square_data$num.occupation, na.rm = T)
     )
     
+    grid[i, 27:28] = c(square_data$row[1], square_data$col[1])
+    
   }
   
-  final = data.frame(
-    exp_values[1,], 
-    nod.cnt.mean = mean(end_data$nodule.count, na.rm = T), 
-    nod.cnt.avg.sd = mean(grid$nodule.count.sd, na.rm = T), 
-    flk.cnt.mean = mean(end_data$flake.count, na.rm = T), 
-    flk.cnt.avg.sd = mean(grid$flake.count.sd, na.rm = T), 
-    cr.mean = mean(end_data$cortex.ratio, na.rm = T), 
-    cr.avg.sd = mean(grid$cortex.ratio.sd, na.rm = T), 
-    ri.mean = mean(end_data$recycling.intensity, na.rm = T), 
-    ri.avg.sd = mean(grid$recycling.intensity.sd, na.rm = T), 
-    num.dis.mean = mean(end_data$num.discards, na.rm = T), 
-    num.dis.avg.sd = mean(grid$num.discards.sd, na.rm = T), 
-    num.scvg.mean = mean(end_data$num.scavenge, na.rm = T), 
-    num.scvg.avg.sd = mean(grid$num.scavenge.sd, na.rm = T), 
-    num.enc.mean = mean(end_data$num.encounters, na.rm = T), 
-    num.enc.avg.sd = mean(grid$num.encounters.sd, na.rm = T), 
-    num.manu.mean = mean(end_data$num.manufacture, na.rm = T), 
-    num.manu.avg.sd = mean(grid$num.manufacture.sd, na.rm = T), 
-    num.ret.mean = mean(end_data$num.retouch, na.rm = T), 
-    num.ret.avg.sd = mean(grid$num.retouch.sd, na.rm = T), 
-    num.occp.mean = mean(end_data$num.occupation, na.rm = T), 
-    num.occp.avg.sd = mean(grid$num.occupation.sd, na.rm = T)
-  )
-  
+
+    
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-  write_csv(final, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-variation.csv"), num_threads=1)
+  write_csv(grid, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-variation.csv"), num_threads=1)
 }
