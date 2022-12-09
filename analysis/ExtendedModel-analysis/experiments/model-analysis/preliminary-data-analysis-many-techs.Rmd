@@ -52,7 +52,7 @@ rm(alldata)
 ```
 
 ## What are the distributions of the output metrics?
-```{r checking-assumptions-multi, eval=T, warning=F}
+```{r checking-assumptions-two, eval=T, warning=F}
 plotNormalHistogram(multi.tech$total.RI)
 distRI = multi.tech[!is.na(multi.tech$total.RI) & !is.nan(multi.tech$total.RI),]$total.RI
 descdist(distRI, discrete=F)
@@ -68,35 +68,40 @@ distSE = multi.tech[!is.na(multi.tech$num.scav.events) & !is.nan(multi.tech$num.
 descdist(distSE, discrete=T)
 rm(distSE)
 
+plotNormalHistogram(multi.tech$num.discard.events)
+distDE = multi.tech[!is.na(multi.tech$num.discard.events) & !is.nan(multi.tech$num.discard.events),]$num.discard.events
+descdist(distDE, discrete=T)
+rm(distDE)
+
+plotNormalHistogram(multi.tech$num.rcycl.obj.made)
+distRO = multi.tech[!is.na(multi.tech$num.rcycl.obj.made) & !is.nan(multi.tech$num.rcycl.obj.made),]$num.rcycl.obj.made
+descdist(distRO, discrete=T)
+rm(distRO)
+
+plotNormalHistogram(multi.tech$num.retouch.events)
+distRE = multi.tech[!is.na(multi.tech$num.retouch.events) & !is.nan(multi.tech$num.retouch.events),]$num.retouch.events
+descdist(distRE, discrete=T)
+rm(distRE)
+
+plotNormalHistogram(multi.tech$num.blank.events)
+distBE = multi.tech[!is.na(multi.tech$num.blank.events) & !is.nan(multi.tech$num.blank.events),]$num.blank.events
+descdist(distBE, discrete=T)
+rm(distBE)
+
 plotNormalHistogram(multi.tech$total.recycled)
 distTR = multi.tech[!is.na(multi.tech$total.recycled) & !is.nan(multi.tech$total.recycled),]$total.recycled
 descdist(distTR, discrete=T)
 rm(distTR)
 
-plotNormalHistogram(multi.tech$num.deposits)
-distND = multi.tech[!is.na(multi.tech$num.deposits) & !is.nan(multi.tech$num.deposits),]$num.deposits
-descdist(distND, discrete=T)
-rm(distND)
+plotNormalHistogram(multi.tech$cum.deposits)
+distCD = multi.tech[!is.na(multi.tech$cum.deposits) & !is.nan(multi.tech$cum.deposits),]$cum.deposits
+descdist(distCD, discrete=T)
+rm(distCD)
 
-plotNormalHistogram(multi.tech$total.encounters)
-distTE = multi.tech[!is.na(multi.tech$total.encounters) & !is.nan(multi.tech$total.encounters),]$total.encounters
-descdist(distTE, discrete=T)
-rm(distTE)
-
-plotNormalHistogram(multi.tech$total.discards)
-distTD = multi.tech[!is.na(multi.tech$total.discards) & !is.nan(multi.tech$total.discards),]$total.discards
-descdist(distTD, discrete=T)
-rm(distTD)
-
-plotNormalHistogram(multi.tech$total.manu.events)
-distME = multi.tech[!is.na(multi.tech$total.manu.events) & !is.nan(multi.tech$total.manu.events),]$total.manu.events
-descdist(distME, discrete=T)
-rm(distME)
-
-plotNormalHistogram(multi.tech$total.retouches)
-distTR = multi.tech[!is.na(multi.tech$total.retouches) & !is.nan(multi.tech$total.retouches),]$total.retouches
-descdist(distTR, discrete=T)
-rm(distTR)
+plotNormalHistogram(multi.tech$cum.encounters)
+distCE = multi.tech[!is.na(multi.tech$cum.encounters) & !is.nan(multi.tech$cum.encounters),]$cum.encounters
+descdist(distCE, discrete=T)
+rm(distCE)
 
 ```
 
@@ -105,12 +110,6 @@ rm(distTR)
 ```{r missing-recycling-intensity, eval=T, warning=F}
 
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
-
-# output.two = two.tech[,c(outputs)]
-# gg_miss_var(output.two, show_pct = T)
-# 
-# output.multi = multi.tech[,c(outputs)]
-# gg_miss_var(output.multi, show_pct = T)
 
 facet_data = multi.tech[,c(parameters, outputs)]
 
@@ -135,17 +134,6 @@ output_table_by_param(parameters[7])
 # output_table_by_param(parameters[11])
 # output_table_by_param(parameters[12])
 # output_table_by_param(parameters[13])
-
-
-# output_table_by_exp = function() {
-#   return(
-#     facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
-#     filter(n_miss != 0) %>% kbl(caption = paste("Missing output values for each experiment")) %>%
-#       kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
-#       )
-# }
-# 
-# output_table_by_exp()
 
 missing.multi = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
 

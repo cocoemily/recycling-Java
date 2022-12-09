@@ -37,7 +37,8 @@ theme_set(theme_minimal())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap", "mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
 
-outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+# outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+outputs = colnames(alldata[c(22:34)])
 
 #alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
 
@@ -68,35 +69,40 @@ distSE = two.tech[!is.na(two.tech$num.scav.events) & !is.nan(two.tech$num.scav.e
 descdist(distSE, discrete=T)
 rm(distSE)
 
+plotNormalHistogram(two.tech$num.discard.events)
+distDE = two.tech[!is.na(two.tech$num.discard.events) & !is.nan(two.tech$num.discard.events),]$num.discard.events
+descdist(distDE, discrete=T)
+rm(distDE)
+
+plotNormalHistogram(two.tech$num.rcycl.obj.made)
+distRO = two.tech[!is.na(two.tech$num.rcycl.obj.made) & !is.nan(two.tech$num.rcycl.obj.made),]$num.rcycl.obj.made
+descdist(distRO, discrete=T)
+rm(distRO)
+
+plotNormalHistogram(two.tech$num.retouch.events)
+distRE = two.tech[!is.na(two.tech$num.retouch.events) & !is.nan(two.tech$num.retouch.events),]$num.retouch.events
+descdist(distRE, discrete=T)
+rm(distRE)
+
+plotNormalHistogram(two.tech$num.blank.events)
+distBE = two.tech[!is.na(two.tech$num.blank.events) & !is.nan(two.tech$num.blank.events),]$num.blank.events
+descdist(distBE, discrete=T)
+rm(distBE)
+
 plotNormalHistogram(two.tech$total.recycled)
 distTR = two.tech[!is.na(two.tech$total.recycled) & !is.nan(two.tech$total.recycled),]$total.recycled
 descdist(distTR, discrete=T)
 rm(distTR)
 
-plotNormalHistogram(two.tech$num.deposits)
-distND = two.tech[!is.na(two.tech$num.deposits) & !is.nan(two.tech$num.deposits),]$num.deposits
-descdist(distND, discrete=T)
-rm(distND)
+plotNormalHistogram(two.tech$cum.deposits)
+distCD = two.tech[!is.na(two.tech$cum.deposits) & !is.nan(two.tech$cum.deposits),]$cum.deposits
+descdist(distCD, discrete=T)
+rm(distCD)
 
-plotNormalHistogram(two.tech$total.encounters)
-distTE = two.tech[!is.na(two.tech$total.encounters) & !is.nan(two.tech$total.encounters),]$total.encounters
-descdist(distTE, discrete=T)
-rm(distTE)
-
-plotNormalHistogram(two.tech$total.discards)
-distTD = two.tech[!is.na(two.tech$total.discards) & !is.nan(two.tech$total.discards),]$total.discards
-descdist(distTD, discrete=T)
-rm(distTD)
-
-plotNormalHistogram(two.tech$total.manu.events)
-distME = two.tech[!is.na(two.tech$total.manu.events) & !is.nan(two.tech$total.manu.events),]$total.manu.events
-descdist(distME, discrete=T)
-rm(distME)
-
-plotNormalHistogram(two.tech$total.retouches)
-distTR = two.tech[!is.na(two.tech$total.retouches) & !is.nan(two.tech$total.retouches),]$total.retouches
-descdist(distTR, discrete=T)
-rm(distTR)
+plotNormalHistogram(two.tech$cum.encounters)
+distCE = two.tech[!is.na(two.tech$cum.encounters) & !is.nan(two.tech$cum.encounters),]$cum.encounters
+descdist(distCE, discrete=T)
+rm(distCE)
 
 ```
 
@@ -105,12 +111,6 @@ rm(distTR)
 ```{r missing-recycling-intensity, eval=T, warning=F, message=F}
 
 outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
-
-# output.two = two.tech[,c(outputs)]
-# gg_miss_var(output.two, show_pct = T)
-# 
-# output.multi = multi.tech[,c(outputs)]
-# gg_miss_var(output.multi, show_pct = T)
 
 facet_data = two.tech[,c(parameters, outputs)]
 
@@ -135,17 +135,6 @@ output_table_by_param(parameters[7])
 # output_table_by_param(parameters[11])
 # output_table_by_param(parameters[12])
 # output_table_by_param(parameters[13])
-
-
-# output_table_by_exp = function() {
-#   return(
-#     facet_data %>% group_by_at(parameters) %>% miss_var_summary %>%
-#     filter(n_miss != 0) %>% kbl(caption = paste("Missing output values for each experiment")) %>%
-#       kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
-#       )
-# }
-# 
-# output_table_by_exp()
 
 missing.two = (facet_data %>% group_by_at(parameters) %>% miss_var_summary %>% filter(n_miss != 0) %>% filter(variable == "total.RI"))[,c(1:6, 8:13, 15)]
 
