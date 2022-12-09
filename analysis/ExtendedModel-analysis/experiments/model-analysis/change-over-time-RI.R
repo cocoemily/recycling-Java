@@ -20,11 +20,11 @@ outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounter
 move_outputs = c("num.deposits", "total.encounters")
 scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
-# two.tech = alldata[which(alldata$overlap == 1),]
-# multi.tech = alldata[which(alldata$overlap == 2),]
-# mu.1 = alldata[which(alldata$mu == 1),]
-# mu.2 = alldata[which(alldata$mu == 2),]
-# mu.3 = alldata[which(alldata$mu == 3),]
+two.tech = alldata[which(alldata$overlap == 1),]
+multi.tech = alldata[which(alldata$overlap == 2),]
+mu.1 = alldata[which(alldata$mu == 1),]
+mu.2 = alldata[which(alldata$mu == 2),]
+mu.3 = alldata[which(alldata$mu == 3),]
 flake.selection = alldata[which(alldata$flake_preference == TRUE),]
 nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
 
