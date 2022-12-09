@@ -10,3 +10,5 @@ run-scripts/ExtendedModel-model-runs/slurm*
 **/.DS_Store
 
 analysis/ExtendedModel-analysis/experiments/results-analysis/*.html
+results/*
+
