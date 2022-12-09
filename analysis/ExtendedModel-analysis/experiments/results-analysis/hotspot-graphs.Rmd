@@ -113,8 +113,8 @@ for(e in 1:length(exp)) {
                x = 0, hjust = 0) +
     theme(plot.margin = margin(0,0,0,7))
   
-  plot_grid(title, plotgrid, ncol = 1, 
-            rel_heights = c(0.1,1))
+  plot(plot_grid(title, plotgrid, ncol = 1, 
+            rel_heights = c(0.1,1)))
   
 }
 
