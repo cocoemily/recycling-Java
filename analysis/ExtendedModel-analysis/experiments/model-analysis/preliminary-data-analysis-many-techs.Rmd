@@ -109,8 +109,6 @@ rm(distCE)
 
 ```{r missing-recycling-intensity, eval=T, warning=F}
 
-outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
-
 facet_data = multi.tech[,c(parameters, outputs)]
 
 output_table_by_param = function(parameter) {
