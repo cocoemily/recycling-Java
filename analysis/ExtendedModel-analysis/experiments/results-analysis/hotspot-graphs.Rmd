@@ -18,7 +18,7 @@ theme_set(theme_bw())
 #the direction (positive or negative) indicates high or low clusters. 
 
 #layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/all-local-G-results.csv", n_max = 600000)
-layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-local-G-results.csv")
+layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-layer-local-Gi.csv")
 layers.Gi = layers.Gi[which(layers.Gi$strict_selection == FALSE),]
 exp = unique(layers.Gi$exp)
 
