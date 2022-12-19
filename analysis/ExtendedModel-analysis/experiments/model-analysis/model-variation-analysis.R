@@ -77,6 +77,6 @@ foreach (d=1:length(dirs)) %dopar% {
     allvar[nrow(allvar) + 1, ] = var
   }
   
-  write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/model-output/", filename, "_variation.csv"), num_threads=1)
+  write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/", filename, "_variation.csv"), num_threads=1)
   
 }
