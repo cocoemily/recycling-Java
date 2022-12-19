@@ -35,18 +35,21 @@ grouping_params = c("mu", "overlap")
 exp = readr::read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 colnames(exp) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
 
-outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
+outputs = colnames(alldata[c(22:34)])
+cum.outputs = outputs[6:13]
+step.outputs = outputs[1:5]
 
-move_outputs = c("num.deposits", "total.encounters")
-scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
 
 two.tech = alldata[which(alldata$overlap == 1),]
 multi.tech = alldata[which(alldata$overlap == 2),]
 
+##hold mu constant 
+two.tech = two.tech[which(two.tech$mu == 2),]
+multi.tech = multi.tech[which(multi.tech$mu == 2),]
+
 rm(alldata)
 
 #### Recycling intensity regressions ####
-
 get_beta_fit = function(overlap.data) {
   overlap.data.br = overlap.data[,c(parameters, "total.RI")] 
   overlap.data.br$total.RI = ifelse(overlap.data.br$total.RI == 1, overlap.data.br$total.RI - 0.00001, overlap.data.br$total.RI)
@@ -55,7 +58,7 @@ get_beta_fit = function(overlap.data) {
   overlap.data.br$norm.RI = beta2norm(overlap.data.br$total.RI)
   
   # beta distribution of recycling intensity
-  fit1 = betareg(total.RI ~ ., data =overlap.data.br[,c(1:11, 12)])
+  fit1 = betareg(total.RI ~ ., data =overlap.data.br[,c(1:6, 9:14)])
   coeftest(fit1, vcov = sandwich)
   
   fit1.coef = exp(coeftest(fit1, vcov = sandwich)[,1])
@@ -88,8 +91,8 @@ overlap.fits = rbind(two.tech.br, multi.tech.br)
 overlap.fits = overlap.fits[which(overlap.fits$terms != "(phi)"),]
 
 
-ggsave(filename = "beta-regs-by-overlap.tif",
-       ggplot(mu.fits, aes(x = terms, y = coef, shape = signf, group = as.factor(mu), color = as.factor(mu))) +
+ggsave(filename = "beta-regs-by-overlap.png",
+       ggplot(overlap.fits, aes(x = terms, y = coef, shape = signf, group = as.factor(overlap), color = as.factor(overlap))) +
          geom_hline(yintercept = 1 ,color = "grey", linetype = 2) +
          geom_point(position = position_dodge(width = 0.5)) +
          geom_linerange(aes(ymin = conf.low, ymax = conf.high), position = position_dodge(width = 0.5)) +
