@@ -27,6 +27,8 @@ theme_set(theme_minimal())
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
 
 outputs = colnames(alldata[c(22:34)])
+cum.outputs = outputs[6:13]
+step.outputs = outputs[1:5]
 
 #alldata = read_csv("~/eclipse-workspace/recycling-Java/output/subset_model_data.csv")
 
@@ -44,6 +46,8 @@ multi.tech = alldata[which(alldata$overlap == 2),]
 
 ```
 
+Analysis of cumulative outputs for entire landscape at different points in model run.
+
 ## End of model run analysis
 What is the resulting archaeological record look like at the last point in model run?
 
@@ -54,7 +58,7 @@ How is recycling intensity correlated with the other output variables?
 endyear = two.tech$start_year[1] + (two.tech$timestep[1] * two.tech$total_steps[1])
 
 enddata = two.tech[which(two.tech$model_year == endyear),]
-endoutputs = enddata[,outputs]
+endoutputs = enddata[,cum.outputs]
 rm(enddata)
 M = cor(endoutputs)
 p.mat = cor.mtest(endoutputs)
@@ -71,7 +75,7 @@ How is recycling intensity correlated with the other output variables?
 endyear = multi.tech$start_year[1] + (multi.tech$timestep[1] * multi.tech$total_steps[1])
 
 enddata = multi.tech[which(multi.tech$model_year == endyear),]
-endoutputs = enddata[,outputs]
+endoutputs = enddata[,cum.outputs]
 rm(enddata)
 M = cor(endoutputs)
 p.mat = cor.mtest(endoutputs)
@@ -91,7 +95,7 @@ How is recycling intensity correlated with the other output variables?
 midyear = two.tech$start_year[1] + (two.tech$timestep[1] * (two.tech$total_steps[1]/2))
 
 middata = two.tech[which(two.tech$model_year == midyear),]
-midoutputs = middata[,outputs]
+midoutputs = middata[,cum.outputs]
 rm(middata)
 
 M = cor(midoutputs)
@@ -109,7 +113,7 @@ How is recycling intensity correlated with the other output variables?
 midyear = multi.tech$start_year[1] + (multi.tech$timestep[1] * (multi.tech$total_steps[1]/2))
 
 middata = multi.tech[which(multi.tech$model_year == midyear),]
-midoutputs = middata[,outputs]
+midoutputs = middata[,cum.outputs]
 rm(middata)
 
 M = cor(midoutputs)
@@ -128,7 +132,7 @@ cor.list = list()
 l = 1
 for(i in unique(two.tech$model_year)){
   yeardata = two.tech[which(two.tech$model_year == i),]
-  yearoutputs = yeardata[,outputs]
+  yearoutputs = yeardata[,cum.outputs]
   
   M = cor(yearoutputs)
   M.df = as.data.frame(melt(M))
@@ -179,7 +183,7 @@ cor.list = list()
 l = 1
 for(i in unique(multi.tech$model_year)){
   yeardata = multi.tech[which(multi.tech$model_year == i),]
-  yearoutputs = yeardata[,outputs]
+  yearoutputs = yeardata[,cum.outputs]
   
   M = cor(yearoutputs)
   M.df = as.data.frame(melt(M))
