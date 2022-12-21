@@ -2,9 +2,6 @@ library(tidyverse)
 library(rcompanion)
 library(cowplot)
 library(raster)
-library(factoextra) 
-library(spatialEco)
-library(terra)
 
 theme_set(theme_bw())
 
@@ -19,7 +16,7 @@ theme_set(theme_bw())
 
 
 #layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/sub_Gi.csv")
-layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-local-G-results.csv")
+layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-layer-local-Gi.csv")
 parameters = colnames(layers.Gi[c(4:9, 11:17)])
 
 exp = unique(layers.Gi$exp)
