@@ -1,4 +1,5 @@
 ##ANALYSIS OF VARIATION IN LAYER DATA
+##NOT SURE WHAT I AM TRYING TO USE THIS FOR
 
 library(tidyverse)
 library(rcompanion)
@@ -13,7 +14,6 @@ library(leaps)
 layer.var = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-variation-output.csv")
 two.tech.layers = layer.var %>% filter(overlap == 1)
 many.tech.layers = layer.var %>% filter(overlap == 2)
-
 
 #### Two technology types ####
 plotNormalHistogram(sqrt(two.tech.layers$nod.cnt.avg.sd)) #square root transformation

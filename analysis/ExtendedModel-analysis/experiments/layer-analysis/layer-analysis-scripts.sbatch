@@ -15,4 +15,5 @@ module load pandoc/2.11.3.2
 
 #R --no-save -q -f layers-variation.R
 #R --no-save -q -f layers-gridded-correlations.R
-R --no-save -q -f layers-spatial-association.R
+#R --no-save -q -f layers-spatial-association.R
+R --no-save -q -f layers-spatial-association_ALL-RUNS.R
