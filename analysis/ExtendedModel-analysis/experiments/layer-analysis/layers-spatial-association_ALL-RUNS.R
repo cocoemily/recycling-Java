@@ -9,12 +9,7 @@ library(tmap)
 library(spdep)
 library(cowplot)
 
-param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
-
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
-
-colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
-param_list = param_list[, c("exp", parameters)]
 
 #dirs = list.dirs("../output/test-layer-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
@@ -42,7 +37,8 @@ foreach (d=1:length(dirs)) %dopar% {
   #plist = list()
   glist = list()
   for(y in 2:length(years)) {
-    allgrids = data[which(data$model_year == years[y]),]
+    allgrids = data[which(data$model_year == years[y]), 
+                    c(parameters, "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
     allgrids$run = rep(seq(1,50, by=1), each=100)
     
     for(i in 1:50) {
@@ -75,7 +71,7 @@ foreach (d=1:length(dirs)) %dopar% {
     
   }
   
-  localGresults = do.call("rbind", glist[2:length(glist)])
+  localGresults = do.call("rbind", glist[1:length(glist)])
   localGresults$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
   
   localG.df = as.data.frame(localGresults)
