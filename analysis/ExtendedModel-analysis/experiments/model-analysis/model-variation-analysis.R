@@ -23,8 +23,9 @@ scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "tot
 #dirs = list.dirs("../output/test-layer-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 ##remove folders refering to artifact data
-dirs = dirs[-c(1:3)]
-dirs = dirs[-length(dirs)]
+dirs = dirs[-1]
+l = length(dirs)
+dirs = dirs[-c((l-1):l)]
 
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
   ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
@@ -36,7 +37,7 @@ registerDoParallel(ncores)
 Sys.setenv(OMP_NUM_THREADS = "1")
 
 foreach (d=1:length(dirs)) %dopar% { 
-  data = read_csv(paste0(dirs[d], "/model-data.csv"), num_threads=1)
+  data = readr::read_csv(paste0(dirs[d], "/model-data.csv"))
   
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
   print(filename)
@@ -77,6 +78,6 @@ foreach (d=1:length(dirs)) %dopar% {
     allvar[nrow(allvar) + 1, ] = var
   }
   
-  write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/", filename, "_variation.csv"), num_threads=1)
+  readr::write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/", filename, "_variation.csv"))
   
 }
