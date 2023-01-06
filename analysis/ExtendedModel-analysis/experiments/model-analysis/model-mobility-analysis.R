@@ -46,38 +46,7 @@ mu.3 = alldata[which(alldata$mu == 3),]
 
 rm(alldata)
 
-# alldata = alldata %>% group_by(model_year) %>%
-#   mutate(RI.lower = min(total.RI, na.rm = T), 
-#          RI.upper = max(total.RI, na.rm = T))
-# 
-# ggsave(filename = "/scratch/ec3307/recycling-Java/results/recycling-intensity-over-time.tif",
-#   ggplot(alldata) +
-#   geom_linerange(aes(x = model_year, ymin = RI.lower, ymax = RI.upper), alpha = 0.1, size = 0.01) +
-#   geom_smooth(aes(x = model_year, y = total.RI)) +
-#   facet_grid(overlap~mu, labeller = label_both) +
-#   scale_x_reverse(), 
-#   dpi = 300
-# )
 
-# p1 = ggplot(mu.1, aes(x = model_year, y = total.RI)) +
-#   geom_smooth(color = "grey") +
-#   facet_grid(~overlap, labeller = label_both) +
-#   scale_x_reverse()
-# 
-# p2 = ggplot(mu.2, aes(x = model_year, y = total.RI)) +
-#   geom_smooth(color = "orange") +
-#   facet_grid(~overlap, labeller = label_both) +
-#   scale_x_reverse()
-# 
-# p3 = ggplot(mu.3, aes(x = model_year, y = total.RI)) +
-#   geom_smooth(color = "blue") +
-#   facet_grid(~overlap, labeller = label_both) +
-#   scale_x_reverse()
-# 
-# cowplot::plot_grid(p1, p2, p3, labels = "auto")
-
-
-###need to know distributions to do regressions
 #### Recycling intensity regressions ####
 
 get_beta_fit = function(mu.data) {
@@ -119,23 +88,62 @@ get_beta_fit = function(mu.data) {
 }
 
 
-mu1.br = get_beta_fit(mu.1)
-mu1.br$mu = 1
-mu2.br = get_beta_fit(mu.2)
-mu2.br$mu = 2
-mu3.br = get_beta_fit(mu.3)
-mu3.br$mu = 3
+# mu1.br = get_beta_fit(mu.1)
+# mu1.br$mu = 1
+# mu2.br = get_beta_fit(mu.2)
+# mu2.br$mu = 2
+# mu3.br = get_beta_fit(mu.3)
+# mu3.br$mu = 3
+# 
+# mu.fits = rbind(mu1.br, mu2.br, mu3.br)
+# mu.fits = mu.fits[which(mu.fits$terms != "(phi)"),]
+# 
+# 
+# ggsave(filename = "beta-regs-by-mu.tif",
+#        ggplot(mu.fits, aes(x = terms, y = coef, shape = signf, group = as.factor(mu), color = as.factor(mu))) +
+#          geom_hline(yintercept = 1 ,color = "grey", linetype = 2) +
+#          geom_point(position = position_dodge(width = 0.5)) +
+#          geom_linerange(aes(ymin = conf.low, ymax = conf.high), position = position_dodge(width = 0.5)) +
+#          coord_flip(), 
+#        dpi = 300
+# )
 
-mu.fits = rbind(mu1.br, mu2.br, mu3.br)
-mu.fits = mu.fits[which(mu.fits$terms != "(phi)"),]
 
+find_best_fit = function(mu.data) {
+  mu.po.data = mu.data[,c(parameters, "total.RI")] 
+  
+  fit1 = glm(total.RI ~ ., data =mu.po.data[,c(1:11, 12)], family = "poisson")
+  fit2 = glm.nb(total.RI ~ ., data = mu.po.data[,c(1:11, 12)])
+  
+  print(lrtest(fit1, fit2))
+  
+  
+  # # 
+  # # AICc(fit1)
+  # # #plot(fit1, which = 2)
+  # # AICc(fit2)
+  # # #plot(fit2, which = 2)
+  # 
+  # # summary(fit2)
+  # coeftest(fit1, vcov = sandwich)
+  # 
+  # fit1.coef = exp(coeftest(fit1, vcov = sandwich)[,1])
+  # fit1.pval = as.numeric(coeftest(fit1, vcov = sandwich)[,4])
+  # fit1.terms = rownames(coeftest(fit1, vcov = sandwich))
+  # fit1.coef.high = exp(coefci(fit1, vcov = sandwich)[,2])
+  # fit1.coef.low = exp(coefci(fit1, vcov = sandwich)[,1])
+  # 
+  # fit1.df = as.data.frame(cbind(fit1.terms, fit1.coef, fit1.coef.low, fit1.coef.high, fit1.pval))
+  # colnames(fit1.df) = c("terms", "coef","conf.low", "conf.high", "pval")
+  # fit1.df$pval = as.numeric(fit1.df$pval)
+  # fit1.df$coef = as.numeric(fit1.df$coef)
+  # fit1.df$conf.low = as.numeric(fit1.df$conf.low)
+  # fit1.df$conf.high = as.numeric(fit1.df$conf.high)
+  # fit1.df$signf = ifelse(fit1.df$pval <= 0.05, "signif.", "not signif.")
+  # rownames(fit1.df) = seq(1,13)
+}
 
-ggsave(filename = "beta-regs-by-mu.tif",
-       ggplot(mu.fits, aes(x = terms, y = coef, shape = signf, group = as.factor(mu), color = as.factor(mu))) +
-         geom_hline(yintercept = 1 ,color = "grey", linetype = 2) +
-         geom_point(position = position_dodge(width = 0.5)) +
-         geom_linerange(aes(ymin = conf.low, ymax = conf.high), position = position_dodge(width = 0.5)) +
-         coord_flip(), 
-       dpi = 300
-)
+find_best_fit(mu1)
+find_best_fit(mu2)
+find_best_fit(mu3)
 
