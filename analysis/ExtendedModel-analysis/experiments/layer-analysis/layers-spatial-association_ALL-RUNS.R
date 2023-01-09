@@ -13,9 +13,9 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 
 #dirs = list.dirs("../output/test-layer-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
-##remove folders refering to artifact data
-dirs = dirs[-c(1:3)]
-dirs = dirs[-length(dirs)]
+dirs = dirs[-1]
+l = length(dirs)
+dirs = dirs[-c((l-1):l)]
 
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
   ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
