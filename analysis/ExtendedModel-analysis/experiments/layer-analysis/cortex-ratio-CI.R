@@ -1,6 +1,9 @@
 #Cortex Ratio Confidence Intervals
 library(tidyverse)
 library(ggthemes)
+library(parallel)
+library(foreach)
+library(doParallel)
 
 theme_set(theme_bw())
 
