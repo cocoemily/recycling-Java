@@ -30,7 +30,7 @@ foreach (d=1:length(dirs)) %dopar% {
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
   print(filename)
   
-  outputs = colnames(data[,22:32])
+  outputs = colnames(data[,22:34])
   
   allvar = data[1,c(parameters, outputs, "model_year")]
   allvar = allvar[0,]
