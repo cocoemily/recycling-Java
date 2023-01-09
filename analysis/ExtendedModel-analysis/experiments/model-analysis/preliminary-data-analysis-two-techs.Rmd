@@ -106,9 +106,8 @@ rm(distCE)
 
 ```
 
-## Where is there missing data for recycling intensity?
 
-```{r missing-recycling-intensity, eval=T, warning=F, message=F}
+```{r missing-recycling-intensity, eval=F, warning=F, message=F, include=F}
 
 facet_data = two.tech[,c(parameters, outputs)]
 

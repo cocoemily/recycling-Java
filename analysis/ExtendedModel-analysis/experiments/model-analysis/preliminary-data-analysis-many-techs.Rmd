@@ -106,9 +106,8 @@ rm(distCE)
 
 ```
 
-## Where is there missing data for recycling intensity?
 
-```{r missing-recycling-intensity, eval=T, warning=F}
+```{r missing-recycling-intensity, eval=F, warning=F, include=F}
 
 facet_data = multi.tech[,c(parameters, outputs)]
 
