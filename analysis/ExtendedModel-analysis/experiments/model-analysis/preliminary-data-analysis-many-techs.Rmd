@@ -55,6 +55,7 @@ rm(alldata)
 ```{r checking-assumptions-two, eval=T, warning=F}
 plotNormalHistogram(multi.tech$total.RI)
 distRI = multi.tech[!is.na(multi.tech$total.RI) & !is.nan(multi.tech$total.RI),]$total.RI
+descdist(distRI, discrete = T)
 descdist(distRI, discrete=F)
 rm(distRI)
 
