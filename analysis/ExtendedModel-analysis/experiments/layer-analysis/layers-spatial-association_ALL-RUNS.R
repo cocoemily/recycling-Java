@@ -39,6 +39,10 @@ foreach (d=1:length(dirs)) %dopar% {
   for(y in 2:length(years)) {
     allgrids = data[which(data$model_year == years[y]), 
                     c(parameters, "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
+    if(years[y] == 200000) {
+      allgrids = allgrids[1:5000,]
+    }
+    
     allgrids$run = rep(seq(1,50, by=1), each=100)
     
     for(i in 1:10) {
