@@ -81,22 +81,58 @@ get_beta_fit = function(overlap.data) {
 }
 
 
-two.tech.br = get_beta_fit(two.tech)
-two.tech.br$overlap = 1
-multi.tech.br = get_beta_fit(multi.tech)
-multi.tech.br$overlap = 2
+# two.tech.br = get_beta_fit(two.tech)
+# two.tech.br$overlap = 1
+# multi.tech.br = get_beta_fit(multi.tech)
+# multi.tech.br$overlap = 2
+# 
+# 
+# overlap.fits = rbind(two.tech.br, multi.tech.br)
+# overlap.fits = overlap.fits[which(overlap.fits$terms != "(phi)"),]
+# 
+# 
+# ggsave(filename = "beta-regs-by-overlap.png",
+#        ggplot(overlap.fits, aes(x = terms, y = coef, shape = signf, group = as.factor(overlap), color = as.factor(overlap))) +
+#          geom_hline(yintercept = 1 ,color = "grey", linetype = 2) +
+#          geom_point(position = position_dodge(width = 0.5)) +
+#          geom_linerange(aes(ymin = conf.low, ymax = conf.high), position = position_dodge(width = 0.5)) +
+#          coord_flip(), 
+#        dpi = 300
+# )
 
+find_best_fit = function(o.data) {
+  o.po.data = o.data[,c(parameters, "total.RI")] 
+  
+  fit1 = glm(total.RI ~ ., data =o.po.data[,c(1:6, 9:14)], family = "poisson")
+  fit2 = glm.nb(total.RI ~ ., data = o.po.data[,c(1:6, 9:14)])
+  
+  print(lrtest(fit1, fit2))
+  
+  
+  # # 
+  # # AICc(fit1)
+  # # #plot(fit1, which = 2)
+  # # AICc(fit2)
+  # # #plot(fit2, which = 2)
+  # 
+  # # summary(fit2)
+  # coeftest(fit1, vcov = sandwich)
+  # 
+  # fit1.coef = exp(coeftest(fit1, vcov = sandwich)[,1])
+  # fit1.pval = as.numeric(coeftest(fit1, vcov = sandwich)[,4])
+  # fit1.terms = rownames(coeftest(fit1, vcov = sandwich))
+  # fit1.coef.high = exp(coefci(fit1, vcov = sandwich)[,2])
+  # fit1.coef.low = exp(coefci(fit1, vcov = sandwich)[,1])
+  # 
+  # fit1.df = as.data.frame(cbind(fit1.terms, fit1.coef, fit1.coef.low, fit1.coef.high, fit1.pval))
+  # colnames(fit1.df) = c("terms", "coef","conf.low", "conf.high", "pval")
+  # fit1.df$pval = as.numeric(fit1.df$pval)
+  # fit1.df$coef = as.numeric(fit1.df$coef)
+  # fit1.df$conf.low = as.numeric(fit1.df$conf.low)
+  # fit1.df$conf.high = as.numeric(fit1.df$conf.high)
+  # fit1.df$signf = ifelse(fit1.df$pval <= 0.05, "signif.", "not signif.")
+  # rownames(fit1.df) = seq(1,13)
+}
 
-overlap.fits = rbind(two.tech.br, multi.tech.br)
-overlap.fits = overlap.fits[which(overlap.fits$terms != "(phi)"),]
-
-
-ggsave(filename = "beta-regs-by-overlap.png",
-       ggplot(overlap.fits, aes(x = terms, y = coef, shape = signf, group = as.factor(overlap), color = as.factor(overlap))) +
-         geom_hline(yintercept = 1 ,color = "grey", linetype = 2) +
-         geom_point(position = position_dodge(width = 0.5)) +
-         geom_linerange(aes(ymin = conf.low, ymax = conf.high), position = position_dodge(width = 0.5)) +
-         coord_flip(), 
-       dpi = 300
-)
-
+find_best_fit(two.tech)
+find_best_fit(multi.tech)
