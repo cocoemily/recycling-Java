@@ -14,7 +14,7 @@ public class RunExtendedModel {
 	 */
 	public static void main(String[] args) {
 		//arguments
-		if(args.length != 21) {
+		if(args.length != 20) {
 			System.out.println("Missing arguments");
 
 
