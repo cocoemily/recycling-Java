@@ -37,10 +37,10 @@ public class RunExtendedModel {
 					Boolean.parseBoolean(args[14]), //flakePref
 					Integer.parseInt(args[15]), 	//minFS
 //					Integer.parseInt(args[16]), 	//minNS
-					Boolean.parseBoolean(args[17]), //strict
-					Double.parseDouble(args[18]), 	//ED
-					Integer.parseInt(args[19]), 	//GF
-					Integer.parseInt(args[20])		//totalSteps
+					Boolean.parseBoolean(args[16]), //strict
+					Double.parseDouble(args[17]), 	//ED
+					Integer.parseInt(args[18]), 	//GF
+					Integer.parseInt(args[19])		//totalSteps
 					);
 			model.print();
 			System.out.println("model created.");
