@@ -51,8 +51,6 @@ public class Agent {
 	 */
 	public void initializeNodules(int n, int maxNS, double nV, int maxFS) {
 		for(int i=0; i<n; i++) {
-			//int nSize = (int) (20 * ((Math.random() * 2) + 1));
-			System.out.println("new nodule");
 			nodules.add(new Nodule(maxNS, nV, maxFS));
 		}
 	}

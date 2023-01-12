@@ -84,7 +84,7 @@ public class ExtendedModel {
 
 		this.nextId = 1;
 		this.agents = new ArrayList<Agent>();
-		this.totalAgents = (int) Math.ceil((0.315 * totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number
+		this.totalAgents = (int) Math.ceil((0.315 * totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number from testing runs
 		this.groupPerc = 0.5;
 
 		this.maxArtifactCarry = maxAC;
@@ -110,7 +110,7 @@ public class ExtendedModel {
 
 		this.sizePref = sizePref;
 		this.minAcceptableFlakeSize = minFS;
-		//this.minAcceptableNoduleSize = minNS;
+		//this.minAcceptableNoduleSize = minNS; //functionality not implemented
 		this.flakePref = flakePref;
 		this.strictSelect = strict;
 

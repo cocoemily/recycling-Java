@@ -36,12 +36,10 @@ public class Nodule {
 		while(SA > 0) {
 			if(SA > maxFS) {
 				int fSize = (int) ((Math.random() * maxFS) + 1);
-				System.out.print(fSize);
 				flakeSizes.add(fSize);
 				SA -= fSize;
 			} else {
 				int fSize = SA;
-				System.out.print(fSize);
 				flakeSizes.add(fSize);
 				SA -= fSize;
 			}
