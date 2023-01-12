@@ -11,10 +11,8 @@ colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", paramet
 param_list = param_list[, c("exp", parameters)]
 
 #dirs = list.dirs("../output/test-layer-data/")
-dirs = list.dirs("/scratch/ec3307/recycling-Java/output/")
-##remove folders refering to artifact data
-dirs = dirs[-c(1:3)]
-dirs = dirs[-length(dirs)]
+dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
+dirs = dirs[grepl("exp", dirs)]
 
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
   ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
