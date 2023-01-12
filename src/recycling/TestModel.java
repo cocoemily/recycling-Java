@@ -17,24 +17,24 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"test-preferences",	//outputFile
-				"run_2", 	//name
+				"test-cortex-ratio",	//outputFile
+				"run_0", 	//name
 				10, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
 				15, 		//maxUI
 				10, 			//maxAC
 				1, 			//maxFS
-				10, 		//maxNS
-				0.75,		//bProb
-				0.75,		//sProb
-				1, 			//overlap
-				1.0,  		//mu
-				true, 		//sizePref
-				false, 		//flakePref
+				20, 		//maxNS
+				0.5,		//bProb
+				0.5,		//sProb
+				2, 			//overlap
+				3.0,  		//mu
+				false, 		//sizePref
+				true, 		//flakePref
 				1, 			//minFS
-				10, 		//minNS
-				true, 		//strict
+//				10, 		//minNS
+				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
 				3000		//totalSteps
@@ -44,6 +44,7 @@ public class TestModel {
 		model.print();
 		System.out.println("model created.");
 
+		//create agents per overlap parameter
 		//create agents per overlap parameter
 		if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
 			ArrayList<Integer> techs = new ArrayList<Integer>();
@@ -66,7 +67,7 @@ public class TestModel {
 		} else if(model.overlap == 0.5) { //partial overlap -> one third type 1 agents, one third random mix of agents, one third type 2 agents
 			int oneThird = (int) (model.totalAgents / 3.0);
 			int aLeft = model.totalAgents - (oneThird + oneThird);
-			
+
 			model.createAgents(1, oneThird);
 
 			ArrayList<Integer> techs = new ArrayList<Integer>();
@@ -83,7 +84,7 @@ public class TestModel {
 			}
 
 			model.createAgents(2, oneThird);
-			
+
 		} else { //if model overlap is anything else, create agents with all different technology types
 			int tech = 1;
 			for(int i=0; i < model.totalAgents; i++) {
@@ -93,7 +94,7 @@ public class TestModel {
 		}
 		model.printAgents();
 		System.out.println("agents created.");
-		
+
 
 		int whichAgent = 0;
 		model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
@@ -101,6 +102,7 @@ public class TestModel {
 		for(int i=0; i <= model.totalSteps; i++) {
 
 			model.currentYear = model.startYear + (i*model.timestep); //update current year of model
+			//System.out.println("current year: " + model.currentYear);
 			System.out.println("current year: " + model.currentYear);
 			System.out.println("\t current agent: " + model.agents.get(whichAgent).getGroup());
 
@@ -131,10 +133,10 @@ public class TestModel {
 							//l.scavenged();
 							System.out.println("\t agent collected selected artifacts");
 						}
-						
+
 					}
 				}
-				
+
 				if(a.hasObjects()) { //if agent is holding objects
 					if(Math.random() < model.blankProb) { //produce blanks with certain probability
 						if(a.getAgentNodules().size() == 0 ) { //if agent does not have a nodule to make blanks, find new ones
@@ -145,7 +147,7 @@ public class TestModel {
 							model.produceBlank(a);
 						}
 						System.out.println("\t agent produced blanks");
-						
+
 					} else { //if agent is not making blanks, retouch flakes
 						if(a.getAgentFlakes().size() != 0) {
 							System.out.println("\t agent retouched flakes");
@@ -166,7 +168,7 @@ public class TestModel {
 				model.dropExhaustedArifacts(a, model.currentYear);
 				//drop up to maxArtifactCarry
 				model.dropArtifacts(a, model.currentYear);
-				
+
 				model.moveAgent(model.agents.get(whichAgent), false);
 
 			} else { //if agent has moved outside of the window of observation, move onto next agent
@@ -177,7 +179,7 @@ public class TestModel {
 					System.out.println("\t agent " + model.agents.get(whichAgent).getGroup() + " has moved into the window");
 				}
 			}
-			
+
 			if(i % (model.totalSteps/2) == 0) {
 				model.getArtifactData();
 			}
@@ -185,16 +187,63 @@ public class TestModel {
 			if(i % (model.totalSteps/300) == 0) {
 				model.getLayerData();
 			}
-			
+
 			if(i == model.totalSteps) {
 				model.getLayerData();
 			}
-			
+
 			model.getModelData();
 			model.resetScavengeEventCounter();
+			model.resetDiscardEventCounter();
+			model.resetRecycledObjectCounter();
+			model.resetRetouchEventCounter();
+			model.resetBlankCounter();
 		}
-		
-		RunExtendedModel.outputModelData(model);
+		outputModelData(model);
+	}
+
+
+	public static void outputModelData(ExtendedModel em) { 
+		String path = System.getProperty("user.dir") + "/output/" + em.outputFile;
+		File file = new File(path);
+		file.mkdir();
+
+		//output model data
+		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
+
+		//output layer data
+		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+
+		//output artifact data
+		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+	}
+
+	public static void createFile(String filename, ArrayList<String> data) {
+		try {
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			for(int i=0; i < data.size(); i++) {
+				fw.write(data.get(i) + "\n");
+			}
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error occurred.");
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void createFile2(String filename, StringBuilder data) {
+		try {
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			fw.write(data.toString());
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error occurred.");
+			e.printStackTrace();
+		}
+
 	}
 
 }

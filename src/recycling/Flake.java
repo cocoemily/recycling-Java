@@ -21,9 +21,9 @@ public class Flake {
 	
 	private int discardYear;
 	
-	public Flake(int s) {
+	public Flake(int s, double v) {
 		this.size = s;
-		this.volume = (this.size * 0.05) * 100000; //proportion same as Davies et al 2018
+		this.volume = v; //proportion same as Davies et al 2018
 		this.stage = 0;
 		this.groups = new ArrayList<Integer>();
 		this.techs = new ArrayList<Integer>();

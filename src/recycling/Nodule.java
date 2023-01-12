@@ -12,6 +12,7 @@ public class Nodule {
 	
 	private int size;
 	private double volume;
+	private double flakePropVol = 0.2;
 	private ArrayList<Flake> flakes;
 	
 	private ArrayList<Integer> groups;
@@ -31,18 +32,29 @@ public class Nodule {
 		this.techs = new ArrayList<Integer>();
 		
 		int SA = s;
+		ArrayList<Integer> flakeSizes = new ArrayList<Integer>();
 		while(SA > 0) {
 			if(SA > maxFS) {
 				int fSize = (int) ((Math.random() * maxFS) + 1);
-				flakes.add(new Flake(fSize));
+				System.out.print(fSize);
+				flakeSizes.add(fSize);
 				SA -= fSize;
 			} else {
-				int fSize = (int) ((Math.random() * maxFS) + 1);
-				flakes.add(new Flake(fSize));
+				int fSize = SA;
+				System.out.print(fSize);
+				flakeSizes.add(fSize);
 				SA -= fSize;
 			}
 			
 		}
+		
+		int flakesOnNod = flakeSizes.size();
+		for(int f = 0; f<flakeSizes.size(); f++) {
+			int fSize = flakeSizes.get(f);
+			double fVol = (this.volume * (fSize * this.flakePropVol)) / flakesOnNod;
+			flakes.add(new Flake(fSize, fVol));
+		}
+		
 		
 		this.recycled = false;
 		this.discardYear = 0;

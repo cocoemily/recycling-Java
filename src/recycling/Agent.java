@@ -35,12 +35,12 @@ public class Agent {
 	 * @param f number of flakes to make
 	 * @param maxFS maximum size flakes can be
 	 */
-	public void initializeFlakes(int f, int maxFS) {
-		for(int i=0; i<f; i++) {
-			int fSize = (int) ((Math.random() * maxFS) + 1);
-			flakes.add(new Flake(fSize));
-		}
-	}
+//	public void initializeFlakes(int f, int maxFS) {
+//		for(int i=0; i<f; i++) {
+//			int fSize = (int) ((Math.random() * maxFS) + 1);
+//			flakes.add(new Flake(fSize));
+//		}
+//	}
 
 	/**
 	 * Create new nodules
@@ -52,6 +52,7 @@ public class Agent {
 	public void initializeNodules(int n, int maxNS, double nV, int maxFS) {
 		for(int i=0; i<n; i++) {
 			//int nSize = (int) (20 * ((Math.random() * 2) + 1));
+			System.out.println("new nodule");
 			nodules.add(new Nodule(maxNS, nV, maxFS));
 		}
 	}

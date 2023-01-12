@@ -41,7 +41,7 @@ public class ExtendedModel {
 
 	public boolean sizePref;
 	public int minAcceptableFlakeSize;
-	public int minAcceptableNoduleSize;
+	//public int minAcceptableNoduleSize;
 	public boolean flakePref;
 	public boolean strictSelect; //determine whether or not random collection after things meeting selection criteria are selected
 
@@ -57,12 +57,20 @@ public class ExtendedModel {
 	StringBuilder artifactdata;
 
 
+	//	public ExtendedModel(
+	//			String of, String name, int size, int startYear, int timestep, //run parameters
+	//			int maxUI, int maxAC, int maxFS, int maxNS, 
+	//			double bProb, double sProb, //action probability parameters
+	//			double overlap, double mu, //agent creation and movement parameters
+	//			boolean sizePref, boolean flakePref, int minFS, int minNS, boolean strict, //selection parameters
+	//			double ED, int GF, //geology parameters
+	//			int totalSteps) {
 	public ExtendedModel(
 			String of, String name, int size, int startYear, int timestep, //run parameters
 			int maxUI, int maxAC, int maxFS, int maxNS, 
 			double bProb, double sProb, //action probability parameters
 			double overlap, double mu, //agent creation and movement parameters
-			boolean sizePref, boolean flakePref, int minFS, int minNS, boolean strict, //selection parameters
+			boolean sizePref, boolean flakePref, int minFS, boolean strict, //selection parameters
 			double ED, int GF, //geology parameters
 			int totalSteps) {
 
@@ -102,7 +110,7 @@ public class ExtendedModel {
 
 		this.sizePref = sizePref;
 		this.minAcceptableFlakeSize = minFS;
-		this.minAcceptableNoduleSize = minNS;
+		//this.minAcceptableNoduleSize = minNS;
 		this.flakePref = flakePref;
 		this.strictSelect = strict;
 
@@ -332,16 +340,18 @@ public class ExtendedModel {
 
 		} else { //nodule preference
 			ArrayList<Nodule> possNods = new ArrayList<Nodule>();
-			if(this.sizePref) { //size preference
-				for(int i=0; i < nodules.size(); i++) {
-					//current selection based on how many flakes are left to take off
-					if(nodules.get(i).getFlakes().size() >= this.minAcceptableNoduleSize) { 
-						possNods.add(nodules.get(i));
-					}
-				}
-			} else {
-				possNods = nodules;
-			}
+			//			if(this.sizePref) { //size preference
+			//				for(int i=0; i < nodules.size(); i++) {
+			//					//current selection based on how many flakes are left to take off
+			//					if(nodules.get(i).getFlakes().size() >= this.minAcceptableNoduleSize) { 
+			//						possNods.add(nodules.get(i));
+			//					}
+			//				}
+			//			} else {
+			//				possNods = nodules;
+			//			}
+
+			possNods = nodules;
 
 			if(possNods.size() <= numNeeded) { //if there are fewer nodules than number needed or exactly the number needed, return all
 				for(int i=0; i < possNods.size(); i++) {
@@ -429,7 +439,7 @@ public class ExtendedModel {
 		this.numberScavengingEvents = 0;
 
 	}
-	
+
 	/**
 	 * Resets discard event counters to zero to track number of events per model step
 	 */
@@ -437,7 +447,7 @@ public class ExtendedModel {
 		this.numberDiscardEvents = 0;
 
 	}
-	
+
 	/**
 	 * Resets recycled objects produced counters to zero to track number of events per model step
 	 */
@@ -445,7 +455,7 @@ public class ExtendedModel {
 		this.numberRecycledObjectsMade = 0;
 
 	}
-	
+
 	/**
 	 * Resets retouch event counters to zero to track number of events per model step
 	 */
@@ -453,7 +463,7 @@ public class ExtendedModel {
 		this.numberRetouchEvents = 0;
 
 	}
-	
+
 	/**
 	 * Resets blank production event counters to zero to track number of events per model step
 	 */
@@ -467,8 +477,12 @@ public class ExtendedModel {
 	 * @param agent
 	 */
 	public void produceBlank(Agent agent) { //create new flake 
+
 		int index = (int) (Math.random() * agent.getAgentNodules().size());
-		if(agent.getAgentNodules().get(index).getFlakes().size() != 0) {
+		ArrayList<Flake> nodFlakes = agent.getAgentNodules().get(index).getFlakes();
+		int size = nodFlakes.size();
+
+		if(size != 0) {
 			Flake f = agent.getAgentNodules().get(index).removeFlake(agent);
 			f.addGroup(agent.getGroup());
 			f.addTech(agent.getTech());
@@ -476,16 +490,16 @@ public class ExtendedModel {
 				f.setRecycled();
 				this.numberRecycledObjectsMade++;
 			}
-			
+
 			agent.collectFlake(f);
-			
+
 			agent.getAgentNodules().get(index).addGroup(agent.getGroup());
 			agent.getAgentNodules().get(index).addTech(agent.getTech());
 			if(agent.getAgentNodules().get(index).getFirstTech() != agent.getAgentNodules().get(index).getLastTech()) {
 				agent.getAgentNodules().get(index).setRecycled();
 				this.numberRecycledObjectsMade++;
 			}
-			
+
 			this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().manufactured();
 			this.numberBlankProduced++;
 		}
@@ -575,7 +589,7 @@ public class ExtendedModel {
 					keep.addAll(flakes);
 				} else {
 					ArrayList<Flake> possFlakes = new ArrayList<Flake>();
-				    possFlakes.addAll(flakes);
+					possFlakes.addAll(flakes);
 					for(int i=0; i < maxToKeep; i++) {
 						int index = (int) (Math.random() * possFlakes.size()); //this does not work properly 
 						keep.add(possFlakes.get(index));
@@ -585,46 +599,46 @@ public class ExtendedModel {
 			}
 
 		} else {
-			if(this.sizePref) { //size preference
-				for(int i=0; i < nodules.size(); i++) {
-					//current selection based on how many flakes are left to take off
-					if(nodules.get(i).getFlakes().size() >= this.minAcceptableNoduleSize) { 
-						if(keep.size() < maxToKeep) {
-							keep.add(nodules.get(i));
-						}
-					}
-				}
+			//			if(this.sizePref) { //size preference
+			//				for(int i=0; i < nodules.size(); i++) {
+			//					//current selection based on how many flakes are left to take off
+			//					if(nodules.get(i).getFlakes().size() >= this.minAcceptableNoduleSize) { 
+			//						if(keep.size() < maxToKeep) {
+			//							keep.add(nodules.get(i));
+			//						}
+			//					}
+			//				}
+			//			} else {
+			if(nodules.size() < maxToKeep) {
+				keep.addAll(nodules);
 			} else {
-				if(nodules.size() < maxToKeep) {
-					keep.addAll(nodules);
-				} else {
-					ArrayList<Nodule> possNods = new ArrayList<Nodule>();
-					possNods.addAll(nodules);
-					for(int i=0; i < maxToKeep; i++) {
-						int index = (int) (Math.random() * possNods.size());
-						keep.add(possNods.get(index));
-						possNods.remove(index);
-					}
+				ArrayList<Nodule> possNods = new ArrayList<Nodule>();
+				possNods.addAll(nodules);
+				for(int i=0; i < maxToKeep; i++) {
+					int index = (int) (Math.random() * possNods.size());
+					keep.add(possNods.get(index));
+					possNods.remove(index);
 				}
 			}
+			//			}
 		}
-		
+
 		if(!this.strictSelect) {
 			if(keep.size() < maxToKeep) {
 				ArrayList<Object> possible = new ArrayList<Object>();
 				possible.addAll(flakes);
 				possible.addAll(nodules);
-				
+
 				for(int i=0; i < (maxToKeep - keep.size()); i++) {
 					int index = (int) (Math.random() * possible.size());
 					if(!keep.contains(possible.get(index))) {
 						keep.add(possible.get(index));
 						possible.remove(index);
-						
+
 					}
 				}
 			}
-			
+
 		}
 
 		return keep;
@@ -701,6 +715,9 @@ public class ExtendedModel {
 		int numNods = 0;
 		int numFlks = 0;
 		int flksOnNods = 0;
+		double flakevol = 0;
+		double nodvol = 0;
+		double fnvol = 0;
 
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
 			for(int j=0; j < this.landscape.getNumCols(); j++) {
@@ -710,17 +727,23 @@ public class ExtendedModel {
 					if(layers.get(l).getYear() == year) {
 						numNods += layers.get(l).getNodules().size();
 						numFlks += layers.get(l).getFlakes().size();
+
+						for(int f=0; f<layers.get(l).getFlakes().size(); f++ ) {
+							flakevol += layers.get(l).getFlakes().get(f).getVolume();
+						}
+
 						for(int n=0; n<layers.get(l).getNodules().size(); n++) {
+							nodvol += layers.get(l).getNodules().get(n).getVolume();
+
 							flksOnNods += layers.get(l).getNodules().get(n).getFlakes().size();
+							for(int flks=0; flks<layers.get(l).getNodules().get(n).getFlakes().size(); flks++ ) {
+								flakevol += layers.get(l).getNodules().get(n).getFlakes().get(flks).getVolume();
+							}
 						}
 					}
 				}
 			}
 		}
-
-		double flakevol = numFlks * ((noduleV * 0.05) / avgFlakesOnNodule);
-		double nodvol = numNods * (noduleV * (1.0 - 0.05));
-		double fnvol = flksOnNods * ((noduleV * 0.05) / avgFlakesOnNodule);
 
 		double modeledNodNum = (flakevol + nodvol + fnvol) / noduleV;
 
@@ -961,7 +984,7 @@ public class ExtendedModel {
 				"size_preference," +
 				"flake_preference," +
 				"min_suitable_flake_size," +
-				"min_suitable_nodule_size," +
+				//"min_suitable_nodule_size," +
 				"strict_selection," +
 				"erosion_deposition_ratio," +
 				"geo_event_freq," +
@@ -982,7 +1005,7 @@ public class ExtendedModel {
 				this.sizePref + "," +
 				this.flakePref + "," +
 				this.minAcceptableFlakeSize + "," +
-				this.minAcceptableNoduleSize + "," +
+				//this.minAcceptableNoduleSize + "," +
 				this.strictSelect + "," +
 				this.EDratio + "," +
 				this.geoFreq + "," +

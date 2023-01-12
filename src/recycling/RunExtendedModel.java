@@ -36,7 +36,7 @@ public class RunExtendedModel {
 					Boolean.parseBoolean(args[13]), //sizePref
 					Boolean.parseBoolean(args[14]), //flakePref
 					Integer.parseInt(args[15]), 	//minFS
-					Integer.parseInt(args[16]), 	//minNS
+//					Integer.parseInt(args[16]), 	//minNS
 					Boolean.parseBoolean(args[17]), //strict
 					Double.parseDouble(args[18]), 	//ED
 					Integer.parseInt(args[19]), 	//GF
