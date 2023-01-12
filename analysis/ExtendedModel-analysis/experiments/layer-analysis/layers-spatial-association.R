@@ -12,7 +12,7 @@ library(cowplot)
 
 param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
 colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
 param_list = param_list[, c("exp", parameters)]
@@ -39,10 +39,11 @@ foreach (d=1:length(dirs)) %dopar% {
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
   print(filename)
   
-  years = unique(data$model_year)
+  #years = unique(data$model_year)
+  years = c(500000, 350000, 200000)
   #plist = list()
   glist = list()
-  for(y in 2:length(years)) {
+  for(y in 1:length(years)) {
     grid = data[which(data$model_year == years[y]),]
     grid = grid[1:100,]
     
@@ -56,34 +57,14 @@ foreach (d=1:length(dirs)) %dopar% {
     grid.spat$row = grid$row
     grid.spat$col = grid$col
     
-    nb = poly2nb(grid.spat, queen = T)
-    lw = nb2listw(nb, zero.policy = T)
-
-    grid.spat$Gi.stat.RI = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.CR = localG_perm(grid.spat$recycling.intensity2, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.flk.count = localG_perm(grid.spat$flake.count, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.nod.count = localG_perm(grid.spat$nodule.count, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.discard = localG_perm(grid.spat$num.discards, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.scavenge = localG_perm(grid.spat$num.scavenge, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.encounters = localG_perm(grid.spat$num.encounters, lw, nsim = 100, zero.policy = T)
-    grid.spat$Gi.stat.num.retouch = localG_perm(grid.spat$num.retouch, lw, nsim = 100, zero.policy = T)
-    
     glist[[y]] = grid.spat
     
   }
   
-  localGresults = do.call("rbind", glist[2:length(glist)])
-  localGresults$exp = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-
-  localG.df = as.data.frame(localGresults)
-
-  print("writing local Gi results")
-  readr::write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-local-G.csv"), num_threads=1)
-  
   #### CHANGE IN VALUES FROM START TO MID AND FROM MID TO FINISH ####
-  startgrid = glist[[2]]
-  midgrid = glist[[151]]
-  endgrid = glist[[301]]
+  startgrid = glist[[1]]
+  midgrid = glist[[2]]
+  endgrid = glist[[3]]
   
   #head(midgrid)
   #head(endgrid)
