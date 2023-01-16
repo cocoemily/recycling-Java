@@ -17,7 +17,7 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
-outputs = colnames(alldata[c(22:34)])
+outputs = colnames(alldata[c(21:33)])
 step.outputs = outputs[1:5]
 
 scvg.data = alldata[c(parameters, grouping_params, "model_year", "num.scav.events" )]
