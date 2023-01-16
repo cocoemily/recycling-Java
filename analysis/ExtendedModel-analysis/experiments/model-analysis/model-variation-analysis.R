@@ -9,7 +9,7 @@ library(doParallel)
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
-#dirs = list.dirs("../output/test-model-data")
+#dirs = list.dirs("../output/test-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
@@ -28,7 +28,7 @@ foreach (d=1:length(dirs)) %dopar% {
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
   print(filename)
   
-  outputs = colnames(data[,22:34])
+  outputs = colnames(data[,21:33])
   
   allvar = data[1,c(parameters, outputs, "model_year")]
   allvar = allvar[0,]
