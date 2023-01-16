@@ -37,7 +37,7 @@ theme_set(theme_minimal())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size",  "strict_selection")
 
-outputs = colnames(alldata[c(22:34)])
+outputs = colnames(alldata[c(21:33)])
 
 #alldata = read_csv("~/eclipse-workspace/recycling-Java/output/sub_model.csv")
 
