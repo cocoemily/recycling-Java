@@ -6,7 +6,7 @@ library(jtools)
 
 theme_set(theme_bw())
 
-exposure.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-exposure-results.csv")
+exposure.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-artifact-exposure.csv")
 
 ##mid.conf.val = whether (TRUE) or not (FALSE) the recycled artifacts at the middle of model run 
 ## have ~significantly~ greater initial discard dates than the non-recycled artifacts
@@ -60,24 +60,53 @@ ggplot(mt.strict.plot) +
   facet_grid(flake_preference~size_preference, labeller = label_both) +
   scale_x_discrete(labels = c("end of model run", "middle of model run"))
 
-#what is happening when size_preference is true and flake_preference is false
-check.data = exposure.data %>% filter(flake_preference == F & size_preference == T & strict_selection == T)
-#when there is size preferences on the nodules -- no recycling of artifacts happens
+
+##when are these results occuring -- under what parameter sets?
+false.two = two.tech.strict %>% filter(end.conf.val == FALSE)
+table(false.two$max_artifact_carry)
+table(false.two$max_use_intensity)
+table(false.two$max_flake_size)
+table(false.two$max_nodules_size)
+table(false.two$blank_prob)
+table(false.two$scavenge_prob)
+table(false.two$mu)
+table(false.two$size_preference)
+table(false.two$min_suitable_flake_size)
+
+test1 = glm(end.conf.val ~ mu + max_use_intensity + max_artifact_carry + 
+      max_flake_size + blank_prob + scavenge_prob + min_suitable_flake_size , data = two.tech.strict, family = binomial)
+summary(test1)
+
+two.tech.strict$flip.val = !two.tech.strict$end.conf.val
+many.tech.strict$flip.val = !many.tech.strict$end.conf.val
+
+test2 = glm(flip.val ~ as.factor(max_use_intensity) + as.factor(max_artifact_carry) + 
+              as.factor(max_flake_size) +
+              as.factor(blank_prob) + as.factor(scavenge_prob) + as.factor(mu) +
+              as.factor(min_suitable_flake_size), 
+            data = two.tech.strict, family = binomial)
+summary(test2)
+
+test3 = glm(flip.val ~ as.factor(max_use_intensity) + as.factor(max_artifact_carry) + 
+              as.factor(max_flake_size) + 
+              as.factor(blank_prob) + as.factor(scavenge_prob) + as.factor(mu) +
+              as.factor(min_suitable_flake_size) , 
+            data = many.tech.strict, family = binomial)
+summary(test3)
 
 #results will be likelihood of TRUE values
 mid.two.tech.fit = glm(mid.conf.val ~ max_use_intensity + max_artifact_carry + 
-                         max_flake_size + max_nodules_size + 
+                         max_flake_size +
                          blank_prob + scavenge_prob + as.factor(flake_preference) + 
-                         mu + as.factor(size_preference) + min_suitable_flake_size + 
-                         min_suitable_nodule_size, 
+                         mu + as.factor(size_preference) + min_suitable_flake_size, 
                        data = two.tech.strict, family = binomial)
 summary(mid.two.tech.fit)
 
+
 end.two.tech.fit = glm(end.conf.val ~ max_use_intensity + max_artifact_carry + 
-                         max_flake_size + max_nodules_size + 
+                         max_flake_size +
                          blank_prob + scavenge_prob + as.factor(flake_preference) + 
-                         mu + as.factor(size_preference) + min_suitable_flake_size + 
-                         min_suitable_nodule_size, 
+                         mu + as.factor(size_preference) + min_suitable_flake_size, 
                        data = two.tech.strict, family = binomial)
 summary(end.two.tech.fit)
 
@@ -87,9 +116,9 @@ export_summs(mid.two.tech.fit, end.two.tech.fit, model.names = c("Middle of mode
              scale = T, error_format = "[{conf.low}, {conf.high}]")
 
 many.tech.fit = glm(mid.conf.val ~ max_use_intensity + max_artifact_carry + 
-                      max_flake_size + max_nodules_size + 
+                      max_flake_size + 
                       blank_prob + scavenge_prob + as.factor(flake_preference) + 
-                      mu + as.factor(size_preference)*min_suitable_flake_size*min_suitable_nodule_size, 
+                      mu + as.factor(size_preference)*min_suitable_flake_size, 
                     data = many.tech.strict, family = binomial)
 summary(many.tech.fit)
 
@@ -97,6 +126,7 @@ summary(many.tech.fit)
 plot_summs(two.tech.fit, many.tech.fit, model.names = c("Two technologies", "Many technologies"))
 export_summs(two.tech.fit, many.tech.fit, scale = T, error_format = "[{conf.low}, {conf.high}]", 
              model.names = c("Two technologies", "Many technologies"))
+
 
 
 

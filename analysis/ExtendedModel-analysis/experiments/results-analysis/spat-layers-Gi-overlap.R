@@ -22,6 +22,20 @@ ggplot(long.overlap) +
 
 table(long.overlap$vars, long.overlap$count.overlap)
 
+##how to see which variable has most overlap with high RI values?
+mean(layers.overlap$RI.flkcnt.overlap)
+mean(layers.overlap$RI.nodcnt.overlap)
+mean(layers.overlap$RI.numdisc.overlap)
+mean(layers.overlap$RI.numenct.overlap)
+mean(layers.overlap$RI.numscvg.overlap)
+mean(layers.overlap$RI.numret.overlap)
+
+var(layers.overlap$RI.flkcnt.overlap)
+var(layers.overlap$RI.nodcnt.overlap)
+var(layers.overlap$RI.numdisc.overlap)
+var(layers.overlap$RI.numenct.overlap)
+var(layers.overlap$RI.numscvg.overlap)
+var(layers.overlap$RI.numret.overlap)
 
 ##at the end of model run, what parameters result in overlap of the output variables
 # with high recycling intensity hotspots?
@@ -54,18 +68,46 @@ chisq.test(x = (layers.overlap %>% filter(overlap == 1))$RI.numret.overlap,
 #overlap of recycling and nodule counts is the only set of variables that has differences
 # depending on whether there are two technology types or multiple technology types
 
-strict.lo = layers.overlap %>% filter(strict_selection == TRUE)
+strict.lo = layers.overlap %>% filter(strict_selection == TRUE) %>%
+  gather(key = "vars", value = "count.overlap", 
+         RI.flkcnt.overlap, RI.nodcnt.overlap, RI.numdisc.overlap, RI.numscvg.overlap, RI.numenct.overlap, RI.numret.overlap)
 
 ggplot(strict.lo) +
-  geom_bar(aes(x = RI.numdisc.overlap)) +
-  facet_wrap(size_preference ~ flake_preference, labeller = label_both)
+  geom_bar(aes(x = count.overlap)) +
+  facet_grid(size_preference*flake_preference ~ vars, labeller = label_both)
 
-lax.lo = layers.overlap %>% filter(strict_selection == FALSE)
+strict.lo = layers.overlap %>% filter(strict_selection == TRUE)
+
+flk2 = zeroinfl(RI.flkcnt.overlap ~ ., data = strict.lo[c(3:8, 10:14, 17)])
+summary(flk2)
+
+nod2 = zeroinfl(RI.nodcnt.overlap ~ ., data = strict.lo[c(3:8, 10:14, 18)])
+summary(nod2)
+
+disc2 = zeroinfl(RI.numdisc.overlap ~ ., data = strict.lo[c(3:8, 10:14, 19)])
+summary(disc2)
+
+scvg2 = zeroinfl(RI.numscvg.overlap ~ ., data = strict.lo[c(3:8, 10:14, 20)])
+summary(scvg2)
+
+enct2 = zeroinfl(RI.numenct.overlap ~ ., data = strict.lo[c(3:8, 10:14, 21)])
+summary(enct2)
+
+ret2 = zeroinfl(RI.numret.overlap ~ ., data = strict.lo[c(3:8, 10:14, 22)])
+summary(ret2)
+
+
+
+lax.lo = layers.overlap %>% filter(strict_selection == FALSE) %>%
+  gather(key = "vars", value = "count.overlap", 
+         RI.flkcnt.overlap, RI.nodcnt.overlap, RI.numdisc.overlap, RI.numscvg.overlap, RI.numenct.overlap, RI.numret.overlap)
 
 ggplot(lax.lo) +
-  geom_bar(aes(x = RI.numdisc.overlap)) +
-  facet_wrap(size_preference ~ flake_preference, labeller = label_both)
+  geom_bar(aes(x = count.overlap)) +
+  facet_grid(size_preference*flake_preference ~ vars, labeller = label_both)
 
+
+lax.lo = layers.overlap %>% filter(strict_selection == FALSE)
 #non-strict selection experiments
 flk1 = zeroinfl(RI.flkcnt.overlap ~ ., data = lax.lo[c(3:8, 10:14, 17)])
 summary(flk1)

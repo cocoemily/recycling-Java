@@ -57,6 +57,6 @@ foreach (d=1:length(dirs)) %dopar% {
   }
   
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-  write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/exp", expnum, "_layer-multi-cor-results.csv"), num_threads=1)
+  write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/exp", expnum, "_layer-obj-counts.csv"), num_threads=1)
   
 }

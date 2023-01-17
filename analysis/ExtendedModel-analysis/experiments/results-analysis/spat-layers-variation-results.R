@@ -1,6 +1,4 @@
 ##ANALYSIS OF VARIATION IN LAYER DATA
-##NOT SURE WHAT I AM TRYING TO USE THIS FOR
-
 library(tidyverse)
 library(rcompanion)
 library(fitdistrplus)
@@ -9,76 +7,123 @@ library(jtools)
 library(VGAM)
 library(lme4)
 library(leaps)
+library(vegan)
+library(QuantPsyc)
 
 #### ANALYSIS OF VARIATION OF OUTPUT VARIABLES BETWEEN GRID SQUARES ACROSS MODEL RUNS ####
 layer.var = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-variation-output.csv")
+layer.var = layer.var %>% group_by(row, col) %>%
+  mutate(square = cur_group_id())
+
 two.tech.layers = layer.var %>% filter(overlap == 1)
 many.tech.layers = layer.var %>% filter(overlap == 2)
 
-#### Two technology types ####
-plotNormalHistogram(sqrt(two.tech.layers$nod.cnt.avg.sd)) #square root transformation
-plotNormalHistogram(log(two.tech.layers$flk.cnt.avg.sd)) #lognormal
-plotNormalHistogram(log(two.tech.layers$cr.avg.sd)) #lognormal
-plotNormalHistogram(two.tech.layers$ri.avg.sd) #tobit regression
-plotNormalHistogram(log(two.tech.layers$num.dis.avg.sd)) #lognormal
-summary(two.tech.layers$num.dis.avg.sd)
-plotNormalHistogram(two.tech.layers$num.enc.avg.sd) #multimodal
-plotNormalHistogram(two.tech.layers$num.manu.avg.sd) #bimodal
-plotNormalHistogram(two.tech.layers$num.occp.avg.sd) #multimodal
-plotNormalHistogram(two.tech.layers$num.ret.avg.sd) #uniform-ish
-plotNormalHistogram(two.tech.layers$num.scvg.avg.sd) #??? not sure what to do 
-summary(two.tech.layers$num.scvg.avg.sd)
-
-flk.cnt.reg = glm(log(flk.cnt.avg.sd) ~ . , data = two.tech.layers[,c(2:7, 9:14, 18)])
-plot(flk.cnt.reg, which = 2)
-summary(flk.cnt.reg)
-nagelkerke(flk.cnt.reg)$Pseudo.R.squared.for.model.vs.null
-
-#total model still performs better
-# best.flk.cnt = regsubsets(log(flk.cnt.avg.sd) ~ . , 
-#                           data = two.tech.layers[,c(2:7, 9:14, 18)],
-#                           nbest = 1,
-#                           nmax = NULL,
-#                           force.in = NULL, force.out = NULL,
-#                           method = "exhaustive")
-# summary_best_subset <- summary(best.flk.cnt)
-# which.max(summary_best_subset$adjr2)
-# summary_best_subset$which[8,]
-# 
-# r.flk.cnt.reg = glm(log(flk.cnt.avg.sd) ~ max_use_intensity + max_artifact_carry +
-#                       max_flake_size + max_nodules_size + blank_prob +
-#                       mu + size_preference:min_suitable_flake_size, data = two.tech.layers)
-# summary(r.flk.cnt.reg)
-# nagelkerke(r.flk.cnt.reg)$Pseudo.R.squared.for.model.vs.null
-
-nd.cnt.reg = lm(sqrt(nod.cnt.avg.sd) ~ . , data = two.tech.layers[,c(2:7, 9:14, 16)])
-plot(nd.cnt.reg, which = 2)
-summary(nd.cnt.reg)
-
-cr.rg = lm(log(cr.avg.sd) ~ . , data = two.tech.layers[,c(2:7, 9:14, 20)])
-plot(cr.rg, which = 2)
-summary(cr.rg)
-
-#Tobit regression not working for recycling intensity
-ri.reg = vglm(ri.avg.sd ~ ., family = tobit(imethod = 1), etastart = c(rep(0, 13)), data = two.tech.layers[,c(2:14, 22)])
-summary(ri.reg)
-
-num.dis.reg = lm(log(num.dis.avg.sd) ~ ., data = two.tech.layers[,c(2:7, 9:14, 24)]) 
-plot(num.dis.reg, which = 2)
-summary(num.dis.reg)
+summary(layer.var$nodule.count.sd)
+summary(layer.var$flake.count.sd)
+summary(layer.var$cortex.ratio.sd)
+summary(layer.var$recycling.intensity.sd)
+summary(layer.var$num.discards.sd) #something weird is happening
+summary(layer.var$num.scavenge.sd) #something weird is happening
+summary(layer.var$num.encounters.sd)
+summary(layer.var$num.occupation.sd)
+summary(layer.var$num.manufacture.sd)
+summary(layer.var$num.retouch.sd)
 
 
-#### Many technology types ####
-plotNormalHistogram(many.tech.layers$nod.cnt.avg.sd) #normal
-plotNormalHistogram(log(many.tech.layers$flk.cnt.avg.sd)) #lognormal
-plotNormalHistogram(many.tech.layers$cr.avg.sd) ##zero inflated?
-plotNormalHistogram(many.tech.layers$ri.avg.sd) ##zero inflated normal?
-plotNormalHistogram(many.tech.layers$num.dis.avg.sd) ##zero inflated?
-plotNormalHistogram(many.tech.layers$num.enc.avg.sd) #multimodal
-plotNormalHistogram(many.tech.layers$num.manu.avg.sd) #bimodal
-plotNormalHistogram(many.tech.layers$num.occp.avg.sd) #multimodal
-plotNormalHistogram(many.tech.layers$num.ret.avg.sd) #uniform-ish
-plotNormalHistogram(many.tech.layers$num.scvg.avg.sd) #zero inflated
+##### regressions to find most impactable variable on variation #####
+#plotNormalHistogram(layer.var$recycling.intensity.sd)
+fit1 = lm(recycling.intensity.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit1)
+ri = as.data.frame(t(lm.beta(fit1)))
+ri$metric = "recycling intensity"
+
+fit2 = lm(nodule.count.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit2)
+lm.beta(fit2)
+nc = as.data.frame(t(lm.beta(fit2)))
+nc$metric = "nodule count"
+
+fit3 = lm(flake.count.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit3)
+lm.beta(fit3)
+fc = as.data.frame(t(lm.beta(fit3)))
+fc$metric = "flake count"
 
 
+fit4 = lm(cortex.ratio.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit4)
+lm.beta(fit4)
+cr = as.data.frame(t(lm.beta(fit4)))
+cr$metric = "cortex ratio"
 
+fit5 = lm(num.encounters.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit5)
+lm.beta(fit5)
+ne = as.data.frame(t(lm.beta(fit5)))
+ne$metric = "number of encounters"
+
+fit6 = lm(num.retouch.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit6)
+lm.beta(fit6)
+nr = as.data.frame(t(lm.beta(fit6)))
+nr$metric = "number of retouches"
+
+
+##TODO What is wrong?
+fit7 = lm(num.discards.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit7)
+lm.beta(fit7)
+nd = as.data.frame(t(lm.beta(fit7)))
+nd$metric = "number of discard events"
+
+fit8 = lm(num.scavenge.sd ~ max_use_intensity + max_artifact_carry +
+            max_flake_size + blank_prob + scavenge_prob + mu + size_preference + 
+            flake_preference + strict_selection + min_suitable_flake_size + square, 
+          data = two.tech.layers)
+summary(fit8)
+lm.beta(fit8)
+ns = as.data.frame(t(lm.beta(fit8)))
+ns$metric = "number of scavenging events"
+
+allsc = rbind(ri, cr, fc, nc, ne, nr, nd, ns) %>%
+  gather(key = "variable", value = "stand_coef", 1:11) %>%
+  mutate(abs_sc = abs(stand_coef))
+
+allsc$variable = factor(allsc$variable, 
+                        levels= c(
+                          "mu", "blank_prob", "scavenge_prob", 
+                          "max_artifact_carry", "max_use_intensity", "max_flake_size",
+                          "min_suitable_flake_size", 
+                          "flake_preferenceTRUE", "size_preferenceTRUE", "strict_selectionTRUE", 
+                          "square"
+                        ))
+
+ggplot(allsc) +
+  geom_hline(yintercept = 0, color = I("red")) +
+  geom_point(aes(x = variable, y = abs_sc, color = metric, group = metric, shape = variable))+
+  coord_flip() +
+  facet_wrap(~metric, ncol =1) +
+  theme(strip.background = element_blank(), strip.text = element_blank()) +
+  scale_color_colorblind() +
+  scale_shape_manual(values = c(16, 0, 2, 3, 4, 24, 25, 7, 9, 10, 8))
