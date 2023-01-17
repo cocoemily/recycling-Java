@@ -27,7 +27,7 @@ rm(alldata)
 
 summary(scvg.data$num.scav.events)
 
-print(scvg.data[which(scvg.data$num.scav.events > 1000),])
+write_csv(scvg.data[which(scvg.data$num.scav.events > 1000),], file = "scavenging-events-over-1000.csv")
 
 
 # flake.selection = scvg.data[which(scvg.data$flake_preference == TRUE),]
