@@ -27,7 +27,7 @@ rm(alldata)
 
 summary(scvg.data$num.scav.events)
 
-print(scvg.data[which(scvg.data$num.scav.events > 1000)],)
+print(scvg.data[which(scvg.data$num.scav.events > 1000),])
 
 
 # flake.selection = scvg.data[which(scvg.data$flake_preference == TRUE),]
