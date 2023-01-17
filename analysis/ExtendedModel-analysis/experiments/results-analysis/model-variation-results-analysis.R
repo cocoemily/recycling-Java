@@ -4,7 +4,8 @@ library(ggthemes)
 theme_set(theme_bw())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "min_suitable_nodule_size", "strict_selection")
-model_var = read_csv("~/eclipse-workspace/recycling-Java/results/all-model-variation.csv", n_max = 300000)
+#model_var = read_csv("~/eclipse-workspace/recycling-Java/results/all-model-variation.csv", n_max = 300000)
+model_var = read_csv("/scratch/ec3307/recycling-Java/results/all-model-variation.csv")
 
 rcycl.obj = model_var[,c(parameters, "num.rcycl.obj.made", "model_year")]
 blank.events = model_var[,c(parameters, "num.blank.events", "model_year")]
