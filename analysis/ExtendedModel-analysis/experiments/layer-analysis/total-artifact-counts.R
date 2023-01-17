@@ -48,8 +48,8 @@ foreach (d=1:length(dirs)) %dopar% {
       grid = allgrids[which(allgrids$run == i),]
       
       exp = c(grid[1, c(parameters, "model_year")])
-      exp[[15]] =  sum(grid$flake.count)
-      exp[[16]] = sum(grid$nodule.count)
+      exp[[14]] =  sum(grid$flake.count)
+      exp[[15]] = sum(grid$nodule.count)
       
       results[nrow(results) + 1, ] <- exp
     }
