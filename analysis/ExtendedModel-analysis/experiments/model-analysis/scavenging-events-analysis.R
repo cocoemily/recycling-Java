@@ -16,6 +16,7 @@ alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
+grouping_params = c("mu", "overlap")
 
 outputs = colnames(alldata[c(21:33)])
 step.outputs = outputs[1:5]
