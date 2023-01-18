@@ -17,7 +17,7 @@ public class TestModel {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"test-cortex-ratio",	//outputFile
+				"model-testing",	//outputFile
 				"run_0", 	//name
 				10, 			//size 
 				500000, 	//startYear
@@ -124,15 +124,15 @@ public class TestModel {
 
 				if(l.hasFlakes() || l.hasNodules()) { //if there are objects at the current layer, collect with certain probability
 					if(Math.random() < model.scavengeProb) {
-						if(!model.flakePref && !model.sizePref) {
-							model.collectRandomArtifacts(a);
-							//l.scavenged();
-							System.out.println("\t agent collected random artifacts");
-						} else {
-							model.collectSelectedArtifacts(a);
-							//l.scavenged();
-							System.out.println("\t agent collected selected artifacts");
-						}
+						//							if(!model.flakePref && !model.sizePref) {
+						//								model.collectRandomArtifacts(a);
+						//								//l.scavenged();
+						//								System.out.println("\t agent collected random artifacts");
+						//							} else {
+						model.collectSelectedArtifacts(a);
+						//l.scavenged();
+						System.out.println("\t agent collected selected artifacts");
+						//							}
 
 					}
 				}
@@ -167,6 +167,8 @@ public class TestModel {
 				//drop all exhausted objects
 				model.dropExhaustedArifacts(a, model.currentYear);
 				//drop up to maxArtifactCarry
+				int agentObjects = a.getAgentFlakes().size() + a.getAgentNodules().size();
+				System.out.println("agent is holding " + agentObjects + " objects");
 				model.dropArtifacts(a, model.currentYear);
 
 				model.moveAgent(model.agents.get(whichAgent), false);

@@ -36,7 +36,7 @@ public class RunExtendedModel {
 					Boolean.parseBoolean(args[13]), //sizePref
 					Boolean.parseBoolean(args[14]), //flakePref
 					Integer.parseInt(args[15]), 	//minFS
-//					Integer.parseInt(args[16]), 	//minNS
+					//					Integer.parseInt(args[16]), 	//minNS
 					Boolean.parseBoolean(args[16]), //strict
 					Double.parseDouble(args[17]), 	//ED
 					Integer.parseInt(args[18]), 	//GF
@@ -124,15 +124,15 @@ public class RunExtendedModel {
 
 					if(l.hasFlakes() || l.hasNodules()) { //if there are objects at the current layer, collect with certain probability
 						if(Math.random() < model.scavengeProb) {
-							if(!model.flakePref && !model.sizePref) {
-								model.collectRandomArtifacts(a);
-								//l.scavenged();
-								System.out.println("\t agent collected random artifacts");
-							} else {
-								model.collectSelectedArtifacts(a);
-								//l.scavenged();
-								System.out.println("\t agent collected selected artifacts");
-							}
+							//							if(!model.flakePref && !model.sizePref) {
+							//								model.collectRandomArtifacts(a);
+							//								//l.scavenged();
+							//								System.out.println("\t agent collected random artifacts");
+							//							} else {
+							model.collectSelectedArtifacts(a);
+							//l.scavenged();
+							System.out.println("\t agent collected selected artifacts");
+							//							}
 
 						}
 					}
@@ -187,11 +187,11 @@ public class RunExtendedModel {
 				if(i % (model.totalSteps/300) == 0) {
 					model.getLayerData();
 				}
-				
+
 				if(i == model.totalSteps) {
 					model.getLayerData();
 				}
-				
+
 				model.getModelData();
 				model.resetScavengeEventCounter();
 				model.resetDiscardEventCounter();

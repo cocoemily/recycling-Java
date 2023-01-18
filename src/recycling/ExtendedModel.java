@@ -272,7 +272,9 @@ public class ExtendedModel {
 	 * @param agent 
 	 */
 	public void collectRandomArtifacts(Agent agent) { //completely random
-		for(int i=agent.getAgentArtifacts().size(); i < this.maxUseIntensity; i++) {
+		int agentObjects = agent.getAgentFlakes().size() + agent.getAgentNodules().size();
+		
+		for(int i=agentObjects; i < this.maxUseIntensity; i++) {
 			ArrayList<Object> all = new ArrayList<Object>();
 			all.addAll(this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().getNodules());
 			all.addAll(this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().getFlakes());
@@ -286,14 +288,14 @@ public class ExtendedModel {
 					agent.collectNodule((Nodule) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
-					this.numberScavengingEvents++; //tracks number of scavenging events
 
 				} else if(choice instanceof Flake) {
 					agent.collectFlake((Flake) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) choice);
 					this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
-					this.numberScavengingEvents++; //tracks number of scavenging events
+					
 				}
+				this.numberScavengingEvents++; //tracks number of scavenging events
 			}
 		}
 	}
@@ -329,7 +331,7 @@ public class ExtendedModel {
 					flakes.remove(possFlakes.get(i));
 				}
 			} else if(possFlakes.size() > numNeeded) {
-				for(int i=numNeeded; i < possFlakes.size(); i++) {//if there are more flakes than number needed, randomly select from possible flakes
+				for(int i=0; i < numNeeded; i++) {//if there are more flakes than number needed, randomly select from possible flakes
 					int index = (int) (Math.random() * possFlakes.size());
 					selection.add(possFlakes.get(index));
 					flakes.remove(possFlakes.get(index));
@@ -359,7 +361,7 @@ public class ExtendedModel {
 					nodules.remove(possNods.get(i));
 				}
 			} else if(possNods.size() > numNeeded ){
-				for(int i=numNeeded; i < possNods.size(); i++) {//if there are more nodules than number needed, randomly select from possible nodules
+				for(int i=0; i < numNeeded; i++) {//if there are more nodules than number needed, randomly select from possible nodules
 					int index = (int) (Math.random() * possNods.size());
 					selection.add(possNods.get(index));
 					nodules.remove(possNods.get(index));
@@ -410,10 +412,12 @@ public class ExtendedModel {
 	 * @param agent
 	 */
 	public void collectSelectedArtifacts(Agent agent) {
+		int agentObjects = agent.getAgentFlakes().size() + agent.getAgentNodules().size();
+		
 		ArrayList<Object> selection  = select(
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().getNodules(),
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().getFlakes(),
-				(this.maxUseIntensity - agent.getAgentArtifacts().size())
+				(this.maxUseIntensity - agentObjects)
 				);
 
 		for(int i=0; i < selection.size(); i++) {
@@ -421,13 +425,12 @@ public class ExtendedModel {
 				agent.collectNodule((Nodule) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeNodule((Nodule) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
-				this.numberScavengingEvents++; //tracks scavenging events
 			} else if(selection.get(i) instanceof Flake) {
 				agent.collectFlake((Flake) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().removeFlake((Flake) selection.get(i));
 				this.landscape.getElement(agent.getCurrentX(), agent.getCurrentY()).getTopLayer().scavenged();
-				this.numberScavengingEvents++; //tracks scavenging events
 			}
+			this.numberScavengingEvents++; //tracks scavenging events
 		}
 
 	}
