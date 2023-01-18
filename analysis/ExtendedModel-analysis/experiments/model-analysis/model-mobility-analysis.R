@@ -52,7 +52,7 @@ find_best_fit = function(mu.data) {
   print(lrtest(fit1, fit2))
 }
 
-find_best_fit(mu1)
-find_best_fit(mu2)
-find_best_fit(mu3)
+find_best_fit(mu.1)
+find_best_fit(mu.2)
+find_best_fit(mu.3)
 
