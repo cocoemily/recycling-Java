@@ -30,7 +30,7 @@ nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
 
 rm(alldata)
 
-###OVERLAP####
+####OVERLAP####
 avg.two.tech = two.tech %>%
   group_by(model_year) %>%
   summarize(mean.RI = mean(total.RI),
@@ -137,3 +137,17 @@ splot = ggplot() +
   labs(color = "flake preference", x = "model year", y = "average recycling intensity")
 
 ggsave(filename = "recycling-intensity-trend-by-selection.png", splot, dpi = 300)
+
+
+####BLANK AND SCAVENGING####
+bsplot = ggplot() +
+  geom_line(data = avg.two.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  facet_grid(blank_prob ~ scavenge_prob)
+  scale_x_reverse() +
+  scale_color_colorblind() +
+  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
+
+ggsave(filename = "recycling-intensity-trend-by-recycling-probs.png", bsplot, dpi = 300)
