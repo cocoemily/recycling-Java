@@ -145,7 +145,7 @@ bsplot = ggplot() +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
   geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-  facet_grid(blank_prob ~ scavenge_prob)
+  facet_grid(blank_prob ~ scavenge_prob) +
   scale_x_reverse() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
