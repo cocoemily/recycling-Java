@@ -140,11 +140,34 @@ ggsave(filename = "recycling-intensity-trend-by-selection.png", splot, dpi = 300
 
 
 ####BLANK AND SCAVENGING####
+##need to make another dataframe that has blank_prob and scavenge_prob in it
+exp.avg.two = two.tech %>%
+  group_by(blank_prob, scavenge_prob, model_year) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(overlap = 1,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+
+exp.avg.multi = multi.tech %>%
+  group_by(blank_prob, scavenge_prob, model_year) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(overlap = 2,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+  
+
+
 bsplot = ggplot() +
-  geom_line(data = avg.two.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
-  geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-  geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
-  geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = exp.avg.two, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = exp.avg.two, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = exp.avg.multi, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = exp.avg.multi, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
   facet_grid(blank_prob ~ scavenge_prob) +
   scale_x_reverse() +
   scale_color_colorblind() +
