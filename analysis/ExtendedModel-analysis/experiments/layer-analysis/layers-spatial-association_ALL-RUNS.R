@@ -43,7 +43,7 @@ foreach (d=1:length(dirs)) %dopar% {
     
     allgrids$run = rep(seq(1,50, by=1), each=100)
     
-    for(i in 1:10) {
+    for(i in 1:5) {
       grid = allgrids[which(allgrids$run == i),]
       
       grid.spat = grid
