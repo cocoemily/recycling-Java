@@ -9,6 +9,7 @@ library(lme4)
 library(leaps)
 library(vegan)
 library(QuantPsyc)
+library(ggthemes)
 
 #### ANALYSIS OF VARIATION OF OUTPUT VARIABLES BETWEEN GRID SQUARES ACROSS MODEL RUNS ####
 layer.var = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-variation-output.csv")
@@ -22,8 +23,8 @@ summary(layer.var$nodule.count.sd)
 summary(layer.var$flake.count.sd)
 summary(layer.var$cortex.ratio.sd)
 summary(layer.var$recycling.intensity.sd)
-summary(layer.var$num.discards.sd) #something weird is happening
-summary(layer.var$num.scavenge.sd) #something weird is happening
+summary(layer.var$num.discards.sd) #something weird is happening?
+summary(layer.var$num.scavenge.sd) #something weird is happening?
 summary(layer.var$num.encounters.sd)
 summary(layer.var$num.occupation.sd)
 summary(layer.var$num.manufacture.sd)

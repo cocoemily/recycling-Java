@@ -297,7 +297,7 @@ lmm.mid6 = lmer(ri.num.ret.cor ~ mu + scavenge_prob +
                   blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
                   flake_preference + size_preference + strict_selection +
                   min_suitable_flake_size + (1 | square), data = two.mid)
-# summary(lmm.mid6)
+#summary(lmm.mid6)
 # car::Anova(lmm.mid6)
 # plotREheatmap(REsim(lmm.mid6))
 
@@ -618,61 +618,61 @@ ggsave(filename = "mu_ri.num.ret.cor.png",compare_mu_scenarios(cor.names[8]),
 
 ####REGRESSIONS LOOKING AT SELECTION SCENARIOS#####
 
-compare_type_pref_scenarios = function(correlation) {
-  lmf = paste(correlation, "~ mu + scavenge_prob +
-                blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + (1 | square)")
-  
-  #####two technologies #####
-  flake.pref = two.end %>%
-    filter(flake_preference == T, 
-           size_preference == F, 
-           strict_selection == T)
-  nodule.pref = two.end %>%
-    filter(flake_preference == F, 
-           size_preference == F, 
-           strict_selection == T)
-  
-  flk1 = lmer(lmf, data = flake.pref)
-  two.fe1 = FEsim(flk1)
-  two.fe1$facet = "two technologies"
-  
-  nod1 = lmer(lmf, data = nodule.pref)
-  two.fe2 = FEsim(nod1)
-  two.fe2$facet = "two technologies"
-  
-  #####many technologies #####
-  flake.pref = many.end %>%
-    filter(flake_preference == T, 
-           size_preference == F, 
-           strict_selection == T)
-  nodule.pref = many.end %>%
-    filter(flake_preference == F, 
-           size_preference == F, 
-           strict_selection == T)
-  
-  flk1 = lmer(lmf, data = flake.pref)
-  many.fe1 = FEsim(flk1)
-  many.fe1$facet = "many technologies"
-  
-  nod1 = lmer(lmf, data = nodule.pref)
-  many.fe2 = FEsim(nod1)
-  many.fe2$facet = "many technologies"
-  
-  plotFEmult("flakepref" = many.fe1, "nodulepref" = many.fe2, "flakepref" = two.fe1, "nodulepref" = two.fe2, facet = T)
-}
-
-ggsave(filename = "type_ri.obj.cnt.cor.png", compare_type_pref_scenarios(cor.names[2]), 
-       width = 7.5, height = 5) #ri.obj.cnt.cor
-ggsave(filename = "type_ri.cr.cor.png", compare_type_pref_scenarios(cor.names[3]), 
-       width = 7.5, height = 5) #ri.cr.cor
-ggsave(filename = "type_ri.num.disc.cor.png", compare_type_pref_scenarios(cor.names[4]), 
-       width = 7.5, height = 5)  #ri.num.disc.cor
-ggsave(filename = "type_ri.num.scvg.cor.png", compare_type_pref_scenarios(cor.names[5]), 
-       width = 7.5, height = 5)  #ri.num.scvg.cor
-ggsave(filename = "type_ri.num.enct.cor.png", compare_type_pref_scenarios(cor.names[6]), 
-       width = 7.5, height = 5)  #ri.num.enct.cor
-ggsave(filename = "type_ri.num.ret.cor.png", compare_type_pref_scenarios(cor.names[8]), 
-       width = 7.5, height = 5)  #ri.num.ret.cor
+# compare_type_pref_scenarios = function(correlation) {
+#   lmf = paste(correlation, "~ mu + scavenge_prob +
+#                 blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + (1 | square)")
+#   
+#   #####two technologies #####
+#   flake.pref = two.end %>%
+#     filter(flake_preference == T, 
+#            size_preference == F, 
+#            strict_selection == T)
+#   nodule.pref = two.end %>%
+#     filter(flake_preference == F, 
+#            size_preference == F, 
+#            strict_selection == T)
+#   
+#   flk1 = lmer(lmf, data = flake.pref)
+#   two.fe1 = FEsim(flk1)
+#   two.fe1$facet = "two technologies"
+#   
+#   nod1 = lmer(lmf, data = nodule.pref)
+#   two.fe2 = FEsim(nod1)
+#   two.fe2$facet = "two technologies"
+#   
+#   #####many technologies #####
+#   flake.pref = many.end %>%
+#     filter(flake_preference == T, 
+#            size_preference == F, 
+#            strict_selection == F)
+#   nodule.pref = many.end %>%
+#     filter(flake_preference == F, 
+#            size_preference == F, 
+#            strict_selection == F)
+#   
+#   flk1 = lmer(lmf, data = flake.pref)
+#   many.fe1 = FEsim(flk1)
+#   many.fe1$facet = "many technologies"
+#   
+#   nod1 = lmer(lmf, data = nodule.pref)
+#   many.fe2 = FEsim(nod1)
+#   many.fe2$facet = "many technologies"
+#   
+#   plotFEmult("flakepref" = many.fe1, "nodulepref" = many.fe2, "flakepref" = two.fe1, "nodulepref" = two.fe2, facet = T)
+# }
+# 
+# ggsave(filename = "type_ri.obj.cnt.cor.png", compare_type_pref_scenarios(cor.names[2]), 
+#        width = 7.5, height = 5) #ri.obj.cnt.cor
+# ggsave(filename = "type_ri.cr.cor.png", compare_type_pref_scenarios(cor.names[3]), 
+#        width = 7.5, height = 5) #ri.cr.cor
+# ggsave(filename = "type_ri.num.disc.cor.png", compare_type_pref_scenarios(cor.names[4]), 
+#        width = 7.5, height = 5)  #ri.num.disc.cor
+# ggsave(filename = "type_ri.num.scvg.cor.png", compare_type_pref_scenarios(cor.names[5]), 
+#        width = 7.5, height = 5)  #ri.num.scvg.cor
+# ggsave(filename = "type_ri.num.enct.cor.png", compare_type_pref_scenarios(cor.names[6]), 
+#        width = 7.5, height = 5)  #ri.num.enct.cor
+# ggsave(filename = "type_ri.num.ret.cor.png", compare_type_pref_scenarios(cor.names[8]), 
+#        width = 7.5, height = 5)  #ri.num.ret.cor
 
 
 compare_size_pref_scenarios = function(correlation) {
