@@ -10,8 +10,8 @@ model_var = read_csv("/scratch/ec3307/recycling-Java/results/all-model-variation
 rcycl.obj = model_var[,c(parameters, "num.rcycl.obj.made", "model_year")]
 blank.events = model_var[,c(parameters, "num.blank.events", "model_year")]
 retouch.events = model_var[,c(parameters, "num.retouch.events", "model_year")]
-#discard.events = model_var[,c(parameters, "num.discard.events", "model_year")]
-#scavenge.events = model_var[,c(parameters, "num.scav.events", "model_year")]
+discard.events = model_var[,c(parameters, "num.discard.events", "model_year")]
+scavenge.events = model_var[,c(parameters, "num.scav.events", "model_year")]
 
 rm(model_var)
 
@@ -84,6 +84,49 @@ rt3 = ggplot(retouch.events) +
   labs(color = "flake preference", x = "model year", y = "variance of number of retouch events")
 ggsave(filename = "retouch-events-var_selection.png", plot=rt3, dpi = 300)
 
-#lots of variation -- currently checking these
-# summary(model_var$num.discard.events)
-# summary(model_var$num.scav.events)
+#### Variation of discard events ####
+d1 = ggplot(discard.events) +
+  geom_smooth(aes(x = model_year, y = num.discard.events, color = as.factor(mu), group = as.factor(mu))) +
+  scale_x_reverse() +
+  scale_color_colorblind()  +
+  labs(color = "mu", x = "model year", y = "variance of number of discard events")
+ggsave(filename = "discard-events-var_mu.png", plot=d1, dpi = 300)
+
+d2 = ggplot(discard.events) +
+  geom_smooth(aes(x = model_year, y = num.discard.events, color = as.factor(overlap), group = as.factor(overlap))) +
+  scale_x_reverse() +
+  scale_color_colorblind() +
+  labs(color = "overlap", x = "model year", y = "variance of number of discard events")
+ggsave(filename = "discard-events-var_overlap.png", plot=d2, dpi = 300)
+
+d3 = ggplot(discard.events) +
+  geom_smooth(aes(x = model_year, y = num.discard.events, color = as.factor(flake_preference), group = as.factor(flake_preference))) +
+  facet_grid(size_preference ~ strict_selection, labeller = label_both) +
+  scale_x_reverse() +
+  scale_color_colorblind() +
+  labs(color = "flake preference", x = "model year", y = "variance of number of discard events")
+ggsave(filename = "retouch-events-var_selection.png", plot=d3, dpi = 300)
+
+#### Variation of scavenging events ####
+s1 = ggplot(scavenge.events) +
+  geom_smooth(aes(x = model_year, y = num.scav.events, color = as.factor(mu), group = as.factor(mu))) +
+  scale_x_reverse() +
+  scale_color_colorblind()  +
+  labs(color = "mu", x = "model year", y = "variance of number of scavenging events")
+ggsave(filename = "discard-events-var_mu.png", plot=s1, dpi = 300)
+
+s2 = ggplot(scavenge.events) +
+  geom_smooth(aes(x = model_year, y = num.scav.events, color = as.factor(overlap), group = as.factor(overlap))) +
+  scale_x_reverse() +
+  scale_color_colorblind() +
+  labs(color = "overlap", x = "model year", y = "variance of number of scavenging events")
+ggsave(filename = "discard-events-var_overlap.png", plot=s2, dpi = 300)
+
+s3 = ggplot(scavenge.events) +
+  geom_smooth(aes(x = model_year, y = num.scav.events, color = as.factor(flake_preference), group = as.factor(flake_preference))) +
+  facet_grid(size_preference ~ strict_selection, labeller = label_both) +
+  scale_x_reverse() +
+  scale_color_colorblind() +
+  labs(color = "flake preference", x = "model year", y = "variance of number of scavenging events")
+ggsave(filename = "retouch-events-var_selection.png", plot=d3, dpi = 300)
+
