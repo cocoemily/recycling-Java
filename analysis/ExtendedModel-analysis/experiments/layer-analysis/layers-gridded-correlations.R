@@ -52,6 +52,7 @@ foreach (d=1:length(dirs)) %dopar% {
     ri.num.manu.cor = NA, 
     ri.num.ret.cor = NA, 
     ri.num.occp.cor = NA
+    
   )
   cor_outputs = colnames(cor_vals)
   
