@@ -173,4 +173,4 @@ bsplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
 
-ggsave(filename = "recycling-intensity-trend-by-recycling-probs.png", bsplot, dpi = 300)
+#ggsave(filename = "recycling-intensity-trend-by-recycling-probs.png", bsplot, dpi = 300)
