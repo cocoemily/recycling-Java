@@ -105,7 +105,7 @@ d3 = ggplot(discard.events) +
   scale_x_reverse() +
   scale_color_colorblind() +
   labs(color = "flake preference", x = "model year", y = "variance of number of discard events")
-ggsave(filename = "retouch-events-var_selection.png", plot=d3, dpi = 300)
+ggsave(filename = "discard-events-var_selection.png", plot=d3, dpi = 300)
 
 #### Variation of scavenging events ####
 s1 = ggplot(scavenge.events) +
@@ -113,14 +113,14 @@ s1 = ggplot(scavenge.events) +
   scale_x_reverse() +
   scale_color_colorblind()  +
   labs(color = "mu", x = "model year", y = "variance of number of scavenging events")
-ggsave(filename = "discard-events-var_mu.png", plot=s1, dpi = 300)
+ggsave(filename = "scavenge-events-var_mu.png", plot=s1, dpi = 300)
 
 s2 = ggplot(scavenge.events) +
   geom_smooth(aes(x = model_year, y = num.scav.events, color = as.factor(overlap), group = as.factor(overlap))) +
   scale_x_reverse() +
   scale_color_colorblind() +
   labs(color = "overlap", x = "model year", y = "variance of number of scavenging events")
-ggsave(filename = "discard-events-var_overlap.png", plot=s2, dpi = 300)
+ggsave(filename = "scavenge-events-var_overlap.png", plot=s2, dpi = 300)
 
 s3 = ggplot(scavenge.events) +
   geom_smooth(aes(x = model_year, y = num.scav.events, color = as.factor(flake_preference), group = as.factor(flake_preference))) +
@@ -128,5 +128,5 @@ s3 = ggplot(scavenge.events) +
   scale_x_reverse() +
   scale_color_colorblind() +
   labs(color = "flake preference", x = "model year", y = "variance of number of scavenging events")
-ggsave(filename = "retouch-events-var_selection.png", plot=d3, dpi = 300)
+ggsave(filename = "scavenge-events-var_selection.png", plot=d3, dpi = 300)
 
