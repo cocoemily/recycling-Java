@@ -36,7 +36,7 @@ foreach (d=1:length(dirs)) %dopar% {
   glist = list()
   for(y in 2:length(years)) {
     allgrids = data[which(data$model_year == years[y]), 
-                    c(parameters, "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
+                    c(parameters, "model_year", "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
     if(years[y] == 200000) {
       allgrids = allgrids[1:5000,]
     }
