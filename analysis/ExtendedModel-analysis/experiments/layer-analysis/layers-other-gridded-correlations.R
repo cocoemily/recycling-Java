@@ -12,7 +12,7 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
 param_list = param_list[, c("exp", parameters)]
 
-#dirs = list.dirs("../output/test-layer-data/")
+#dirs = list.dirs("../output/test-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
@@ -74,7 +74,7 @@ foreach (d=1:length(dirs)) %dopar% {
       cor(square_data$num.discards, square_data$num.retouch, use = "complete.obs", method = "spearman"), 
       cor(square_data$num.scavenge, square_data$num.encounters, use = "complete.obs", method = "spearman"),
       cor(square_data$num.scavenge, square_data$num.retouch, use = "complete.obs", method = "spearman"),
-      cor(square_data$num.encounters, square_data$num.retouch, use = "complete.obs", method = "spearman"),
+      cor(square_data$num.encounters, square_data$num.retouch, use = "complete.obs", method = "spearman")
     )
     
     end_grid[i, 27:28] = c(square_data$row[1], square_data$col[1])
@@ -97,7 +97,7 @@ foreach (d=1:length(dirs)) %dopar% {
       cor(square_data$num.discards, square_data$num.retouch, use = "complete.obs", method = "spearman"), 
       cor(square_data$num.scavenge, square_data$num.encounters, use = "complete.obs", method = "spearman"),
       cor(square_data$num.scavenge, square_data$num.retouch, use = "complete.obs", method = "spearman"),
-      cor(square_data$num.encounters, square_data$num.retouch, use = "complete.obs", method = "spearman"),
+      cor(square_data$num.encounters, square_data$num.retouch, use = "complete.obs", method = "spearman")
     )
     
     mid_grid[i, 27:28] = c(square_data$row[1], square_data$col[1])
