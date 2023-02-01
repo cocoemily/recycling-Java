@@ -12,4 +12,5 @@
 module purge
 module load r/gcc/4.2.0
 
-R --no-save -q -f cortex-ratio-CI.R
+#R --no-save -q -f cortex-ratio-CI.R
+R --no-save -q -f cortex-ratios-gridded-analysis.R
