@@ -3,6 +3,7 @@ library(tidyverse)
 
 theme_set(theme_bw())
 
+#### CORTEX RATION CIs ####
 cr = read_csv("~/eclipse-workspace/recycling-Java/results/cortex-ratio-CI-results.csv")
 # 
 # ggplot(cr) +
@@ -15,6 +16,11 @@ cr = read_csv("~/eclipse-workspace/recycling-Java/results/cortex-ratio-CI-result
 #   facet_wrap(~mu)
 
 ggplot(cr) +
-  geom_jitter(aes(x = mu, y = end_mean)) +
-  facet_grid(flake_preference ~ size_preference, labeller = label_both, scales = "free")
-           
+  geom_boxplot(aes(x = mu, y = end_mean, group = mu)) +
+  facet_grid(flake_preference  + size_preference ~ strict_selection, labeller = label_both, scales = "free")
+  
+
+#### GRID-BASED CORTEX RATIOS ####
+cr.grid = read_csv("~/eclipse-workspace/recycling-Java/results/all-gridded-CR.csv") 
+
+

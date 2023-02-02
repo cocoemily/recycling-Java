@@ -51,8 +51,8 @@ foreach (d=1:length(dirs)) %dopar% {
     num.disc.num.scvg.cor = NA, 
     num.disc.num.enct.cor = NA,
     num.disc.num.ret.cor = NA,
-    num.scvg.num.ret.cor = NA,
     num.scvg.num.enct.cor = NA,
+    num.scvg.num.ret.cor = NA,
     num.enct.num.ret.cor = NA
     
   )

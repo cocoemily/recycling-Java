@@ -12,8 +12,6 @@ library(cowplot)
 library(ggpubr)
 library(Dict)
 
-source("ExtendedModel-analysis/experiments/results-analysis/helper-functions.R")
-
 theme_set(theme_bw())
 
 #### ANALYSIS OF CORRELATION BETWEEN OUTPUTS WITHIN GRID SQUARES ACROSS MODEL RUNS ####
@@ -26,7 +24,7 @@ layer.cor1 = layer.cor[-c(25:27)]
 layer.cor = layer.cor1  %>% group_by(row, col) %>% 
   mutate(square = cur_group_id())
 
-row.col = unique(layer.cor %>% select(row, col, square))
+row.col = unique(layer.cor %>% dplyr::select(row, col, square))
 
 
 layer.cor.end = layer.cor[which(layer.cor$time == "end"),]
@@ -130,13 +128,15 @@ plotFEmult = function(..., facet = FALSE, title = NULL) {
   p = ggplot(aes_string(x = "xvar_clean", y = "median", ymax = "ymax", ymin = "ymin", color = "group", group = "group"), data = plot.data) +
     geom_hline(yintercept = hlineInt, color = I("red")) +
     #geom_point(color="gray75", alpha=1/(nrow(data)^.33), size=I(0.5), position = position_dodge(width = 0.5)) +
-    geom_point(data = subset(plot.data, sig == TRUE),size=I(1), position = position_dodge(width = 0.5)) +
+    geom_point(data = subset(plot.data, sig == TRUE),size=I(1), position = position_dodge(width = 0.65)) +
     #geom_errorbar(color="gray75", alpha=1/(nrow(data)^.33),width = 0.1, position = position_dodge(width = 0.5)) +
-    geom_errorbar(data = subset(plot.data, sig == TRUE),width = 0.2, position = position_dodge(width = 0.5)) +
+    geom_errorbar(data = subset(plot.data, sig == TRUE),width = 0.2, position = position_dodge(width = 0.65)) +
     coord_flip() +
     theme_bw() +
     scale_color_colorblind() +
-    labs(y = "estimate", x = "term")
+    labs(y = "estimate", x = "term") +
+    theme(strip.text = element_text(size = 7), axis.text = element_text(size = 6), 
+          title = element_text(size = 9), axis.title = element_text(size = 8))
   
   if(facet) {
     p = p + facet_grid(~facet)
@@ -148,8 +148,6 @@ plotFEmult = function(..., facet = FALSE, title = NULL) {
   return(p)
 }
 
-
-##need to separate out overlap = 1 and overlap = 2
 
 ##### TWO TECHNOLOGIES #####
 two.end = layer.cor.end %>% filter(overlap == 1)
@@ -537,18 +535,26 @@ compare_mu_scenarios = function(correlation) {
                     facet =TRUE, title = correlation)) 
 }
 
-ggsave(filename = "mu_ri.obj.cnt.cor.png", compare_mu_scenarios(cor.names[2]), 
-       width = 7.5, height = 5, dpi = 300) #ri.obj.cnt.cor
-ggsave(filename = "mu_ri.cr.cor.png",compare_mu_scenarios(cor.names[3]),
-       width = 7.5, height = 5, dpi = 300) #ri.cr.cor
-ggsave(filename = "mu_ri.num.disc.cor.png",compare_mu_scenarios(cor.names[4]),
-       width = 7.5, height = 5, dpi = 300)  #ri.num.disc.cor
-ggsave(filename = "mu_ri.num.scvg.cor.png",compare_mu_scenarios(cor.names[5]),
-       width = 7.5, height = 5, dpi = 300)  #ri.num.scvg.cor
-ggsave(filename = "mu_ri.num.enct.cor.png",compare_mu_scenarios(cor.names[6]),
-       width = 7.5, height = 5, dpi = 300)  #ri.num.enct.cor
-ggsave(filename = "mu_ri.num.ret.cor.png",compare_mu_scenarios(cor.names[8]),
-       width = 7.5, height = 5, dpi = 300)  #ri.num.ret.cor
+# ggsave(filename = "mu_ri.obj.cnt.cor.png", compare_mu_scenarios(cor.names[2]), 
+#        width = 7.5, height = 5, dpi = 300) #ri.obj.cnt.cor
+# ggsave(filename = "mu_ri.cr.cor.png",compare_mu_scenarios(cor.names[3]),
+#        width = 7.5, height = 5, dpi = 300) #ri.cr.cor
+# ggsave(filename = "mu_ri.num.disc.cor.png",compare_mu_scenarios(cor.names[4]),
+#        width = 7.5, height = 5, dpi = 300)  #ri.num.disc.cor
+# ggsave(filename = "mu_ri.num.scvg.cor.png",compare_mu_scenarios(cor.names[5]),
+#        width = 7.5, height = 5, dpi = 300)  #ri.num.scvg.cor
+# ggsave(filename = "mu_ri.num.enct.cor.png",compare_mu_scenarios(cor.names[6]),
+#        width = 7.5, height = 5, dpi = 300)  #ri.num.enct.cor
+# ggsave(filename = "mu_ri.num.ret.cor.png",compare_mu_scenarios(cor.names[8]),
+#        width = 7.5, height = 5, dpi = 300)  #ri.num.ret.cor
+
+ggaplot = ggarrange(compare_mu_scenarios(cor.names[2]), compare_mu_scenarios(cor.names[3]), 
+          compare_mu_scenarios(cor.names[4]), compare_mu_scenarios(cor.names[5]), 
+          compare_mu_scenarios(cor.names[6]), compare_mu_scenarios(cor.names[8]), 
+          ncol = 2, nrow = 3,
+          common.legend = T, labels = "AUTO")
+ggsave(filename = "../figures/correlation-fixed-effects_mu.tiff", ggaplot, width = 8, height = 10, dpi = 300)
+
 
 ####REGRESSIONS LOOKING AT SELECTION SCENARIOS#####
 
@@ -652,18 +658,25 @@ compare_size_pref_scenarios = function(correlation) {
   
   plotFEmult("size preference" = many.fe1, "no size preference" = many.fe2, "size preference" = two.fe1, "no size preference" = two.fe2, facet = T, title = correlation)
 }
-ggsave(filename = "size_ri.obj.cnt.cor.png", compare_size_pref_scenarios(cor.names[2]), 
-       width = 7.5, height = 5) #ri.obj.cnt.cor
-ggsave(filename = "size_ri.cr.cor.png", compare_size_pref_scenarios(cor.names[3]), 
-       width = 7.5, height = 5) #ri.cr.cor
-ggsave(filename = "size_ri.num.disc.cor.png", compare_size_pref_scenarios(cor.names[4]), 
-       width = 7.5, height = 5)  #ri.num.disc.cor
-ggsave(filename = "size_ri.num.scvg.cor.png", compare_size_pref_scenarios(cor.names[5]), 
-       width = 7.5, height = 5)  #ri.num.scvg.cor
-ggsave(filename = "size_ri.num.enct.cor.png", compare_size_pref_scenarios(cor.names[6]), 
-       width = 7.5, height = 5)  #ri.num.enct.cor
-ggsave(filename = "size_ri.num.ret.cor.png", compare_size_pref_scenarios(cor.names[8]), 
-       width = 7.5, height = 5)  #ri.num.ret.cor
+# ggsave(filename = "size_ri.obj.cnt.cor.png", compare_size_pref_scenarios(cor.names[2]), 
+#        width = 7.5, height = 5) #ri.obj.cnt.cor
+# ggsave(filename = "size_ri.cr.cor.png", compare_size_pref_scenarios(cor.names[3]), 
+#        width = 7.5, height = 5) #ri.cr.cor
+# ggsave(filename = "size_ri.num.disc.cor.png", compare_size_pref_scenarios(cor.names[4]), 
+#        width = 7.5, height = 5)  #ri.num.disc.cor
+# ggsave(filename = "size_ri.num.scvg.cor.png", compare_size_pref_scenarios(cor.names[5]), 
+#        width = 7.5, height = 5)  #ri.num.scvg.cor
+# ggsave(filename = "size_ri.num.enct.cor.png", compare_size_pref_scenarios(cor.names[6]), 
+#        width = 7.5, height = 5)  #ri.num.enct.cor
+# ggsave(filename = "size_ri.num.ret.cor.png", compare_size_pref_scenarios(cor.names[8]), 
+#        width = 7.5, height = 5)  #ri.num.ret.cor
+
+ggaplot2 = ggarrange(compare_size_pref_scenarios(cor.names[2]), compare_size_pref_scenarios(cor.names[3]), 
+                    compare_size_pref_scenarios(cor.names[4]), compare_size_pref_scenarios(cor.names[5]), 
+                    compare_size_pref_scenarios(cor.names[6]), compare_size_pref_scenarios(cor.names[8]), 
+                    ncol = 2, nrow = 3,
+                    common.legend = T, labels = "AUTO")
+ggsave(filename = "../figures/correlation-fixed-effects_size-pref.tiff", ggaplot2, width = 8, height = 10, dpi = 300)
 
 
 ##strict selection vs not strict selection
@@ -710,15 +723,22 @@ compare_strict_select_scenarios = function(correlation) {
   plotFEmult("strict selection" = many.fe1, "non-strict selection" = many.fe2, "strict selection" = two.fe1, "non-strict selection" = two.fe2, facet = T, title = correlation)
     
 }
-ggsave(filename = "strict_ri.obj.cnt.cor.png", compare_strict_select_scenarios(cor.names[2]), 
-       width = 7.5, height = 5) #ri.obj.cnt.cor
-ggsave(filename = "strict_ri.cr.cor.png", compare_strict_select_scenarios(cor.names[3]), 
-       width = 7.5, height = 5) #ri.cr.cor
-ggsave(filename = "strict_ri.num.disc.cor.png", compare_strict_select_scenarios(cor.names[4]), 
-       width = 7.5, height = 5)  #ri.num.disc.cor
-ggsave(filename = "strict_ri.num.scvg.cor.png", compare_strict_select_scenarios(cor.names[5]), 
-       width = 7.5, height = 5)  #ri.num.scvg.cor
-ggsave(filename = "strict_ri.num.enct.cor.png", compare_strict_select_scenarios(cor.names[6]), 
-       width = 7.5, height = 5)  #ri.num.enct.cor
-ggsave(filename = "strict_ri.num.ret.cor.png", compare_strict_select_scenarios(cor.names[8]), 
-       width = 7.5, height = 5)  #ri.num.ret.cor
+# ggsave(filename = "strict_ri.obj.cnt.cor.png", compare_strict_select_scenarios(cor.names[2]), 
+#        width = 7.5, height = 5) #ri.obj.cnt.cor
+# ggsave(filename = "strict_ri.cr.cor.png", compare_strict_select_scenarios(cor.names[3]), 
+#        width = 7.5, height = 5) #ri.cr.cor
+# ggsave(filename = "strict_ri.num.disc.cor.png", compare_strict_select_scenarios(cor.names[4]), 
+#        width = 7.5, height = 5)  #ri.num.disc.cor
+# ggsave(filename = "strict_ri.num.scvg.cor.png", compare_strict_select_scenarios(cor.names[5]), 
+#        width = 7.5, height = 5)  #ri.num.scvg.cor
+# ggsave(filename = "strict_ri.num.enct.cor.png", compare_strict_select_scenarios(cor.names[6]), 
+#        width = 7.5, height = 5)  #ri.num.enct.cor
+# ggsave(filename = "strict_ri.num.ret.cor.png", compare_strict_select_scenarios(cor.names[8]), 
+#        width = 7.5, height = 5)  #ri.num.ret.cor
+
+ggaplot3 = ggarrange(compare_strict_select_scenarios(cor.names[2]), compare_strict_select_scenarios(cor.names[3]), 
+                     compare_strict_select_scenarios(cor.names[4]), compare_strict_select_scenarios(cor.names[5]), 
+                     compare_strict_select_scenarios(cor.names[6]), compare_strict_select_scenarios(cor.names[8]), 
+                     ncol = 2, nrow = 3,
+                     common.legend = T, labels = "AUTO")
+ggsave(filename = "../figures/correlation-fixed-effects_strict.tiff", ggaplot3, width = 8, height = 10, dpi = 300)
