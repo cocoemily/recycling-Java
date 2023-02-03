@@ -39,14 +39,14 @@ for(e in 1:length(exp)) {
   for(r in 1:length(unique(layers.Gi$run))) {
     Gi.run = Gi.end[which(Gi.end$run == r),]
     
-    RI.rast = rasterFromXYZ(Gi.end[,c(25,26,27)])
-    CR.rast = rasterFromXYZ(Gi.end[,c(25,26,28)])
-    flkcnt.rast = rasterFromXYZ(Gi.end[,c(25,26,29)])
-    nodcnt.rast = rasterFromXYZ(Gi.end[,c(25,26,30)])
-    numdisc.rast = rasterFromXYZ(Gi.end[,c(25,26,31)])
-    numscvg.rast = rasterFromXYZ(Gi.end[,c(25,26,32)])
-    numenct.rast = rasterFromXYZ(Gi.end[,c(25,26,33)])
-    numret.rast = rasterFromXYZ(Gi.end[,c(25,26,34)])
+    RI.rast = rasterFromXYZ(Gi.run[,c(25,26,27)])
+    CR.rast = rasterFromXYZ(Gi.run[,c(25,26,28)])
+    flkcnt.rast = rasterFromXYZ(Gi.run[,c(25,26,29)])
+    nodcnt.rast = rasterFromXYZ(Gi.run[,c(25,26,30)])
+    numdisc.rast = rasterFromXYZ(Gi.run[,c(25,26,31)])
+    numscvg.rast = rasterFromXYZ(Gi.run[,c(25,26,32)])
+    numenct.rast = rasterFromXYZ(Gi.run[,c(25,26,33)])
+    numret.rast = rasterFromXYZ(Gi.run[,c(25,26,34)])
     
     RI.rast[RI.rast < 2] = NA
     CR.rast[CR.rast < 2] = NA
