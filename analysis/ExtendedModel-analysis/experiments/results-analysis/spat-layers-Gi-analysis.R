@@ -10,11 +10,6 @@ theme_set(theme_bw())
 #the direction (positive or negative) indicates high or low clusters. 
 #Gi values are z scores
 
-##want to look at overlap of high values between different outputs
-
-##this will need to be set up to run on HPC
-
-
 #layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/sub_local-G.csv")
 layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-runs-local-G.csv")
 parameters = colnames(layers.Gi[c(1:12)])
@@ -36,8 +31,8 @@ for(e in 1:length(exp)) {
   Gi = layers.Gi[which(layers.Gi$exp == exp[e]),]
   Gi.end = Gi[which(Gi$model_year == 200000),]
   
-  for(r in 1:length(unique(layers.Gi$run))) {
-    Gi.run = Gi.end[which(Gi.end$run == r),]
+  for(run in 1:length(unique(layers.Gi$run))) {
+    Gi.run = Gi.end[which(Gi.end$run == run),]
     
     RI.rast = rasterFromXYZ(Gi.run[,c(25,26,27)])
     CR.rast = rasterFromXYZ(Gi.run[,c(25,26,28)])
@@ -81,7 +76,7 @@ for(e in 1:length(exp)) {
     output[nrow(output) + 1, ] <-
       c(
         exp[e], 
-        r,
+        run,
         Gi.end[1, parameters], 
         RI.CR.o, 
         RI.flkcnt.o, 
@@ -95,4 +90,4 @@ for(e in 1:length(exp)) {
   
 }
 
-write.csv(output, file = "cell-counts-hotspot-overlap.csv")
+#write.csv(output, file = "cell-counts-hotspot-overlap.csv")
