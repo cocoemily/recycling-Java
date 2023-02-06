@@ -90,4 +90,4 @@ for(e in 1:length(exp)) {
   
 }
 
-#write.csv(output, file = "cell-counts-hotspot-overlap.csv")
+write.csv(output, file = "cell-counts-hotspot-overlap.csv")
