@@ -9,24 +9,13 @@ alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_da
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-grouping_params = c("mu", "overlap")
-
-exp = readr::read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
-colnames(exp) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
-
-outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
-
-move_outputs = c("num.deposits", "total.encounters")
-scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
-
 two.tech = alldata[which(alldata$overlap == 1),]
 multi.tech = alldata[which(alldata$overlap == 2),]
 
 rm(alldata)
 
 avg.two.tech = two.tech %>%
-  group_by(model_year) %>%
+  group_by(model_year, blank_prob, scavenge_prob) %>%
   summarize(mean.RI = mean(total.RI),
             sd.RI = sd(total.RI),
             n.RI = n()) %>%
@@ -35,7 +24,7 @@ avg.two.tech = two.tech %>%
          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
 avg.multi.tech = multi.tech %>%
-  group_by(model_year) %>%
+  group_by(model_year, blank_prob, scavenge_prob) %>%
   summarize(mean.RI = mean(total.RI),
             sd.RI = sd(total.RI),
             n.RI = n()) %>%
