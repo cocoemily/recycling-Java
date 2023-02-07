@@ -14,9 +14,9 @@ multi.tech = alldata[which(alldata$overlap == 2),]
 
 rm(alldata)
 
-blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.50")
+blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
 names(blank.labs) = c("0.25", "0.5", "0.75")
-scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.50")
+scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.75")
 names(scvg.labs) = c("0.25", "0.5", "0.75")
 
 ####recycling intensity####
