@@ -160,7 +160,7 @@ oplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of discard events")
 
-ggsave(filename = "discard-trend-by-orobs.png", oplot, dpi = 300, 
+ggsave(filename = "discard-trend-by-probs.png", oplot, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
@@ -196,7 +196,7 @@ oplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of retouch events")
 
-ggsave(filename = "retouch-trend-by-overlap.png", oplot, dpi = 300, 
+ggsave(filename = "retouch-trend-by-probs.png", oplot, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
