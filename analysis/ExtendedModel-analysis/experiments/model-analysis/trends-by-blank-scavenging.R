@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(ggthemes)
+library(ggpubr)
 
 theme_set(theme_bw())
 
@@ -39,7 +40,7 @@ avg.multi.tech = multi.tech %>%
          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
 
-pplot = ggplot() +
+p1 = ggplot() +
   geom_line(data = avg.two.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
@@ -51,7 +52,7 @@ pplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
 
-ggsave(filename = "recycling-intensity-trend-by-probs.png", pplot, dpi = 300, 
+ggsave(filename = "recycling-intensity-trend-by-probs.png", p1, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
@@ -75,7 +76,7 @@ avg.multi.tech = multi.tech %>%
          lower.ci.ro = mean.ro - qt(1 - (0.05 / 2), n.ro - 1) * se.ro,
          upper.ci.ro = mean.ro + qt(1 - (0.05 / 2), n.ro - 1) * se.ro)
 
-oplot = ggplot() +
+p2 = ggplot() +
   geom_line(data = avg.two.tech, aes(x = model_year, y = mean.ro, color = as.factor(overlap))) +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.ro, ymax = upper.ci.ro), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.ro, color = as.factor(overlap))) +
@@ -87,7 +88,7 @@ oplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created")
 
-ggsave(filename = "recycled-objects-trend-by-probs.png", oplot, dpi = 300, 
+ggsave(filename = "recycled-objects-trend-by-probs.png", p2, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
@@ -111,7 +112,7 @@ avg.multi.tech = multi.tech %>%
          lower.ci.scvg = mean.scvg - qt(1 - (0.05 / 2), n.scvg - 1) * se.scvg,
          upper.ci.scvg = mean.scvg + qt(1 - (0.05 / 2), n.scvg - 1) * se.scvg)
 
-pplot = ggplot() +
+p3 = ggplot() +
   geom_line(data = avg.two.tech, aes(x = model_year, y = mean.scvg, color = as.factor(overlap))) +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.scvg, ymax = upper.ci.scvg), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.scvg, color = as.factor(overlap))) +
@@ -123,7 +124,7 @@ pplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of scavenging events")
 
-ggsave(filename = "scavenging-trend-by-probs.png", pplot, dpi = 300, 
+ggsave(filename = "scavenging-trend-by-probs.png", p3, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
@@ -148,7 +149,7 @@ avg.multi.tech = multi.tech %>%
          lower.ci.disc = mean.disc - qt(1 - (0.05 / 2), n.disc - 1) * se.disc,
          upper.ci.disc = mean.disc + qt(1 - (0.05 / 2), n.disc - 1) * se.disc)
 
-oplot = ggplot() +
+p4 = ggplot() +
   geom_line(data = avg.two.tech, aes(x = model_year, y = mean.disc, color = as.factor(overlap))) +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.disc, ymax = upper.ci.disc), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.disc, color = as.factor(overlap))) +
@@ -160,7 +161,7 @@ oplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of discard events")
 
-ggsave(filename = "discard-trend-by-probs.png", oplot, dpi = 300, 
+ggsave(filename = "discard-trend-by-probs.png", p4, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
@@ -184,7 +185,7 @@ avg.multi.tech = multi.tech %>%
          lower.ci.disc = mean.disc - qt(1 - (0.05 / 2), n.disc - 1) * se.disc,
          upper.ci.disc = mean.disc + qt(1 - (0.05 / 2), n.disc - 1) * se.disc)
 
-oplot = ggplot() +
+p5 = ggplot() +
   geom_line(data = avg.two.tech, aes(x = model_year, y = mean.disc, color = as.factor(overlap))) +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.disc, ymax = upper.ci.disc), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.disc, color = as.factor(overlap))) +
@@ -196,7 +197,7 @@ oplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of retouch events")
 
-ggsave(filename = "retouch-trend-by-probs.png", oplot, dpi = 300, 
+ggsave(filename = "retouch-trend-by-probs.png", p5, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
@@ -220,7 +221,7 @@ avg.multi.tech = multi.tech %>%
          lower.ci.disc = mean.disc - qt(1 - (0.05 / 2), n.disc - 1) * se.disc,
          upper.ci.disc = mean.disc + qt(1 - (0.05 / 2), n.disc - 1) * se.disc)
 
-oplot = ggplot() +
+p6 = ggplot() +
   geom_line(data = avg.two.tech, aes(x = model_year, y = mean.disc, color = as.factor(overlap))) +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.disc, ymax = upper.ci.disc), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.disc, color = as.factor(overlap))) +
@@ -232,6 +233,10 @@ oplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of blanks produced")
 
-ggsave(filename = "blanks-trend-by-overlap.png", oplot, dpi = 300, 
+ggsave(filename = "blanks-trend-by-probs.png", p6, dpi = 300, 
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
+
+grid = ggarrange(p1, p2, p3, p4, p5, p6, nrow = 2, common.legend = F, legend = "bottom")
+ggsave(filename = "trends-by-probs.tiff", grid,
+       dpi = 300, width = 12, height = 9)
