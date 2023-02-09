@@ -249,6 +249,6 @@ ggsave(filename = "blanks-trend-by-probs.png", p6, dpi = 300,
        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
-grid = ggarrange(p1, p2, p3, p4, p5, p6, nrow = 2, common.legend = F, legend = "bottom")
+grid = ggarrange(p1, p2, p3, p4, p5, p6, nrow = 2, ncol = 3, common.legend = F, legend = "bottom")
 ggsave(filename = "trends-by-probs.tiff", grid,
        dpi = 300, width = 12, height = 9)
