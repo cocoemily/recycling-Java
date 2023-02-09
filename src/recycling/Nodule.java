@@ -12,6 +12,7 @@ public class Nodule {
 	
 	private int size;
 	private double volume;
+	private double surfaceArea;
 	private double flakePropVol = 0.2;
 	private ArrayList<Flake> flakes;
 	
@@ -23,9 +24,10 @@ public class Nodule {
 	private int discardYear;
 	
 	
-	public Nodule(int s, double noduleV, int maxFS) {
+	public Nodule(int s, double noduleV, double noduleSA, int maxFS) {
 		this.size = s;
 		this.volume = noduleV;
+		this.surfaceArea = noduleSA;
 		this.flakes = new ArrayList<Flake>();
 		
 		this.groups = new ArrayList<Integer>();
@@ -50,7 +52,8 @@ public class Nodule {
 		for(int f = 0; f<flakeSizes.size(); f++) {
 			int fSize = flakeSizes.get(f);
 			double fVol = (this.volume * (fSize * this.flakePropVol)) / flakesOnNod;
-			flakes.add(new Flake(fSize, fVol));
+			double fSA = (this.surfaceArea / this.size) * fSize;
+			flakes.add(new Flake(fSize, fVol, fSA));
 		}
 		
 		
@@ -64,6 +67,10 @@ public class Nodule {
 	
 	public double getVolume() {
 		return volume;
+	}
+
+	public double getSurfaceArea() {
+		return this.surfaceArea;
 	}
 	
 	public ArrayList<Flake> getFlakes() {
@@ -116,6 +123,10 @@ public class Nodule {
 		f.addGroup(a.getGroup());
 		f.addTech(a.getTech());
 		this.volume -= f.getVolume();
+		this.surfaceArea -= f.getSurfaceArea();
+		if(this.surfaceArea < 0) {
+			this.surfaceArea = 0;
+		}
 		this.addGroup(a.getGroup());
 		this.addTech(a.getTech());
 		return f;

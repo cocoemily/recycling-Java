@@ -171,21 +171,26 @@ public class Layer {
 	 * @return Cortex Ratio
 	 */
 	public double calculateCortexRatio(double noduleV, double noduleSA, double avgFlakesPerNodule) {
-		int numNods = this.getNodules().size();
-		int numFlks = this.getFlakes().size();
-		int flksOnNods = 0;
-		for(int n=0; n < this.getNodules().size(); n++) {
-			flksOnNods += this.getNodules().get(n).getFlakes().size();
+		double flakevol = 0;
+		double nodvol = 0;
+		double flsa = 0;
+		double nodsa = 0;
+		
+		for(int f=0; f<this.getFlakes().size(); f++ ) {
+			flakevol += this.getFlakes().get(f).getVolume();
+			flsa += this.getFlakes().get(f).getSurfaceArea();
+		}
+
+		for(int n=0; n<this.getNodules().size(); n++) {
+			nodvol += this.getNodules().get(n).getVolume();
+			nodsa += this.getNodules().get(n).getSurfaceArea();
+		
 		}
 		
-		double flakevol = numFlks * ((noduleV * 0.05) / avgFlakesPerNodule);
-		double nodvol = numNods * (noduleV * (1.0 - 0.05));
-		double fnvol = flksOnNods * ((noduleV * 0.05) / avgFlakesPerNodule);
-		
-		double modeledNodNum = (flakevol + nodvol + fnvol) / noduleV;
-		
+		double modeledNodNum = (flakevol + nodvol) / noduleV;
+
 		double expSA = noduleSA * modeledNodNum;
-		double obsSA = ((numFlks + flksOnNods) / avgFlakesPerNodule) * noduleSA;
+		double obsSA = flsa + nodsa;
 		
 		double CR = obsSA / expSA;
 		
@@ -200,6 +205,19 @@ public class Layer {
 		}
 		for(int i=0; i < this.nodulelist.size(); i++) {
 			vol += this.nodulelist.get(i).getVolume();
+		}
+		
+		return vol;
+	}
+	
+	public double calculateAssemblageSA() {
+		double vol = 0;
+		
+		for(int i=0; i < this.flakelist.size(); i++) {
+			vol += this.flakelist.get(i).getSurfaceArea();
+		}
+		for(int i=0; i < this.nodulelist.size(); i++) {
+			vol += this.nodulelist.get(i).getSurfaceArea();
 		}
 		
 		return vol;

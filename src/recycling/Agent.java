@@ -49,9 +49,9 @@ public class Agent {
 	 * @param nV nodule volume
 	 * @param maxFS maximum size flakes on nodules can be
 	 */
-	public void initializeNodules(int n, int maxNS, double nV, int maxFS) {
+	public void initializeNodules(int n, int maxNS, double nV, double nSA, int maxFS) {
 		for(int i=0; i<n; i++) {
-			nodules.add(new Nodule(maxNS, nV, maxFS));
+			nodules.add(new Nodule(maxNS, nV, nSA, maxFS));
 		}
 	}
 

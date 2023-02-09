@@ -31,7 +31,7 @@ public class TestModel {
 				2, 			//overlap
 				3.0,  		//mu
 				false, 		//sizePref
-				true, 		//flakePref
+				false, 		//flakePref
 				1, 			//minFS
 //				10, 		//minNS
 				false, 		//strict

@@ -11,6 +11,7 @@ public class Flake {
 	
 	private int size;
 	private double volume; 
+	private double surfaceArea;
 	private int stage;
 	private int shape; //0 is flake, 1 is blade
 	private ArrayList<Integer> groups;
@@ -21,9 +22,10 @@ public class Flake {
 	
 	private int discardYear;
 	
-	public Flake(int s, double v) {
+	public Flake(int s, double v, double sa) {
 		this.size = s;
 		this.volume = v; //proportion same as Davies et al 2018
+		this.surfaceArea = sa;
 		this.stage = 0;
 		this.groups = new ArrayList<Integer>();
 		this.techs = new ArrayList<Integer>();
@@ -54,6 +56,10 @@ public class Flake {
 	
 	public double getVolume() {
 		return this.volume;
+	}
+	
+	public double getSurfaceArea() {
+		return this.surfaceArea;
 	}
 	
 	public int getStage() {

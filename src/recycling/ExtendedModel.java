@@ -123,14 +123,14 @@ public class ExtendedModel {
 		this.numberScavengingEvents = 0;
 
 		this.layerdata = new StringBuilder();
-		String cols = this.getParameterData().get(0) + ",row,col,model_year,year,nodule.count,flake.count,assemblage.vol,cortex.ratio,"
+		String cols = this.getParameterData().get(0) + ",row,col,model_year,year,nodule.count,flake.count,assemblage.vol,assemblage.sa,cortex.ratio,"
 				+ "recycling.intensity,num.discards,num.scavenge,num.encounters,num.manufacture,num.retouch,num.occupation";
 		this.layerdata.append(cols + "\n");
 		this.modeldata = new StringBuilder();
 		String mcols = this.getParameterData().get(0) + ",model_year,num.scav.events,num.discard.events,num.rcycl.obj.made,num.retouch.events,num.blank.events,total.recycled,cum.deposits,cum.encounters,cum.discards,cum.manu.events,cum.retouches,total.CR,total.RI"; 
 		this.modeldata.append(mcols + "\n");
 		this.artifactdata = new StringBuilder();
-		this.artifactdata.append("row,col,model_year,layer_year,obj_type,initial_discard,size,volume,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
+		this.artifactdata.append("row,col,model_year,layer_year,obj_type,initial_discard,size,volume,surface_area,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
 
 	}
 
@@ -182,7 +182,7 @@ public class ExtendedModel {
 					ArrayList<Nodule> initArtifacts = new ArrayList<Nodule>();
 					for(int a = 0; a < numArtifacts; a++) { 
 						//int nSize = (int) ((Math.random() * (this.maxNoduleSize / 10)) + 1) * 10;
-						Nodule toAdd = new Nodule(this.maxNoduleSize, this.noduleV, this.maxFlakeSize);
+						Nodule toAdd = new Nodule(this.maxNoduleSize, this.noduleV, this.noduleSA, this.maxFlakeSize);
 						initArtifacts.add(toAdd);
 					}
 					this.landscape.getElement(i, j).addNodules(initArtifacts);
@@ -263,7 +263,7 @@ public class ExtendedModel {
 	 * @param numNodules number of nodules agent "finds"
 	 */
 	public void findNodules(Agent agent, int numNodules) {
-		agent.initializeNodules(numNodules, this.maxNoduleSize, this.noduleV, this.maxFlakeSize);
+		agent.initializeNodules(numNodules, this.maxNoduleSize, this.noduleV, this.noduleSA, this.maxFlakeSize);
 	}
 
 	/**
@@ -715,12 +715,10 @@ public class ExtendedModel {
 	//need to rethink how this would work with geological events happening, 
 	//because layers on "surface" would not necessarily have the same age
 	public double calculateTotalCortexRatio(int year) {
-		int numNods = 0;
-		int numFlks = 0;
-		int flksOnNods = 0;
 		double flakevol = 0;
 		double nodvol = 0;
-		double fnvol = 0;
+		double flsa = 0;
+		double nodsa = 0;
 
 		for(int i=0; i < this.landscape.getNumRows(); i++) {
 			for(int j=0; j < this.landscape.getNumCols(); j++) {
@@ -728,31 +726,26 @@ public class ExtendedModel {
 				ArrayList<Layer> layers = this.landscape.getElement(i, j).getLayers();
 				for(int l=0; l < layers.size(); l++) {
 					if(layers.get(l).getYear() == year) {
-						numNods += layers.get(l).getNodules().size();
-						numFlks += layers.get(l).getFlakes().size();
-
 						for(int f=0; f<layers.get(l).getFlakes().size(); f++ ) {
 							flakevol += layers.get(l).getFlakes().get(f).getVolume();
+							flsa += layers.get(l).getFlakes().get(f).getSurfaceArea();
 						}
 
 						for(int n=0; n<layers.get(l).getNodules().size(); n++) {
 							nodvol += layers.get(l).getNodules().get(n).getVolume();
-
-							flksOnNods += layers.get(l).getNodules().get(n).getFlakes().size();
-							for(int flks=0; flks<layers.get(l).getNodules().get(n).getFlakes().size(); flks++ ) {
-								flakevol += layers.get(l).getNodules().get(n).getFlakes().get(flks).getVolume();
-							}
+							nodsa += layers.get(l).getNodules().get(n).getSurfaceArea();
+						
 						}
 					}
 				}
 			}
 		}
 
-		double modeledNodNum = (flakevol + nodvol + fnvol) / noduleV;
+		double modeledNodNum = (flakevol + nodvol) / noduleV;
 
 		double expSA = noduleSA * modeledNodNum;
-		double obsSA = ((numFlks + flksOnNods) / avgFlakesOnNodule) * noduleSA;
-
+		double obsSA = flsa + nodsa;
+		
 		double CR = obsSA / expSA;
 
 		return CR;
@@ -824,6 +817,7 @@ public class ExtendedModel {
 									+ nods.get(n).getDiscardYear() + ","				//initial discard year
 									+ nods.get(n).getSize() + "," 						//size
 									+ nods.get(n).getVolume() + ","						//volume
+									+ nods.get(n).getSurfaceArea() + ","				//surface area
 									+ fleft + ","										//cortex (equal to size of flakes left)
 									+ "NA" + ","										//stage
 									+ nods.get(n).getGroups().size() + ","				//numgroups
@@ -843,6 +837,7 @@ public class ExtendedModel {
 									+ flakes.get(f).getDiscardYear() + ","				//initial discard year
 									+ flakes.get(f).getSize() + "," 					//size
 									+ flakes.get(f).getVolume() + ","					//volume
+									+ flakes.get(f).getSurfaceArea() + ","				//surface area
 									+ flakes.get(f).getSize() + ","						//cortex (equal to size of flake)
 									+ flakes.get(f).getStage() + ","					//stage
 									+ flakes.get(f).getGroups().size() + ","			//numgroups
@@ -880,6 +875,8 @@ public class ExtendedModel {
 					datastring += layer.getFlakes().size() + ",";
 					//assemblage volume
 					datastring += layer.calculateAssemblageVol() + ",";
+					//assemblage surface area
+					datastring += layer.calculateAssemblageSA() + ",";
 					//cortex ratio
 					datastring += layer.calculateCortexRatio(this.noduleV, this.noduleSA, this.avgFlakesOnNodule) + ",";
 					// recycling intensity
