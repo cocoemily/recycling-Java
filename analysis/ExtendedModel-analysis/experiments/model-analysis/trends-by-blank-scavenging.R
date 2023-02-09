@@ -49,8 +49,10 @@ p1 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
+  scale_y_continous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
+  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity") +
+  theme(strip.text = element_text(size = 5))
 
 ggsave(filename = "recycling-intensity-trend-by-probs.png", p1, dpi = 300, 
        height = 7, width = 8)
@@ -85,8 +87,10 @@ p2 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
+  scale_y_continous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created")
+  labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created") +
+  theme(strip.text = element_text(size = 5))
 
 ggsave(filename = "recycled-objects-trend-by-probs.png", p2, dpi = 300, 
        height = 7, width = 8)
@@ -121,8 +125,10 @@ p3 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
+  scale_y_continous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average number of scavenging events")
+  labs(color = "overlap parameter", x = "model year", y = "average number of scavenging events") +
+  theme(strip.text = element_text(size = 5))
 
 ggsave(filename = "scavenging-trend-by-probs.png", p3, dpi = 300, 
        height = 7, width = 8)
@@ -158,8 +164,10 @@ p4 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
+  scale_y_continous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average number of discard events")
+  labs(color = "overlap parameter", x = "model year", y = "average number of discard events") +
+  theme(strip.text = element_text(size = 5))
 
 ggsave(filename = "discard-trend-by-probs.png", p4, dpi = 300, 
        height = 7, width = 8)
@@ -194,8 +202,10 @@ p5 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
+  scale_y_continous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average number of retouch events")
+  labs(color = "overlap parameter", x = "model year", y = "average number of retouch events") +
+  theme(strip.text = element_text(size = 5))
 
 ggsave(filename = "retouch-trend-by-probs.png", p5, dpi = 300, 
        height = 7, width = 8)
@@ -230,8 +240,10 @@ p6 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
+  scale_y_continous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average number of blanks produced")
+  labs(color = "overlap parameter", x = "model year", y = "average number of blanks produced") +
+  theme(strip.text = element_text(size = 5))
 
 ggsave(filename = "blanks-trend-by-probs.png", p6, dpi = 300, 
        height = 7, width = 8)
