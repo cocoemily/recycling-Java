@@ -46,11 +46,10 @@ p1 = ggplot(ad %>% filter(overlap == 2)) +
                                  size_preference = size.labs, 
                                  strict_selection = strict.labs)) +
   scale_x_discrete(labels = c("middle", "end")) +
-  scale_fill_brewer(palette = "Dark2") #+
-  # theme(legend.title = element_blank(), 
-  #       legend.key.size = unit(0.25, "cm"), 
-  #       legend.text = element_text(size = 8), 
-  #       strip.text = element_text(size = 8))
+  scale_fill_brewer(palette = "Paired") +
+  theme(legend.title = element_blank(),
+        strip.text = element_text(size = 8),
+        axis.text = element_text(size = 6))
 plot(p1)
 
 p2 = ggplot(ad %>% filter(overlap == 1)) +
@@ -60,14 +59,13 @@ p2 = ggplot(ad %>% filter(overlap == 1)) +
                                  size_preference = size.labs, 
                                  strict_selection = strict.labs)) +
   scale_x_discrete(labels = c("middle", "end")) +
-  scale_fill_brewer(palette = "Dark2") #+
-  # theme(legend.title = element_blank(), 
-  #       legend.key.size = unit(0.25, "cm"), 
-  #       legend.text = element_text(size = 8), 
-  #       strip.text = element_text(size = 8))
+  scale_fill_brewer(palette = "Paired") +
+  theme(legend.title = element_blank(),
+        strip.text = element_text(size = 8),
+        axis.text = element_text(size = 6))
 plot(p2)
 
 ggsave(filename = "../figures/recycled-object-counts.tiff", 
        plot = ggarrange(p1, p2, 
-                        common.legend = T, legend = "bottom", labels = "AUTO"), 
-       dpi = 300, width = 8)
+                        common.legend = T, labels = "AUTO"), 
+       dpi = 300, width = 10, height = 6)
