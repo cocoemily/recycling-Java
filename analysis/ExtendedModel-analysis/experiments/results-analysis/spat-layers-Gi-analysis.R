@@ -76,8 +76,8 @@ for(e in 1:length(exp)) {
     output[nrow(output) + 1, ] <-
       c(
         exp[e], 
-        run,
         Gi.end[1, parameters], 
+        run,
         RI.CR.o, 
         RI.flkcnt.o, 
         RI.nodcnt.o, 
