@@ -18,13 +18,21 @@ exp = unique(layers.Gi$exp)
 
 output = layers.Gi[,c("exp", parameters)]
 output$run = 0
+output$high_RI = 0
 output$RI.CR.overlap  = 0
+output$high_CR = 0
 output$RI.flkcnt.overlap = 0
+output$high_flkcnt = 0
 output$RI.nodcnt.overlap = 0
+output$high_nodcnt = 0
 output$RI.numdisc.overlap = 0
+output$high_disc = 0
 output$RI.numscvg.overlap = 0
+output$high_scvg = 0
 output$RI.numenct.overlap = 0
+output$high_enct = 0
 output$RI.numret.overlap = 0 
+output$high_ret = 0
 output = output[0,]
 
 for(e in 1:length(exp)) {
@@ -76,15 +84,23 @@ for(e in 1:length(exp)) {
     output[nrow(output) + 1, ] <-
       c(
         exp[e], 
-        Gi.end[1, parameters], 
+        Gi.run[1, parameters], 
         run,
+        100 - freq(RI.rast, value = NA),
         RI.CR.o, 
+        100 - freq(CR.rast, value = NA),
         RI.flkcnt.o, 
-        RI.nodcnt.o, 
-        RI.numdisc.o, 
+        100 - freq(flkcnt.rast, value = NA),
+        RI.nodcnt.o,
+        100 - freq(nodcnt.rast, value = NA),
+        RI.numdisc.o,
+        100 - freq(numdisc.rast, value = NA),
         RI.numscvg.o, 
+        100 - freq(numscvg.rast, value = NA),
         RI.numenct.o, 
-        RI.numret.o
+        100 - freq(numenct.rast, value = NA),
+        RI.numret.o,
+        100 - freq(numret.rast, value = NA)
       )
   }
   
