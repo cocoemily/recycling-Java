@@ -140,7 +140,7 @@ two.sc = ggplot(allsc) +
                                     "flake preference: TRUE", "min. selectable flake size", "max. flake size",
                                     "max. use intensity", "max. artifact carry", "scavenging probability",
                                     "blank probability", "mu"))) +
-  guides(color = FALSE) +
+  guides(color = "none") +
   scale_x_discrete(labels =
                      rev(c("square", "strict selection: TRUE", "size preference: TRUE",
                        "flake preference: TRUE", "min. selectable flake size", "max. flake size",
@@ -259,7 +259,7 @@ two.sc = ggplot(allsc) +
                                     "flake preference: TRUE", "min. selectable flake size", "max. flake size",
                                     "max. use intensity", "max. artifact carry", "scavenging probability",
                                     "blank probability", "mu"))) +
-  guides(color = FALSE) +
+  guides(color = "none") +
   scale_x_discrete(labels =
                      rev(c("square", "strict selection: TRUE", "size preference: TRUE",
                            "flake preference: TRUE", "min. selectable flake size", "max. flake size",

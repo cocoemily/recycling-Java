@@ -175,7 +175,7 @@ plot_row1 = ggarrange(plotREheatmap(REsim(lmm.mid1)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row1 = annotate_figure(plot_row1, bottom = text_grob("correlation of recycling intensity and object counts", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row1)
-ggsave(filename = "../figures/TWO-TECH_ri.obj.cor.tiff", plot_row1, dpi = 300, 
+ggsave(filename = "../figures/random-effects/TWO-TECH_ri.obj.cor.tiff", plot_row1, dpi = 300, 
        height = 5.5)
 
 #ri.cr.cor
@@ -200,7 +200,7 @@ plot_row2 = ggarrange(plotREheatmap(REsim(lmm.mid2)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row2 = annotate_figure(plot_row2, bottom = text_grob("correlation of recycling intensity and cortex ratio", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row2)
-ggsave(filename = "../figures/TWO-TECH_ri.cr.cor.tiff", plot_row2, dpi = 300, 
+ggsave(filename = "../figures/random-effects/TWO-TECH_ri.cr.cor.tiff", plot_row2, dpi = 300, 
        height = 5.5)
 
 #ri.num.disc.cor
@@ -225,7 +225,7 @@ plot_row3 = ggarrange(plotREheatmap(REsim(lmm.mid3)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row3 = annotate_figure(plot_row3, bottom = text_grob("correlation of recycling intensity and discard events", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row3)
-ggsave(filename = "../figures/TWO-TECH_ri.disc.cor.tiff", plot_row3, dpi = 300, 
+ggsave(filename = "../figures/random-effects/TWO-TECH_ri.disc.cor.tiff", plot_row3, dpi = 300, 
        height = 5.5)
 
 #ri.num.scvg.cor
@@ -250,7 +250,7 @@ plot_row4 = ggarrange(plotREheatmap(REsim(lmm.mid4)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row4 = annotate_figure(plot_row4, bottom = text_grob("correlation of recycling intensity and scavenging events", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row4)
-ggsave(filename = "../figures/TWO-TECH_ri.scvg.cor.tiff", plot_row4, dpi = 300, 
+ggsave(filename = "../figures/random-effects/TWO-TECH_ri.scvg.cor.tiff", plot_row4, dpi = 300, 
        height = 5.5)
 
 #ri.num.enct.cor
@@ -275,7 +275,7 @@ plot_row5 = ggarrange(plotREheatmap(REsim(lmm.mid5)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row5 = annotate_figure(plot_row5, bottom = text_grob("correlation of recycling intensity and layer encounters", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row5)
-ggsave(filename = "../figures/TWO-TECH_ri.enct.cor.tiff", plot_row5, dpi = 300, 
+ggsave(filename = "../figures/random-effects/TWO-TECH_ri.enct.cor.tiff", plot_row5, dpi = 300, 
        height = 5.5)
 
 #ri.num.ret.cor
@@ -300,7 +300,7 @@ plot_row6 = ggarrange(plotREheatmap(REsim(lmm.mid6)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row6 = annotate_figure(plot_row6, bottom = text_grob("correlation of recycling intensity and retouches", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row6)
-ggsave(filename = "../figures/TWO-TECH_ri.ret.cor.tiff", plot_row6, dpi = 300, 
+ggsave(filename = "../figures/random-effects/TWO-TECH_ri.ret.cor.tiff", plot_row6, dpi = 300, 
        height = 5.5)
 
 
@@ -330,7 +330,7 @@ plot_row1 = ggarrange(plotREheatmap(REsim(lmm.mid1)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row1 = annotate_figure(plot_row1, bottom = text_grob("correlation of recycling intensity and object counts", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row1)
-ggsave(filename = "../figures/MANY-TECH_ri.obj.cor.tiff", plot_row1, dpi = 300, 
+ggsave(filename = "../figures/random-effects/MANY-TECH_ri.obj.cor.tiff", plot_row1, dpi = 300, 
        height = 5.5)
 
 #ri.cr.cor
@@ -355,7 +355,7 @@ plot_row2 = ggarrange(plotREheatmap(REsim(lmm.mid2)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row2 = annotate_figure(plot_row2, bottom = text_grob("correlation of recycling intensity and cortex ratio", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row2)
-ggsave(filename = "../figures/MANY-TECH_ri.cr.cor.tiff", plot_row2, dpi = 300, 
+ggsave(filename = "../figures/random-effects/MANY-TECH_ri.cr.cor.tiff", plot_row2, dpi = 300, 
        height = 5.5)
 
 #ri.num.disc.cor
@@ -380,7 +380,7 @@ plot_row3 = ggarrange(plotREheatmap(REsim(lmm.mid3)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row3 = annotate_figure(plot_row3, bottom = text_grob("correlation of recycling intensity and discard events", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row3)
-ggsave(filename = "../figures/MANY-TECH_ri.disc.cor.tiff", plot_row3, dpi = 300, 
+ggsave(filename = "../figures/random-effects/MANY-TECH_ri.disc.cor.tiff", plot_row3, dpi = 300, 
        height = 5.5)
 
 #ri.num.scvg.cor
@@ -406,7 +406,7 @@ plot_row4 = ggarrange(plotREheatmap(REsim(lmm.mid4)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row4 = annotate_figure(plot_row4, bottom = text_grob("correlation of recycling intensity and scavenging events", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row4)
-ggsave(filename = "../figures/MANY-TECH_ri.scvg.cor.tiff", plot_row4, dpi = 300, 
+ggsave(filename = "../figures/random-effects/MANY-TECH_ri.scvg.cor.tiff", plot_row4, dpi = 300, 
        height = 5.5)
 
 #ri.num.enct.cor
@@ -431,7 +431,7 @@ plot_row5 = ggarrange(plotREheatmap(REsim(lmm.mid5)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row5 = annotate_figure(plot_row5, bottom = text_grob("correlation of recycling intensity and layer encounters", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row5)
-ggsave(filename = "../figures/MANY-TECH_ri.enct.cor.tiff", plot_row5, dpi = 300, 
+ggsave(filename = "../figures/random-effects/MANY-TECH_ri.enct.cor.tiff", plot_row5, dpi = 300, 
        height = 5.5)
 
 
@@ -457,7 +457,7 @@ plot_row6 = ggarrange(plotREheatmap(REsim(lmm.mid6)), plotREheatmap(REsim(lmm.en
                       font.label = list(size = 10))
 plot_row6 = annotate_figure(plot_row6, bottom = text_grob("correlation of recycling intensity and retouches", vjust = -7, just = "right", hjust = 0.575))
 plot(plot_row6)
-ggsave(filename = "../figures/MANY-TECH_ri.ret.cor.tiff", plot_row6, dpi = 300, 
+ggsave(filename = "../figures/random-effects/MANY-TECH_ri.ret.cor.tiff", plot_row6, dpi = 300, 
        height = 5.5)
 
 
@@ -553,7 +553,7 @@ ggaplot = ggarrange(compare_mu_scenarios(cor.names[2]), compare_mu_scenarios(cor
           compare_mu_scenarios(cor.names[6]), compare_mu_scenarios(cor.names[8]), 
           ncol = 2, nrow = 3,
           common.legend = T, labels = "AUTO")
-ggsave(filename = "../figures/correlation-fixed-effects_mu.tiff", ggaplot, width = 8, height = 10, dpi = 300)
+ggsave(filename = "../figures/correlation-fixed-effects_mu.tiff", ggaplot, width = 8.25, height =9.5, dpi = 300)
 
 
 ####REGRESSIONS LOOKING AT SELECTION SCENARIOS#####
@@ -676,7 +676,7 @@ ggaplot2 = ggarrange(compare_size_pref_scenarios(cor.names[2]), compare_size_pre
                     compare_size_pref_scenarios(cor.names[6]), compare_size_pref_scenarios(cor.names[8]), 
                     ncol = 2, nrow = 3,
                     common.legend = T, labels = "AUTO")
-ggsave(filename = "../figures/correlation-fixed-effects_size-pref.tiff", ggaplot2, width = 8, height = 10, dpi = 300)
+ggsave(filename = "../figures/correlation-fixed-effects_size-pref.tiff", ggaplot2, width = 8.25, height = 9.5, dpi = 300)
 
 
 ##strict selection vs not strict selection
@@ -741,4 +741,4 @@ ggaplot3 = ggarrange(compare_strict_select_scenarios(cor.names[2]), compare_stri
                      compare_strict_select_scenarios(cor.names[6]), compare_strict_select_scenarios(cor.names[8]), 
                      ncol = 2, nrow = 3,
                      common.legend = T, labels = "AUTO")
-ggsave(filename = "../figures/correlation-fixed-effects_strict.tiff", ggaplot3, width = 8, height = 10, dpi = 300)
+ggsave(filename = "../figures/correlation-fixed-effects_strict.tiff", ggaplot3, width = 8.25, height = 9.5, dpi = 300)
