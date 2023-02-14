@@ -49,7 +49,7 @@ p1 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
-  scale_y_continous(labels = label_number(accuracy = 0.01)) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity") +
   theme(strip.text = element_text(size = 5))
@@ -87,7 +87,7 @@ p2 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
-  scale_y_continous(labels = label_number(accuracy = 0.01)) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created") +
   theme(strip.text = element_text(size = 5))
@@ -125,7 +125,7 @@ p3 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
-  scale_y_continous(labels = label_number(accuracy = 0.01)) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of scavenging events") +
   theme(strip.text = element_text(size = 5))
@@ -164,7 +164,7 @@ p4 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
-  scale_y_continous(labels = label_number(accuracy = 0.01)) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of discard events") +
   theme(strip.text = element_text(size = 5))
@@ -202,7 +202,7 @@ p5 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
-  scale_y_continous(labels = label_number(accuracy = 0.01)) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of retouch events") +
   theme(strip.text = element_text(size = 5))
@@ -240,7 +240,7 @@ p6 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse() +
-  scale_y_continous(labels = label_number(accuracy = 0.01)) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of blanks produced") +
   theme(strip.text = element_text(size = 5))
