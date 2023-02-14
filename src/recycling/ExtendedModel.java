@@ -969,7 +969,8 @@ public class ExtendedModel {
 	 */
 	public ArrayList<String> getParameterData() {
 		ArrayList<String> data = new ArrayList<String>();
-		data.add("size," +
+		data.add("run" +
+				"size," +
 				"start_year," +
 				"timestep," +
 				"max_use_intensity," +
@@ -990,7 +991,8 @@ public class ExtendedModel {
 				"geo_event_freq," +
 				"total_steps");
 
-		data.add(this.size*this.size + "," + 
+		data.add(this.name + "," +
+				this.size*this.size + "," + 
 				this.startYear + "," +
 				this.timestep + "," +
 				this.maxUseIntensity + "," +
