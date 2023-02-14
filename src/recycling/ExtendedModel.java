@@ -130,7 +130,7 @@ public class ExtendedModel {
 		String mcols = this.getParameterData().get(0) + ",model_year,num.scav.events,num.discard.events,num.rcycl.obj.made,num.retouch.events,num.blank.events,total.recycled,cum.deposits,cum.encounters,cum.discards,cum.manu.events,cum.retouches,total.CR,total.RI"; 
 		this.modeldata.append(mcols + "\n");
 		this.artifactdata = new StringBuilder();
-		this.artifactdata.append("row,col,model_year,layer_year,obj_type,initial_discard,size,volume,surface_area,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
+		this.artifactdata.append("run,row,col,model_year,layer_year,obj_type,initial_discard,size,volume,surface_area,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
 
 	}
 
@@ -812,7 +812,8 @@ public class ExtendedModel {
 							}
 							//boolean nodRecycled = nods.get(n).getFirstTech() != nods.get(n).getLastTech();
 
-							toAddData.append(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
+							toAddData.append(this.name + "," + //run number
+									i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_year,layer_year
 									+ "nodule" + ","                                    //obj_type
 									+ nods.get(n).getDiscardYear() + ","				//initial discard year
 									+ nods.get(n).getSize() + "," 						//size
@@ -832,7 +833,8 @@ public class ExtendedModel {
 					ArrayList<Flake> flakes = layers.get(l).getFlakes();
 					if(flakes.size() != 0) {
 						for(int f=0; f<flakes.size(); f++) {
-							toAddData.append(i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
+							toAddData.append(this.name + "," + //run number
+									i + "," + j + "," + this.currentYear + "," + layers.get(l).getYear() + ","	//row,col,model_yar,layer_year
 									+ "flake" + ","  									//obj_type
 									+ flakes.get(f).getDiscardYear() + ","				//initial discard year
 									+ flakes.get(f).getSize() + "," 					//size
@@ -969,7 +971,7 @@ public class ExtendedModel {
 	 */
 	public ArrayList<String> getParameterData() {
 		ArrayList<String> data = new ArrayList<String>();
-		data.add("run" +
+		data.add("run," +
 				"size," +
 				"start_year," +
 				"timestep," +
