@@ -53,8 +53,21 @@ foreach (f=1:length(files)) %dopar% {
   
   onerun.grid = onerun %>% group_by(row, col) %>%
     summarize(count_recycled = sum(recycled), 
-              count_retouched = sum(stage > 0, na.rm = T))
+              count_retouched = sum(stage > 0, na.rm = T)) %>%
+    mutate(!!parameters[1] := c(exp_values[1, c(parameters[1])]), 
+           !!parameters[2] := c(exp_values[1, c(parameters[2])]), 
+           !!parameters[3] := c(exp_values[1, c(parameters[3])]), 
+           !!parameters[4] := c(exp_values[1, c(parameters[4])]), 
+           !!parameters[5] := c(exp_values[1, c(parameters[5])]), 
+           !!parameters[6] := c(exp_values[1, c(parameters[6])]), 
+           !!parameters[7] := c(exp_values[1, c(parameters[7])]), 
+           !!parameters[8] := c(exp_values[1, c(parameters[8])]), 
+           !!parameters[9] := c(exp_values[1, c(parameters[9])]), 
+           !!parameters[10] := c(exp_values[1, c(parameters[10])]), 
+           !!parameters[11] := c(exp_values[1, c(parameters[11])]), 
+           !!parameters[12] := c(exp_values[1, c(parameters[12])]))
   
+  #colnames(onerun.grid) = c("row", "col", "count_recycled", "count_retouched", parameters)
   
   filename = str_split(files[f], "_")[[1]][1]
   write_csv(onerun.grid, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_ONERUN_recycled-retouched-object-counts.csv"), num_threads=1)
