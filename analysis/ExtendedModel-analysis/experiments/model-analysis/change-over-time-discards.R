@@ -137,3 +137,8 @@ splot = ggplot() +
   labs(color = "flake preference", x = "model year", y = "average number of discard events")
 
 ggsave(filename = "discard-trend-by-selection.png", splot, dpi = 300)
+
+ggsave(filename = "discard-trends.tiff",
+       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 1, nrow = 3, labels = "AUTO"), 
+       dpi = 300, width = 7, height = 10
+)

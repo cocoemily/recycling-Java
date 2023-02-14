@@ -137,3 +137,8 @@ splot = ggplot() +
   labs(color = "flake preference", x = "model year", y = "average number of retouch events")
 
 ggsave(filename = "retouch-trend-by-selection.png", splot, dpi = 300)
+
+ggsave(filename = "retouch-trends.tiff",
+       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 1, nrow = 3, labels = "AUTO"), 
+       dpi = 300, width = 7, height = 10
+)

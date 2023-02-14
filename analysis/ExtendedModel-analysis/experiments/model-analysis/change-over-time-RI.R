@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(ggthemes)
+library(scales)
 
 theme_set(theme_bw())
 
@@ -29,6 +30,15 @@ flake.selection = alldata[which(alldata$flake_preference == TRUE),]
 nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
 
 rm(alldata)
+
+size.labs = c("size preference", "no size preference")
+names(size.labs) = c("TRUE", "FALSE")
+flake.labs = c("flake preference", "nodule preference")
+names(flake.labs) = c("TRUE", "FALSE")
+strict.labs = c("strict selection", "non-strict selection")
+names(strict.labs) = c("TRUE", "FALSE")
+tech.labs = c("two technology types", "many technology types")
+names(tech.labs) = c("1", "2")
 
 ####OVERLAP####
 avg.two.tech = two.tech %>%
@@ -131,7 +141,9 @@ splot = ggplot() +
   geom_ribbon(data = avg.flk.select, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
   geom_line(data = avg.nod.select, aes(x = model_year, y = mean.RI, color = as.factor(flake_preference))) +
   geom_ribbon(data = avg.nod.select, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-  facet_grid(size_preference ~ strict_selection, labeller = label_both) +
+  facet_grid(size_preference ~ strict_selection, labeller = labeller(
+    size_preference = size.labs, strict_selection = strict.labs
+  )) +
   scale_x_reverse() +
   scale_color_colorblind() +
   labs(color = "flake preference", x = "model year", y = "average recycling intensity")
@@ -139,38 +151,45 @@ splot = ggplot() +
 ggsave(filename = "recycling-intensity-trend-by-selection.png", splot, dpi = 300)
 
 
-####BLANK AND SCAVENGING####
-##need to make another dataframe that has blank_prob and scavenge_prob in it
-exp.avg.two = two.tech %>%
-  group_by(blank_prob, scavenge_prob, model_year) %>%
-  summarize(mean.RI = mean(total.RI),
-            sd.RI = sd(total.RI),
-            n.RI = n()) %>%
-  mutate(overlap = 1,
-         se.RI = sd.RI / sqrt(n.RI),
-         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
-         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-
-exp.avg.multi = multi.tech %>%
-  group_by(blank_prob, scavenge_prob, model_year) %>%
-  summarize(mean.RI = mean(total.RI),
-            sd.RI = sd(total.RI),
-            n.RI = n()) %>%
-  mutate(overlap = 2,
-         se.RI = sd.RI / sqrt(n.RI),
-         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
-         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-  
+ggsave(filename = "recycling-intensity-trends.tiff",
+  ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 1, nrow = 3, labels = "AUTO"), 
+  dpi = 300, width = 7, height = 10
+)
 
 
-bsplot = ggplot() +
-  geom_line(data = exp.avg.two, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
-  geom_ribbon(data = exp.avg.two, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-  geom_line(data = exp.avg.multi, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
-  geom_ribbon(data = exp.avg.multi, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-  facet_grid(blank_prob ~ scavenge_prob) +
-  scale_x_reverse() +
-  scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
 
-#ggsave(filename = "recycling-intensity-trend-by-recycling-probs.png", bsplot, dpi = 300)
+# ####BLANK AND SCAVENGING####
+# ##need to make another dataframe that has blank_prob and scavenge_prob in it
+# exp.avg.two = two.tech %>%
+#   group_by(blank_prob, scavenge_prob, model_year) %>%
+#   summarize(mean.RI = mean(total.RI),
+#             sd.RI = sd(total.RI),
+#             n.RI = n()) %>%
+#   mutate(overlap = 1,
+#          se.RI = sd.RI / sqrt(n.RI),
+#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+# 
+# exp.avg.multi = multi.tech %>%
+#   group_by(blank_prob, scavenge_prob, model_year) %>%
+#   summarize(mean.RI = mean(total.RI),
+#             sd.RI = sd(total.RI),
+#             n.RI = n()) %>%
+#   mutate(overlap = 2,
+#          se.RI = sd.RI / sqrt(n.RI),
+#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+#   
+# 
+# 
+# bsplot = ggplot() +
+#   geom_line(data = exp.avg.two, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+#   geom_ribbon(data = exp.avg.two, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+#   geom_line(data = exp.avg.multi, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+#   geom_ribbon(data = exp.avg.multi, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+#   facet_grid(blank_prob ~ scavenge_prob) +
+#   scale_x_reverse() +
+#   scale_color_colorblind() +
+#   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
+# 
+# #ggsave(filename = "recycling-intensity-trend-by-recycling-probs.png", bsplot, dpi = 300)
