@@ -9,7 +9,7 @@ library(doParallel)
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
-#dirs = list.dirs("../output/test-layer-data")
+#dirs = list.dirs("../output/test-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
@@ -32,24 +32,22 @@ foreach (d=1:length(dirs)) %dopar% {
   
   years = unique(data$model_year)
   results = data[which(data$model_year == years[1]), 
-                 c(parameters, "model_year", "flake.count", "nodule.count")]
+                 c(parameters, "run", "model_year", "flake.count", "nodule.count")]
   results = results[0,]
   
   for(y in 1:length(years)) {
     allgrids = data[which(data$model_year == years[y]), 
-                    c(parameters, "model_year", "row", "col", "flake.count", "nodule.count")]
+                    c(parameters, "run", "model_year", "row", "col", "flake.count", "nodule.count")]
     if(years[y] == 200000) {
       allgrids = allgrids[1:5000,]
     }
     
-    allgrids$run = rep(seq(1,50, by=1), each=100)
-    
-    for(i in 1:50) {
+    for(i in unique(allgrids$run)) {
       grid = allgrids[which(allgrids$run == i),]
       
-      exp = c(grid[1, c(parameters, "model_year")])
-      exp[[14]] =  sum(grid$flake.count)
-      exp[[15]] = sum(grid$nodule.count)
+      exp = c(grid[1, c(parameters, "run", "model_year")])
+      exp[[15]] =  sum(grid$flake.count)
+      exp[[16]] = sum(grid$nodule.count)
       
       results[nrow(results) + 1, ] <- exp
     }
