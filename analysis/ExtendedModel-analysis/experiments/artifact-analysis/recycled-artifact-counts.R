@@ -1,4 +1,4 @@
-#Counts of recycled nodules and flakes
+#Counts of recycled nodules and flakes + retouched flakes
 library(tidyverse)
 library(parallel)
 library(foreach)
@@ -12,8 +12,7 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
 param_list = param_list[, c("exp", parameters)]
 
-
-#files = list.files("../output/test-artifact-data/")
+#files = list.files("../output/test-data/")
 files = list.files("/scratch/ec3307/recycling-Java/output/artifact-data/")
 files = files[-length(files)]
 
@@ -31,7 +30,7 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 foreach (f=1:length(files)) %dopar% {
   expnum = str_extract(files[f], "[0-9]+")
   
-  #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
+  #data = read_csv(paste0("../output/test-data/", files[f], "/artifacts-data.csv"))
   data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]), num_threads=1)
   print(files[f])
   
@@ -40,20 +39,56 @@ foreach (f=1:length(files)) %dopar% {
   mid_data = data[which(data$model_year == 350000), ]
   end_data = data[which(data$model_year == 200000), ]
   
-  rcycl.mid = mid_data[which(mid_data$recycled == T), ]
-  rcycl.end = end_data[which(end_data$recycled == T), ]
+  runs = unique(data$run)
+  run.list = list()
+  for(i in runs) {
+    
+    gridded.end = end_data %>% filter(run == i) %>%
+      group_by(row, col) %>%
+      summarize(count_recycled = sum(recycled), 
+                count_retouched = sum(stage > 0, na.rm = T))  %>%
+      mutate(!!parameters[1] := c(exp_values[1, c(parameters[1])]), 
+             !!parameters[2] := c(exp_values[1, c(parameters[2])]), 
+             !!parameters[3] := c(exp_values[1, c(parameters[3])]), 
+             !!parameters[4] := c(exp_values[1, c(parameters[4])]), 
+             !!parameters[5] := c(exp_values[1, c(parameters[5])]), 
+             !!parameters[6] := c(exp_values[1, c(parameters[6])]), 
+             !!parameters[7] := c(exp_values[1, c(parameters[7])]), 
+             !!parameters[8] := c(exp_values[1, c(parameters[8])]), 
+             !!parameters[9] := c(exp_values[1, c(parameters[9])]), 
+             !!parameters[10] := c(exp_values[1, c(parameters[10])]), 
+             !!parameters[11] := c(exp_values[1, c(parameters[11])]), 
+             !!parameters[12] := c(exp_values[1, c(parameters[12])]))
+    gridded.end$run = i
+    gridded.end$time = "end"
+    
+    gridded.mid = mid_data %>% filter(run == i) %>%
+      group_by(row, col) %>%
+      summarize(count_recycled = sum(recycled), 
+                count_retouched = sum(stage > 0, na.rm = T))  %>%
+      mutate(!!parameters[1] := c(exp_values[1, c(parameters[1])]), 
+             !!parameters[2] := c(exp_values[1, c(parameters[2])]), 
+             !!parameters[3] := c(exp_values[1, c(parameters[3])]), 
+             !!parameters[4] := c(exp_values[1, c(parameters[4])]), 
+             !!parameters[5] := c(exp_values[1, c(parameters[5])]), 
+             !!parameters[6] := c(exp_values[1, c(parameters[6])]), 
+             !!parameters[7] := c(exp_values[1, c(parameters[7])]), 
+             !!parameters[8] := c(exp_values[1, c(parameters[8])]), 
+             !!parameters[9] := c(exp_values[1, c(parameters[9])]), 
+             !!parameters[10] := c(exp_values[1, c(parameters[10])]), 
+             !!parameters[11] := c(exp_values[1, c(parameters[11])]), 
+             !!parameters[12] := c(exp_values[1, c(parameters[12])]))
+    gridded.mid$run = i
+    gridded.mid$time = "middle"
+    
+    run.list[[length(run.list) + 1]] <- gridded.mid
+    run.list[[length(run.list) + 1]] <- gridded.end
+  }
   
   
+  allresults = do.call("rbind", run.list[1:length(run.list)])
   
-  results = data.frame(exp_values[1,], 
-                       nrow(rcycl.mid[which(rcycl.mid$obj_type == "flake"),]), 
-                       nrow(rcycl.mid[which(rcycl.mid$obj_type == "nodule"),]), 
-                       nrow(rcycl.end[which(rcycl.end$obj_type == "flake"),]), 
-                       nrow(rcycl.end[which(rcycl.end$obj_type == "nodule"),]))
-  colnames(results) <- c(colnames(exp_values), 
-                         "recycled.flakes.mid", "recycled.nodules.mid", 
-                         "recycled.flakes.end", "recycled.nodules.end")
   filename = str_split(files[f], "_")[[1]][1]
-  write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_recycled-object-counts.csv"), num_threads=1)
+  write_csv(allresults, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_recycled-object-counts.csv"), num_threads=1)
   
 }
