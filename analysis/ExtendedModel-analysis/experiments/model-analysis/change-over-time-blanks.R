@@ -3,6 +3,7 @@
 library(tidyverse)
 library(ggthemes)
 library(ggpubr)
+library(scales)
 
 theme_set(theme_bw())
 
