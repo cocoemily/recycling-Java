@@ -156,8 +156,8 @@ splot = ggplot() +
 
 
 ggsave(filename = "recycling-intensity-trends.tiff",
-  ggarrange(oplot, mplot, splot, legend = "right", ncol = 1, nrow = 3, labels = "AUTO"), 
-  dpi = 300, width = 7, height = 10
+  ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
+  dpi = 300, width = 10, height = 5
 )
 
 
