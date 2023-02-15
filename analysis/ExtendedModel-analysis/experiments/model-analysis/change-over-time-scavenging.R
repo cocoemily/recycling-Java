@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(ggthemes)
+library(ggpubr)
 
 theme_set(theme_bw())
 
@@ -59,7 +60,7 @@ oplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of scavenging events")
 
-ggsave(filename = "scavenging-trend-by-overlap.png", oplot, dpi = 300)
+#ggsave(filename = "scavenging-trend-by-overlap.png", oplot, dpi = 300)
 
 ####MU####
 avg.mu.1 = mu.1 %>%
@@ -101,7 +102,7 @@ mplot = ggplot() +
   scale_color_colorblind() +
   labs(color = "mu parameter", x = "model year", y = "average number of scavenging events")
 
-ggsave(filename = "scavenging-trend-by-mu.png", mplot, dpi = 300)
+#ggsave(filename = "scavenging-trend-by-mu.png", mplot, dpi = 300)
 
 
 ####SELECTION####
@@ -136,9 +137,9 @@ splot = ggplot() +
   scale_color_colorblind() +
   labs(color = "flake preference", x = "model year", y = "average number of scavenging events")
 
-ggsave(filename = "scavenging-trend-by-selection.png", splot, dpi = 300)
+#ggsave(filename = "scavenging-trend-by-selection.png", splot, dpi = 300)
 
 ggsave(filename = "scavenging-trends.tiff",
-       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 1, nrow = 3, labels = "AUTO"), 
-       dpi = 300, width = 7, height = 10
+       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
+       dpi = 300, width = 10, height = 5
 )

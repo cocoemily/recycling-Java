@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(ggthemes)
+library(ggpubr)
 
 theme_set(theme_bw())
 
@@ -142,6 +143,6 @@ splot = ggplot() +
 # ggsave(filename = "discard-trend-by-selection.png", splot, dpi = 300)
 
 ggsave(filename = "discard-trends.tiff",
-       ggarrange(oplot, mplot, splot, legend = "right", ncol = 1, nrow = 3, labels = "AUTO"), 
-       dpi = 300, width = 7, height = 10
+       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
+       dpi = 300, width = 10, height = 5
 )
