@@ -49,14 +49,15 @@ p1 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity") +
   theme(strip.text = element_text(size = 5))
 
-ggsave(filename = "recycling-intensity-trend-by-probs.png", p1, dpi = 300, 
-       height = 7, width = 8)
+# ggsave(filename = "recycling-intensity-trend-by-probs.png", p1, dpi = 300, 
+#        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
 ####recycling events####
@@ -87,14 +88,15 @@ p2 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created") +
   theme(strip.text = element_text(size = 5))
 
-ggsave(filename = "recycled-objects-trend-by-probs.png", p2, dpi = 300, 
-       height = 7, width = 8)
+# ggsave(filename = "recycled-objects-trend-by-probs.png", p2, dpi = 300, 
+#        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
 ####scavenging events####
@@ -125,14 +127,15 @@ p3 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of scavenging events") +
   theme(strip.text = element_text(size = 5))
 
-ggsave(filename = "scavenging-trend-by-probs.png", p3, dpi = 300, 
-       height = 7, width = 8)
+# ggsave(filename = "scavenging-trend-by-probs.png", p3, dpi = 300, 
+#        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
 
@@ -164,14 +167,15 @@ p4 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of discard events") +
   theme(strip.text = element_text(size = 5))
 
-ggsave(filename = "discard-trend-by-probs.png", p4, dpi = 300, 
-       height = 7, width = 8)
+# ggsave(filename = "discard-trend-by-probs.png", p4, dpi = 300, 
+#        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
 ####retouch events####
@@ -202,14 +206,15 @@ p5 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of retouch events") +
   theme(strip.text = element_text(size = 5))
 
-ggsave(filename = "retouch-trend-by-probs.png", p5, dpi = 300, 
-       height = 7, width = 8)
+# ggsave(filename = "retouch-trend-by-probs.png", p5, dpi = 300, 
+#        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
 ####blank creation events####
@@ -240,16 +245,17 @@ p6 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of blanks produced") +
   theme(strip.text = element_text(size = 5))
 
-ggsave(filename = "blanks-trend-by-probs.png", p6, dpi = 300, 
-       height = 7, width = 8)
+# ggsave(filename = "blanks-trend-by-probs.png", p6, dpi = 300, 
+#        height = 7, width = 8)
 rm(avg.two.tech, avg.multi.tech)
 
-grid = ggarrange(p1, p2, p3, p4, p5, p6, nrow = 2, ncol = 3, common.legend = F, legend = "bottom")
+grid = ggarrange(p1, p2, p3, p4, p5, p6, nrow = 2, ncol = 3, common.legend = T, legend = "bottom")
 ggsave(filename = "trends-by-probs.tiff", grid,
        dpi = 300, width = 12, height = 9)

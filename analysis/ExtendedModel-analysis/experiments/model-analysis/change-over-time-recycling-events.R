@@ -55,11 +55,12 @@ oplot = ggplot() +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.ro, ymax = upper.ci.ro), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.ro, color = as.factor(overlap))) +
   geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.ro, ymax = upper.ci.ro), alpha = 0.2) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created")
 
-ggsave(filename = "recycled-objects-trend-by-overlap.png", oplot, dpi = 300)
+# ggsave(filename = "recycled-objects-trend-by-overlap.png", oplot, dpi = 300)
 
 ####MU####
 avg.mu.1 = mu.1 %>%
@@ -97,11 +98,12 @@ mplot = ggplot() +
   geom_ribbon(data = avg.mu.2, aes(x = model_year, ymin = lower.ci.ro, ymax = upper.ci.ro), alpha = 0.2) +
   geom_line(data = avg.mu.3, aes(x = model_year, y = mean.ro, color = as.factor(mu))) +
   geom_ribbon(data = avg.mu.3, aes(x = model_year, ymin = lower.ci.ro, ymax = upper.ci.ro), alpha = 0.2) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   labs(color = "mu parameter", x = "model year", y = "average number of recycled objects created")
 
-ggsave(filename = "recycled-objects-trend-by-mu.png", mplot, dpi = 300)
+# ggsave(filename = "recycled-objects-trend-by-mu.png", mplot, dpi = 300)
 
 
 ####SELECTION####
@@ -132,13 +134,14 @@ splot = ggplot() +
   geom_line(data = avg.nod.select, aes(x = model_year, y = mean.ro, color = as.factor(flake_preference))) +
   geom_ribbon(data = avg.nod.select, aes(x = model_year, ymin = lower.ci.ro, ymax = upper.ci.ro), alpha = 0.2) +
   facet_grid(size_preference ~ strict_selection, labeller = label_both) +
-  scale_x_reverse() +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   labs(color = "flake preference", x = "model year", y = "average number of recycled objects created")
 
-ggsave(filename = "recycled-objects-trend-by-selection.png", splot, dpi = 300)
+# ggsave(filename = "recycled-objects-trend-by-selection.png", splot, dpi = 300)
 
 ggsave(filename = "recycled-objects-trends.tiff",
-       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 1, nrow = 3, labels = "AUTO"), 
+       ggarrange(oplot, mplot, splot, legend = "right", ncol = 1, nrow = 3, labels = "AUTO"), 
        dpi = 300, width = 7, height = 10
 )
