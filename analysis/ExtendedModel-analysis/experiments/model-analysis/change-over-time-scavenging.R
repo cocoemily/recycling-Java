@@ -32,6 +32,13 @@ nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
 
 rm(alldata)
 
+flake.labs = c("flake preference", "nodule preference")
+names(flake.labs) = c("TRUE", "FALSE")
+size.labs = c("size preference", "no size preference")
+names(size.labs) = c("TRUE", "FALSE")
+strict.labs = c("strict selection", "no strict selection")
+names(strict.labs) = c("TRUE", "FALSE")
+
 ###OVERLAP####
 avg.two.tech = two.tech %>%
   group_by(model_year) %>%
@@ -135,7 +142,8 @@ splot = ggplot() +
   geom_ribbon(data = avg.flk.select, aes(x = model_year, ymin = lower.ci.scvg, ymax = upper.ci.scvg), alpha = 0.2) +
   geom_line(data = avg.nod.select, aes(x = model_year, y = mean.scvg, color = as.factor(flake_preference))) +
   geom_ribbon(data = avg.nod.select, aes(x = model_year, ymin = lower.ci.scvg, ymax = upper.ci.scvg), alpha = 0.2) +
-  facet_grid(size_preference ~ strict_selection, labeller = label_both) +
+  facet_grid(size_preference ~ strict_selection, 
+             labeller = labeller(strict_selection = strict.labs, size_preference = size.labs)) +
   scale_x_reverse(breaks = c(500000, 350000, 200000), 
                   labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
@@ -145,5 +153,5 @@ splot = ggplot() +
 
 ggsave(filename = "scavenging-trends.tiff",
        ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
-       dpi = 300, width = 10, height = 5
+       dpi = 300, width = 11, height = 4.5
 )
