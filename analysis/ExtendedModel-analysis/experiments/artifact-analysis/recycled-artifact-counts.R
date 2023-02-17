@@ -46,38 +46,40 @@ foreach (f=1:length(files)) %dopar% {
     gridded.end = end_data %>% filter(run == i) %>%
       group_by(row, col, obj_type) %>%
       summarize(count_recycled = sum(recycled), 
-                count_retouched = sum(stage > 0, na.rm = T))  %>%
-      mutate(!!parameters[1] := c(exp_values[1, c(parameters[1])]), 
-             !!parameters[2] := c(exp_values[1, c(parameters[2])]), 
-             !!parameters[3] := c(exp_values[1, c(parameters[3])]), 
-             !!parameters[4] := c(exp_values[1, c(parameters[4])]), 
-             !!parameters[5] := c(exp_values[1, c(parameters[5])]), 
-             !!parameters[6] := c(exp_values[1, c(parameters[6])]), 
-             !!parameters[7] := c(exp_values[1, c(parameters[7])]), 
-             !!parameters[8] := c(exp_values[1, c(parameters[8])]), 
-             !!parameters[9] := c(exp_values[1, c(parameters[9])]), 
-             !!parameters[10] := c(exp_values[1, c(parameters[10])]), 
-             !!parameters[11] := c(exp_values[1, c(parameters[11])]), 
-             !!parameters[12] := c(exp_values[1, c(parameters[12])]))
+                count_retouched = sum(stage > 0, na.rm = T))
+    
+    gridded.end[,parameters[1]] = c(exp_values[1, c(parameters[1])])
+    gridded.end[,parameters[2]] = c(exp_values[1, c(parameters[2])])
+    gridded.end[,parameters[3]] = c(exp_values[1, c(parameters[3])])
+    gridded.end[,parameters[4]] = c(exp_values[1, c(parameters[4])])
+    gridded.end[,parameters[5]] = c(exp_values[1, c(parameters[5])])
+    gridded.end[,parameters[6]] = c(exp_values[1, c(parameters[6])])
+    gridded.end[,parameters[7]] = c(exp_values[1, c(parameters[7])])
+    gridded.end[,parameters[8]] = c(exp_values[1, c(parameters[8])])
+    gridded.end[,parameters[9]] = c(exp_values[1, c(parameters[9])])
+    gridded.end[,parameters[10]] = c(exp_values[1, c(parameters[10])])
+    gridded.end[,parameters[11]] = c(exp_values[1, c(parameters[11])])
+    gridded.end[,parameters[12]] = c(exp_values[1, c(parameters[12])])
     gridded.end$run = i
     gridded.end$time = "end"
     
     gridded.mid = mid_data %>% filter(run == i) %>%
       group_by(row, col, obj_type) %>%
       summarize(count_recycled = sum(recycled), 
-                count_retouched = sum(stage > 0, na.rm = T))  %>%
-      mutate(!!parameters[1] := c(exp_values[1, c(parameters[1])]), 
-             !!parameters[2] := c(exp_values[1, c(parameters[2])]), 
-             !!parameters[3] := c(exp_values[1, c(parameters[3])]), 
-             !!parameters[4] := c(exp_values[1, c(parameters[4])]), 
-             !!parameters[5] := c(exp_values[1, c(parameters[5])]), 
-             !!parameters[6] := c(exp_values[1, c(parameters[6])]), 
-             !!parameters[7] := c(exp_values[1, c(parameters[7])]), 
-             !!parameters[8] := c(exp_values[1, c(parameters[8])]), 
-             !!parameters[9] := c(exp_values[1, c(parameters[9])]), 
-             !!parameters[10] := c(exp_values[1, c(parameters[10])]), 
-             !!parameters[11] := c(exp_values[1, c(parameters[11])]), 
-             !!parameters[12] := c(exp_values[1, c(parameters[12])]))
+                count_retouched = sum(stage > 0, na.rm = T))  
+    
+    gridded.mid[,parameters[1]] = c(exp_values[1, c(parameters[1])])
+    gridded.mid[,parameters[2]] = c(exp_values[1, c(parameters[2])])
+    gridded.mid[,parameters[3]] = c(exp_values[1, c(parameters[3])])
+    gridded.mid[,parameters[4]] = c(exp_values[1, c(parameters[4])])
+    gridded.mid[,parameters[5]] = c(exp_values[1, c(parameters[5])])
+    gridded.mid[,parameters[6]] = c(exp_values[1, c(parameters[6])])
+    gridded.mid[,parameters[7]] = c(exp_values[1, c(parameters[7])])
+    gridded.mid[,parameters[8]] = c(exp_values[1, c(parameters[8])])
+    gridded.mid[,parameters[9]] = c(exp_values[1, c(parameters[9])])
+    gridded.mid[,parameters[10]] = c(exp_values[1, c(parameters[10])])
+    gridded.mid[,parameters[11]] = c(exp_values[1, c(parameters[11])])
+    gridded.mid[,parameters[12]] = c(exp_values[1, c(parameters[12])])
     gridded.mid$run = i
     gridded.mid$time = "middle"
     
