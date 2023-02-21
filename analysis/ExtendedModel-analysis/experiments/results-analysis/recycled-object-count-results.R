@@ -142,46 +142,49 @@ for(i in 1:nrow(param_list)) {
              min_suitable_flake_size == c(param_list[i,parameters[11]]) &
              strict_selection == c(param_list[i,parameters[12]]))
   
-  exp.end = exp.end[which(exp.end$time == "end"),]
+  exp.end = exp[which(exp$time == "end"),]
   
   for(run in c("run1", "run2", "run3", "run4", "run5")) {
     exp.run = exp.end[which(exp.end$run == run),]
     
-    exp.g = exp.run %>% group_by(row, col) %>%
-      summarize(count_recycled = sum(count_recycled), 
-                count_retouched = sum(count_retouched))
-    
-    exp.spat = exp.g
-    coordinates(exp.spat) = ~col+row
-    gridded(exp.spat) = TRUE
-    exp.spat = as(exp.spat, "SpatialPolygonsDataFrame") 
-    exp.spat$row = exp.g$row
-    exp.spat$col = exp.g$col
-    
-    nb = poly2nb(exp.spat, queen = T)
-    lw = nb2listw(nb, zero.policy = T)
-    
-    exp.spat$G.rcycl.obj = localG_perm(exp.spat$count_recycled, lw, nsim = 100, zero.policy = T)
-    exp.spat$G.retouch.obj = localG_perm(exp.spat$count_retouched, lw, nsim = 100, zero.policy = T)
-    
-    exp.df = as.data.frame(exp.spat) %>%
-      mutate(param_list[i, ])
-    
-    recycled.rast = rasterFromXYZ(exp.df[,c(3,4,5)])
-    recycled.rast[recycled.rast < 2] = NA
-    retouched.rast = rasterFromXYZ(exp.df[,c(3,4,6)])
-    retouched.rast[retouched.rast < 2] = NA
-    
-    r = overlay(recycled.rast, retouched.rast, fun=sum)
-    rcycl.ret.o = 100 - freq(r, value = NA)
-    
-    output[nrow(output) + 1, ] <-
-      c(param_list[i, ],
-        run, 
-        100 - freq(recycled.rast, value = NA),
-        100 - freq(retouched.rast, value = NA),
-        rcycl.ret.o
-      )
+    if(nrow(exp.run) > 0) {
+      
+      exp.g = exp.run %>% group_by(row, col) %>%
+        summarize(count_recycled = sum(count_recycled), 
+                  count_retouched = sum(count_retouched))
+      
+      exp.spat = exp.g
+      coordinates(exp.spat) = ~col+row
+      gridded(exp.spat) = TRUE
+      exp.spat = as(exp.spat, "SpatialPolygonsDataFrame") 
+      exp.spat$row = exp.g$row
+      exp.spat$col = exp.g$col
+      
+      nb = poly2nb(exp.spat, queen = T)
+      lw = nb2listw(nb, zero.policy = T)
+      
+      exp.spat$G.rcycl.obj = localG_perm(exp.spat$count_recycled, lw, nsim = 100, zero.policy = T)
+      exp.spat$G.retouch.obj = localG_perm(exp.spat$count_retouched, lw, nsim = 100, zero.policy = T)
+      
+      exp.df = as.data.frame(exp.spat) %>%
+        mutate(param_list[i, ])
+      
+      recycled.rast = rasterFromXYZ(exp.df[,c(3,4,5)])
+      recycled.rast[recycled.rast < 2] = NA
+      retouched.rast = rasterFromXYZ(exp.df[,c(3,4,6)])
+      retouched.rast[retouched.rast < 2] = NA
+      
+      r = overlay(recycled.rast, retouched.rast, fun=sum)
+      rcycl.ret.o = 100 - freq(r, value = NA)
+      
+      output[nrow(output) + 1, ] <-
+        c(param_list[i, ],
+          run, 
+          100 - freq(recycled.rast, value = NA),
+          100 - freq(retouched.rast, value = NA),
+          rcycl.ret.o
+        )
+    }
   }
 }
 
