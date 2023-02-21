@@ -60,7 +60,7 @@ plot_other_correlations = function(data, correlation) {
                                    overlap = tech.labs)) +
     labs(y = cor_dict[correlation]) +
     scale_color_colorblind() +
-    theme(axis.title = element_text(size = 8), strip.text = element_text(size = 7), 
+    theme(axis.title = element_text(size = 6), strip.text = element_text(size = 6), 
           legend.title = element_text(size = 8))
   
 }
@@ -70,69 +70,85 @@ p1 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[1]),
           plot_other_correlations(layer.cor.end, cor.names[1]), 
           common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[1], ".tiff"), 
-       p1 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[1], ".tiff"), 
+#        p1 , dpi = 300, width = 8, height = 8)
 
 p2 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[2]),
                plot_other_correlations(layer.cor.end, cor.names[2]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[2], ".tiff"), 
-       p2 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[2], ".tiff"), 
+#        p2 , dpi = 300, width = 8, height = 8)
 
 p3 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[3]),
                plot_other_correlations(layer.cor.end, cor.names[3]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[3], ".tiff"), 
-       p3 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[3], ".tiff"), 
+#        p3 , dpi = 300, width = 8, height = 8)
 
 p4 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[4]),
                plot_other_correlations(layer.cor.end, cor.names[4]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[4], ".tiff"), 
-       p4 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[4], ".tiff"), 
+#        p4 , dpi = 300, width = 8, height = 8)
 
 p5 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[5]),
                plot_other_correlations(layer.cor.end, cor.names[5]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[5], ".tiff"), 
-       p5 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[5], ".tiff"), 
+#        p5 , dpi = 300, width = 8, height = 8)
 
 p6 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[6]),
                plot_other_correlations(layer.cor.end, cor.names[6]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[6], ".tiff"), 
-       p6 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[6], ".tiff"), 
+#        p6 , dpi = 300, width = 8, height = 8)
 
 p7 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[7]),
                plot_other_correlations(layer.cor.end, cor.names[7]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[7], ".tiff"), 
-       p7 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[7], ".tiff"), 
+#        p7 , dpi = 300, width = 8, height = 8)
 
 p8 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[8]),
                plot_other_correlations(layer.cor.end, cor.names[8]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[8], ".tiff"), 
-       p8 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[8], ".tiff"), 
+#        p8 , dpi = 300, width = 8, height = 8)
 
 p9 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[9]),
                plot_other_correlations(layer.cor.end, cor.names[9]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[9], ".tiff"), 
-       p9 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[9], ".tiff"), 
+#        p9 , dpi = 300, width = 8, height = 8)
 
 p10 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[10]),
                plot_other_correlations(layer.cor.end, cor.names[10]), 
                common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
 
-ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[10], ".tiff"), 
-       p10 , dpi = 300, width = 8, height = 8)
+# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[10], ".tiff"), 
+#        p10 , dpi = 300, width = 8, height = 8)
+
+
+endgrid = ggarrange(plot_other_correlations(layer.cor.end, cor.names[1]), 
+          plot_other_correlations(layer.cor.end, cor.names[2]),
+          plot_other_correlations(layer.cor.end, cor.names[3]),
+          plot_other_correlations(layer.cor.end, cor.names[4]),
+          plot_other_correlations(layer.cor.end, cor.names[5]),
+          plot_other_correlations(layer.cor.end, cor.names[6]),
+          plot_other_correlations(layer.cor.end, cor.names[7]),
+          plot_other_correlations(layer.cor.end, cor.names[8]),
+          plot_other_correlations(layer.cor.end, cor.names[9]), 
+          plot_other_correlations(layer.cor.end, cor.names[10]), 
+          ncol = 2, nrow = 5, common.legend = T, legend = "bottom", labels = "AUTO")
+
+ggsave(filename = "../figures/supplementary-figures/end-grid-other-cor.tiff", 
+       endgrid, dpi = 300, width = 12, height = 15)
 

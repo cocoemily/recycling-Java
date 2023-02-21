@@ -73,6 +73,7 @@ terms_dict = dict(
   "max_artifact_carry" = "max. artifact carry",
   "blank_prob" = "blank probability",
   "(Intercept)" = "(intercept)",
+  "scavenge_prob:blank_prob" = "blank probability:scavenging probability",
   "max_flake_size:min_suitable_flake_size" = "max. flake size:min. selectable flake size",
   .class = "character", 
   .overwrite = FALSE
@@ -89,6 +90,7 @@ term_levels = c(
   "flake preference: TRUE", 
   "size preference: TRUE", 
   "strict selection: TRUE", 
+  "blank probability:scavenging probability",
   "max. flake size:min. selectable flake size"
 )
 
@@ -464,10 +466,9 @@ ggsave(filename = "../figures/random-effects/MANY-TECH_ri.ret.cor.tiff", plot_ro
 ####REGRESSIONS LOOKING AT MU#####
 compare_mu_scenarios = function(correlation) {
   
-  lmf = paste(correlation, "~ scavenge_prob +
-                blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
+  lmf = paste(correlation, "~ scavenge_prob + blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
                 flake_preference + size_preference + strict_selection +
-                min_suitable_flake_size +(1 | square) ")
+                min_suitable_flake_size + (1 | square) ")
   
   #####two technologies#####
   mu1 = two.end %>%
@@ -503,7 +504,7 @@ compare_mu_scenarios = function(correlation) {
   mu1 = many.end %>%
     filter(mu == 1)
   
- lmm1 = lmer(lmf,  data = mu1)
+  lmm1 = lmer(lmf,  data = mu1)
   # summary(lmm1)
   # car::Anova(lmm1)
   #plotREsim(REsim(lmm1))
@@ -549,10 +550,10 @@ compare_mu_scenarios = function(correlation) {
 #        width = 7.5, height = 5, dpi = 300)  #ri.num.ret.cor
 
 ggaplot = ggarrange(compare_mu_scenarios(cor.names[2]), compare_mu_scenarios(cor.names[3]), 
-          compare_mu_scenarios(cor.names[4]), compare_mu_scenarios(cor.names[5]), 
-          compare_mu_scenarios(cor.names[6]), compare_mu_scenarios(cor.names[8]), 
-          ncol = 2, nrow = 3,
-          common.legend = T, labels = "AUTO")
+                    compare_mu_scenarios(cor.names[4]), compare_mu_scenarios(cor.names[5]), 
+                    compare_mu_scenarios(cor.names[6]), compare_mu_scenarios(cor.names[8]), 
+                    ncol = 2, nrow = 3,
+                    common.legend = T, labels = "AUTO")
 ggsave(filename = "../figures/correlation-fixed-effects_mu.tiff", ggaplot, width = 8.25, height =9.5, dpi = 300)
 
 
@@ -617,9 +618,8 @@ ggsave(filename = "../figures/correlation-fixed-effects_mu.tiff", ggaplot, width
 
 compare_size_pref_scenarios = function(correlation) {
   
-  lmf = paste(correlation, "~ mu + scavenge_prob +
-                 blank_prob + max_use_intensity + max_artifact_carry  + 
-              max_flake_size*min_suitable_flake_size + (1 | square)")
+  lmf = paste(correlation, "~ mu + max_use_intensity + max_artifact_carry  + 
+  scavenge_prob + blank_prob + max_flake_size*min_suitable_flake_size  + (1 | square)")
   
   
   sizepref = two.end %>%
@@ -672,17 +672,16 @@ compare_size_pref_scenarios = function(correlation) {
 #        width = 7.5, height = 5)  #ri.num.ret.cor
 
 ggaplot2 = ggarrange(compare_size_pref_scenarios(cor.names[2]), compare_size_pref_scenarios(cor.names[3]), 
-                    compare_size_pref_scenarios(cor.names[4]), compare_size_pref_scenarios(cor.names[5]), 
-                    compare_size_pref_scenarios(cor.names[6]), compare_size_pref_scenarios(cor.names[8]), 
-                    ncol = 2, nrow = 3,
-                    common.legend = T, labels = "AUTO")
+                     compare_size_pref_scenarios(cor.names[4]), compare_size_pref_scenarios(cor.names[5]), 
+                     compare_size_pref_scenarios(cor.names[6]), compare_size_pref_scenarios(cor.names[8]), 
+                     ncol = 2, nrow = 3,
+                     common.legend = T, labels = "AUTO")
 ggsave(filename = "../figures/correlation-fixed-effects_size-pref.tiff", ggaplot2, width = 8.25, height = 9.5, dpi = 300)
 
 
 ##strict selection vs not strict selection
 compare_strict_select_scenarios = function(correlation) {
-  lmf = paste(correlation, "~ mu + scavenge_prob +
-                 blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
+  lmf = paste(correlation, "~ mu + scavenge_prob + blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
                   min_suitable_flake_size + (1 | square)")
   
   strict = two.end %>%
@@ -721,7 +720,7 @@ compare_strict_select_scenarios = function(correlation) {
   many.fe2$facet = "many technologies"
   
   plotFEmult("strict selection" = many.fe1, "non-strict selection" = many.fe2, "strict selection" = two.fe1, "non-strict selection" = two.fe2, facet = T, title = correlation)
-    
+  
 }
 # ggsave(filename = "strict_ri.obj.cnt.cor.png", compare_strict_select_scenarios(cor.names[2]), 
 #        width = 7.5, height = 5) #ri.obj.cnt.cor

@@ -174,11 +174,11 @@ plot_exposure_counts_by_parameters = function (exposure.data) {
 }
 
 plot_exposure_counts_by_parameters(two.tech)
-ggsave(filename = "../figures/TWO-TECH_exposure-by-parameters.tiff",
+ggsave(filename = "../figures/supplementary-figures/TWO-TECH_exposure-by-parameters.tiff",
        plot_exposure_counts_by_parameters(two.tech), 
        dpi = 300, width = 8)
 plot_exposure_counts_by_parameters(many.tech)
-ggsave(filename = "../figures/MANY-TECH_exposure-by-parameters.tiff",
+ggsave(filename = "../figures/supplementary-figures/MANY-TECH_exposure-by-parameters.tiff",
        plot_exposure_counts_by_parameters(many.tech), 
        dpi = 300, width = 8)
 

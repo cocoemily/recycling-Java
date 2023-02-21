@@ -3,6 +3,7 @@ library(tidyverse)
 library(ggpubr)
 library(rcompanion)
 library(fitdistrplus)
+library(pscl)
 
 theme_set(theme_bw())
 
@@ -32,10 +33,13 @@ ggsave(filename = "../figures/average-cortex-ratios.tiff", p1,
        dpi = 300, width = 6, height = 5)
 
 
+
 #### GRID-BASED CORTEX RATIOS ####
 cr.grid = read_csv("~/eclipse-workspace/recycling-Java/results/all-gridded-CR.csv") 
 
-ggplot(cr.grid %>% filter(flake_preference == T & size_preference == T)) +
+summary(cr.grid$cortex.ratio)
+
+ggplot(cr.grid %>% filter(flake_preference == T & size_preference == T) %>% filter(cortex.ratio < 5)) +
   geom_hline(aes(yintercept = 1), color = "grey80", ) +
   geom_boxplot(aes(x = mu, y = cortex.ratio, group = mu)) +
   facet_grid(row ~ col)
