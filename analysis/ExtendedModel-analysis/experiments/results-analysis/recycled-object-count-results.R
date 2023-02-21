@@ -142,7 +142,7 @@ for(i in 1:nrow(param_list)) {
              min_suitable_flake_size == c(param_list[i,parameters[11]]) &
              strict_selection == c(param_list[i,parameters[12]]))
   
-  exp.end = exp.end[which(exp.end$time == "end"),]
+  exp.end = exp[which(exp$time == "end"),]
   
   for(run in c("run1", "run2", "run3", "run4", "run5")) {
     exp.run = exp.end[which(exp.end$run == run),]
