@@ -1,71 +1,188 @@
 ##recycled object counts
-
 library(tidyverse)
 library(ggthemes)
 library(jtools)
 library(ggpubr)
+library(raster)
+library(sp)
+library(rgdal)
+library(tmap)
+library(spdep)
 
 theme_set(theme_bw())
 
-count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-recycled-object-counts.csv")
+#count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-recycled-object-counts.csv")
+count.data = read_csv("/scratch/ec3307/recycling-Java/results/all-recycled-object-counts.csv")
 
-#strict.count = count.data %>% filter(strict_selection == TRUE)
-flake.count = count.data %>% 
-  gather(key = "time", value = "count", recycled.flakes.mid, recycled.flakes.end)
+parameters = colnames(count.data[,6:17])
+#param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+param_list = param_list[,c(6:17)]
+colnames(param_list) = parameters
 
-# ggplot(flake.count) +
-#   geom_col(aes(x = time, y = count, fill = as.factor(overlap), group =as.factor(overlap)), position = "dodge") +
-#   facet_grid(size_preference + strict_selection ~ flake_preference, labeller = label_both) +
-#   scale_x_discrete(labels = c("end", "middle")) +
-#   labs(y = "recycled flake count")
+#### recycled object counts ####
+# run.avg = count.data %>%
+#   group_by_at(c("obj_type", "time", parameters)) %>%
+#   summarize(avg_recycled = mean(count_recycled))
+# 
+# flake.labs = c("flake preference", "nodule preference")
+# names(flake.labs) = c("TRUE", "FALSE")
+# size.labs = c("size preference", "no size preference")
+# names(size.labs) = c("TRUE", "FALSE")
+# strict.labs = c("strict selection", "no strict selection")
+# names(strict.labs) = c("TRUE", "FALSE")
+# 
+# p1 = ggplot(run.avg %>% filter(overlap == 2)) +
+#   #geom_boxplot(aes(x = time, y = avg_recycled, group = time), alpha = 0.25, color = "grey20") +
+#   geom_boxplot(aes(x = time, y = avg_recycled, fill = obj_type)) +
+#   facet_grid(flake_preference + size_preference ~ strict_selection , 
+#              labeller = labeller(flake_preference = flake.labs, 
+#                                  size_preference = size.labs, 
+#                                  strict_selection = strict.labs)) +
+#   scale_x_discrete(limits = rev) +
+#   scale_fill_brewer(palette = "Paired") +
+#   theme(legend.title = element_blank(),
+#         strip.text = element_text(size = 8),
+#         axis.text = element_text(size = 6)) +
+#   labs(y = "number of recycled objects")
+# plot(p1)
+# 
+# p2 = ggplot(run.avg %>% filter(overlap == 1)) +
+#   geom_boxplot(aes(x = time, y = avg_recycled, fill = obj_type)) +
+#   facet_grid(flake_preference + size_preference ~ strict_selection , 
+#              labeller = labeller(flake_preference = flake.labs, 
+#                                  size_preference = size.labs, 
+#                                  strict_selection = strict.labs)) +
+#   scale_x_discrete(limits = rev) +
+#   scale_fill_brewer(palette = "Paired") +
+#   theme(legend.title = element_blank(),
+#         strip.text = element_text(size = 8),
+#         axis.text = element_text(size = 6)) +
+#   labs(y = "number of recycled objects")
+# plot(p2)
+# 
+# ggsave(filename = "../figures/supplementary-figures/recycled-object-counts.tiff", 
+#        plot = ggarrange(p2, p1, 
+#                         common.legend = T, labels = "AUTO"), 
+#        dpi = 300, width = 10, height = 6)
+# 
+# 
+# test.p1 = ggplot(run.avg %>% filter(overlap == 1), aes(x = time, y = avg_recycled, fill = obj_type, group =obj_type)) +
+#   stat_summary(fun = "mean", geom = "bar", position = position_dodge()) +
+#   stat_summary(geom = "errorbar", position = position_dodge(0.9),
+#                width = 0.05,
+#                # fun.data = "mean_cl_normal") +
+#                fun.max = function(x) mean(x) + 
+#                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x)),
+#                fun.min = function(x) mean(x) - 
+#                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x))) +
+#   facet_grid(flake_preference + size_preference ~ strict_selection , 
+#              labeller = labeller(flake_preference = flake.labs, 
+#                                  size_preference = size.labs, 
+#                                  strict_selection = strict.labs)) +
+#   scale_fill_brewer(palette = "Paired") +
+#   scale_x_discrete(limits = rev) +
+#   theme(legend.title = element_blank(),
+#         strip.text = element_text(size = 8),
+#         axis.text = element_text(size = 6)) +
+#   labs(y = "average number of recycled objects")
+# plot(test.p1)
+# 
+# test.p2 = ggplot(run.avg %>% filter(overlap == 2), aes(x = time, y = avg_recycled, fill = obj_type, group =obj_type)) +
+#   stat_summary(fun = "mean", geom = "bar", position = position_dodge()) +
+#   stat_summary(geom = "errorbar", position = position_dodge(0.9),
+#                width = 0.05,
+#                # fun.data = "mean_cl_normal") +
+#                fun.max = function(x) mean(x) + 
+#                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x)),
+#                fun.min = function(x) mean(x) - 
+#                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x))) +
+#   facet_grid(flake_preference + size_preference ~ strict_selection , 
+#              labeller = labeller(flake_preference = flake.labs, 
+#                                  size_preference = size.labs, 
+#                                  strict_selection = strict.labs)) +
+#   scale_fill_brewer(palette = "Paired") +
+#   scale_x_discrete(limits = rev) +
+#   theme(legend.title = element_blank(),
+#         strip.text = element_text(size = 8),
+#         axis.text = element_text(size = 6)) +
+#   labs(y = "average number of recycled objects")
+# plot(test.p2)
+# 
+# ggsave(filename = "../figures/supplementary-figures/run-averaged_recycled-object-counts.tiff", 
+#        plot = ggarrange(test.p1, test.p2, 
+#                         common.legend = T, labels = "AUTO"), 
+#        dpi = 300, width = 10, height = 6)
+# 
+# ggsave(filename = "../figures/supplementary-figures/all-recycled-object-count-data.tiff", 
+#        plot = ggarrange(p2, p1, test.p1, test.p2, 
+#                         common.legend = T, labels = "AUTO", ncol = 2, nrow = 2), 
+#        dpi = 300, width = 10, height = 10)
 
-nodule.count = count.data %>% 
-  gather(key = "time", value = "count", recycled.nodules.mid, recycled.nodules.end)
-# ggplot(nodule.count) +
-#   geom_col(aes(x = time, y = count, fill = as.factor(overlap), group =as.factor(overlap)), position = "dodge") +
-#   facet_grid(size_preference + strict_selection ~ flake_preference, labeller = label_both) +
-#   scale_x_discrete(labels = c("end", "middle")) +
-#   labs(y = "recycled nodule count")
 
+#### retouched and recycled overlap ####
+output = count.data[,c(parameters, "run")]
+output$high_recycled = 0
+output$high_retouched = 0
+output$rcycl.ret.overlap  = 0
+output = output[0,]
 
-ad = rbind(flake.count[,-c(14:15)], nodule.count[,-c(14:15)]) %>%
-  separate(time, c("rcycl", "type", "time"), sep ="\\.")
-ad$time = factor(ad$time, levels = c("mid", "end"))
+for(i in 1:nrow(param_list)) {
+  exp = count.data %>%
+    filter(max_use_intensity == c(param_list[i,parameters[1]]) &
+             max_artifact_carry == c(param_list[i,parameters[2]]) &
+             max_flake_size == c(param_list[i,parameters[3]]) &
+             max_nodules_size == c(param_list[i,parameters[4]]) &
+             blank_prob == c(param_list[i,parameters[5]]) &
+             scavenge_prob == c(param_list[i,parameters[6]]) &
+             overlap == c(param_list[i,parameters[7]]) &
+             mu == c(param_list[i,parameters[8]]) &
+             size_preference == c(param_list[i,parameters[9]]) &
+             flake_preference == c(param_list[i,parameters[10]]) &
+             min_suitable_flake_size == c(param_list[i,parameters[11]]) &
+             strict_selection == c(param_list[i,parameters[12]]))
+  
+  exp.end = exp.end[which(exp.end$time == "end"),]
+  
+  for(run in c("run1", "run2", "run3", "run4", "run5")) {
+    exp.run = exp.end[which(exp.end$run == run),]
+    
+    exp.g = exp.run %>% group_by(row, col) %>%
+      summarize(count_recycled = sum(count_recycled), 
+                count_retouched = sum(count_retouched))
+    
+    exp.spat = exp.g
+    coordinates(exp.spat) = ~col+row
+    gridded(exp.spat) = TRUE
+    exp.spat = as(exp.spat, "SpatialPolygonsDataFrame") 
+    exp.spat$row = exp.g$row
+    exp.spat$col = exp.g$col
+    
+    nb = poly2nb(exp.spat, queen = T)
+    lw = nb2listw(nb, zero.policy = T)
+    
+    exp.spat$G.rcycl.obj = localG_perm(exp.spat$count_recycled, lw, nsim = 100, zero.policy = T)
+    exp.spat$G.retouch.obj = localG_perm(exp.spat$count_retouched, lw, nsim = 100, zero.policy = T)
+    
+    exp.df = as.data.frame(exp.spat) %>%
+      mutate(param_list[i, ])
+    
+    recycled.rast = rasterFromXYZ(exp.df[,c(3,4,5)])
+    recycled.rast[recycled.rast < 2] = NA
+    retouched.rast = rasterFromXYZ(exp.df[,c(3,4,6)])
+    retouched.rast[retouched.rast < 2] = NA
+    
+    r = overlay(recycled.rast, retouched.rast, fun=sum)
+    rcycl.ret.o = 100 - freq(r, value = NA)
+    
+    output[nrow(output) + 1, ] <-
+      c(param_list[i, ],
+        run, 
+        100 - freq(recycled.rast, value = NA),
+        100 - freq(retouched.rast, value = NA),
+        rcycl.ret.o
+      )
+  }
+}
 
-flake.labs = c("flake preference", "nodule preference")
-names(flake.labs) = c("TRUE", "FALSE")
-size.labs = c("size preference", "no size preference")
-names(size.labs) = c("TRUE", "FALSE")
-strict.labs = c("strict selection", "no strict selection")
-names(strict.labs) = c("TRUE", "FALSE")
-
-p1 = ggplot(ad %>% filter(overlap == 2)) +
-  geom_col(aes(x = time, y = count, fill = type)) +
-  facet_grid(flake_preference + size_preference ~ strict_selection , 
-             labeller = labeller(flake_preference = flake.labs, 
-                                 size_preference = size.labs, 
-                                 strict_selection = strict.labs)) +
-  scale_x_discrete(labels = c("middle", "end")) +
-  scale_fill_brewer(palette = "Paired") +
-  theme(legend.title = element_blank(),
-        strip.text = element_text(size = 8),
-        axis.text = element_text(size = 6))
-plot(p1)
-
-p2 = ggplot(ad %>% filter(overlap == 1)) +
-  geom_col(aes(x = time, y = count, fill = type)) +
-  facet_grid(flake_preference + size_preference ~ strict_selection , 
-             labeller = labeller(flake_preference = flake.labs, 
-                                 size_preference = size.labs, 
-                                 strict_selection = strict.labs)) +
-  scale_x_discrete(labels = c("middle", "end")) +
-  scale_fill_brewer(palette = "Paired") +
-  theme(legend.title = element_blank(),
-        strip.text = element_text(size = 8),
-        axis.text = element_text(size = 6))
-plot(p2)
-
-ggsave(filename = "../figures/recycled-object-counts.tiff", 
-       plot = ggarrange(p1, p2, 
-                        common.legend = T, labels = "AUTO"), 
-       dpi = 300, width = 10, height = 6)
+write.csv(output, file = "recycled-retouched-overlap.csv")
