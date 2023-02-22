@@ -11,7 +11,7 @@ library(cowplot)
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
-#dirs = list.dirs("../output/test-layer-data")
+#dirs = list.dirs("../output/test-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
@@ -36,7 +36,7 @@ foreach (d=1:length(dirs)) %dopar% {
   glist = list()
   for(y in 2:length(years)) {
     allgrids = data[which(data$model_year == years[y]), 
-                    c(parameters, "model_year", "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
+                    c("run", parameters, "model_year", "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
     if(years[y] == 200000) {
       allgrids = allgrids[1:5000,]
     }
