@@ -41,10 +41,10 @@ foreach (d=1:length(dirs)) %dopar% {
       allgrids = allgrids[1:5000,]
     }
     
-    allgrids$run = rep(seq(1,50, by=1), each=100)
+    #allgrids$run = rep(seq(1,50, by=1), each=100)
     
-    for(i in 1:5) {
-      grid = allgrids[which(allgrids$run == i),]
+    for(run in c("run1", "run2", "run3", "run4", "run5")) {
+      grid = allgrids[which(allgrids$run == run),]
       
       grid.spat = grid
       coordinates(grid.spat) = ~col+row
