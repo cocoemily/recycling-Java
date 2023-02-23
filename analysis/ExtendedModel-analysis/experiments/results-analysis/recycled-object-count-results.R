@@ -9,7 +9,7 @@ library(rgdal)
 library(tmap)
 library(spdep)
 library(pscl)
-library(Dict)
+#library(Dict)
 
 theme_set(theme_bw())
 
@@ -171,7 +171,7 @@ for(i in 1:nrow(param_list)) {
       exp.df = as.data.frame(exp.spat) %>%
         mutate(param_list[i, ])
       
-      readr::write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/exp", i, "_", run, "_rr-local-G.csv"), num_threads=1)
+      readr::write_csv(exp.df, paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/exp", i, "_", run, "_rr-local-G.csv"), num_threads=1)
 
       # recycled.rast = rasterFromXYZ(exp.df[,c(3,4,5)])
       # recycled.rast[recycled.rast < 2] = NA
