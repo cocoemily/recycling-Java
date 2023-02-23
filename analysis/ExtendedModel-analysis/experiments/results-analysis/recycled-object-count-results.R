@@ -130,20 +130,20 @@ output$rcycl.ret.overlap  = 0
 output = output[0,]
 
 for(i in 1:nrow(param_list)) {
-  exp = count.data %>%
-    filter(max_use_intensity == c(param_list[i,parameters[1]]) &
-             max_artifact_carry == c(param_list[i,parameters[2]]) &
-             max_flake_size == c(param_list[i,parameters[3]]) &
-             max_nodules_size == c(param_list[i,parameters[4]]) &
-             blank_prob == c(param_list[i,parameters[5]]) &
-             scavenge_prob == c(param_list[i,parameters[6]]) &
-             overlap == c(param_list[i,parameters[7]]) &
-             mu == c(param_list[i,parameters[8]]) &
-             size_preference == c(param_list[i,parameters[9]]) &
-             flake_preference == c(param_list[i,parameters[10]]) &
-             min_suitable_flake_size == c(param_list[i,parameters[11]]) &
-             strict_selection == c(param_list[i,parameters[12]]))
-
+  exp = count.data[which(
+    count.data$max_use_intensity == c(param_list[i,parameters[1]]) &
+      count.data$max_artifact_carry == c(param_list[i,parameters[2]]) &
+      count.data$max_flake_size == c(param_list[i,parameters[3]]) &
+      count.data$max_nodules_size == c(param_list[i,parameters[4]]) &
+      count.data$blank_prob == c(param_list[i,parameters[5]]) &
+      count.data$scavenge_prob == c(param_list[i,parameters[6]]) &
+      count.data$overlap == c(param_list[i,parameters[7]]) &
+      count.data$mu == c(param_list[i,parameters[8]]) &
+      count.data$size_preference == c(param_list[i,parameters[9]]) &
+      count.data$flake_preference == c(param_list[i,parameters[10]]) &
+      count.data$min_suitable_flake_size == c(param_list[i,parameters[11]]) &
+      count.data$strict_selection == c(param_list[i,parameters[12]])),]
+  
   exp.end = exp[which(exp$time == "end"),]
 
   for(run in c("run1", "run2", "run3", "run4", "run5")) {
@@ -169,7 +169,8 @@ for(i in 1:nrow(param_list)) {
       exp.spat$G.retouch.obj = localG_perm(exp.spat$count_retouched, lw, nsim = 100, zero.policy = T)
 
       exp.df = as.data.frame(exp.spat) %>%
-        mutate(param_list[i, ])
+        mutate(param_list[i, ], 
+               run = run)
       
       readr::write_csv(exp.df, paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/exp", i, "_", run, "_rr-local-G.csv"), num_threads=1)
 
