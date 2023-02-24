@@ -259,3 +259,58 @@ rm(avg.two.tech, avg.multi.tech)
 grid = ggarrange(p1, p2, p3, p4, p5, p6, nrow = 2, ncol = 3, common.legend = T, legend = "bottom", labels = "AUTO")
 ggsave(filename = "trends-by-probs.tiff", grid,
        dpi = 300, width = 12, height = 9)
+
+
+#### recycling intensity by probabilities and selection ####
+avg.two.tech = two.tech %>%
+  group_by(model_year, blank_prob, scavenge_prob, strict_selection) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(overlap = 1,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+avg.multi.tech = multi.tech %>%
+  group_by(model_year, blank_prob, scavenge_prob, strict_selection) %>%
+  summarize(mean.RI = mean(total.RI),
+            sd.RI = sd(total.RI),
+            n.RI = n()) %>%
+  mutate(overlap = 2,
+         se.RI = sd.RI / sqrt(n.RI),
+         lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
+         upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
+
+ssp = ggplot() +
+  geom_line(data = avg.two.tech %>% filter(strict_selection == TRUE), aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.two.tech %>% filter(strict_selection == TRUE), aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = avg.multi.tech %>% filter(strict_selection == TRUE), aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.multi.tech %>% filter(strict_selection == TRUE), aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
+    blank_prob = blank.labs, scavenge_prob = scvg.labs
+  )) +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
+  scale_color_colorblind() +
+  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity") +
+  theme(strip.text = element_text(size = 5))
+
+nsp = ggplot() +
+  geom_line(data = avg.two.tech %>% filter(strict_selection == FALSE), aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.two.tech %>% filter(strict_selection == FALSE), aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  geom_line(data = avg.multi.tech %>% filter(strict_selection == FALSE), aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
+  geom_ribbon(data = avg.multi.tech %>% filter(strict_selection == FALSE), aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
+  facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
+    blank_prob = blank.labs, scavenge_prob = scvg.labs
+  )) +
+  scale_x_reverse(breaks = c(500000, 350000, 200000), 
+                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_y_continuous(labels = label_number(accuracy = 0.01)) +
+  scale_color_colorblind() +
+  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity") +
+  theme(strip.text = element_text(size = 5))
+
+grid = ggarrange(ssp, nsp, nrow = 1, ncol = 2, common.legend = T, legend = "bottom", labels = "AUTO")
+ggsave(filename = "trends-by-probs-and-selection.tiff", grid,
+       dpi = 300, width = 12, height = 9)
