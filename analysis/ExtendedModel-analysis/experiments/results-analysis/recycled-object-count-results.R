@@ -196,101 +196,188 @@ for(i in 1:nrow(param_list)) {
 #write.csv(output, file = "recycled-retouched-overlap.csv")
 
 #### overlap analysis ####
-# odata = read_csv("~/eclipse-workspace/recycling-Java/results/recycled-retouched-overlap.csv")
-# 
-# mean(odata$rcycl.ret.overlap)
-# summary(odata$rcycl.ret.overlap)
-# hist(odata$rcycl.ret.overlap)
-# 
-# rro = zeroinfl(rcycl.ret.overlap ~ ., odata[c(2:4, 6:13,17)])
-# summary(rro)
-# est = coef(rro, "zero")
-# se = sqrt(diag(vcov(rro, "zero")))
-# zrro.df = as.data.frame(cbind(est, se))
-# zrro.df$name = "retouched and recycled object counts"
-# zrro.df$var = rownames(zrro.df)
-# rownames(zrro.df) = NULL
-# zrro.df$model = "zero"
-# 
-# est = coef(rro, "count")
-# se = sqrt(diag(vcov(rro, "count")))
-# crro.df = as.data.frame(cbind(est, se))
-# crro.df$name = "retouched and recycled object counts"
-# crro.df$var = rownames(crro.df)
-# rownames(crro.df) = NULL
-# crro.df$model = "count"
-# 
-# df = rbind(zrro.df, crro.df)
-# df = df  %>%
-#   mutate(lower = est - se, 
-#          upper = est + se, 
-#          signif = ifelse(lower < 0 & upper > 0, FALSE, TRUE))
-# 
-# terms_dict = dict(
-#   "overlap" = "technology overlap scenario",
-#   "mu" = "mu",
-#   "strict_selectionTRUE" = "strict selection: TRUE",
-#   "size_preferenceTRUE" = "size preference: TRUE",
-#   "flake_preferenceTRUE" = "flake preference: TRUE",
-#   "scavenge_prob" = "scavenging probability",
-#   "min_suitable_flake_size" = "min. selectable flake size",
-#   "max_use_intensity" = "max. use intensity",
-#   "max_flake_size" = "max. flake size",
-#   "max_artifact_carry" = "max. artifact carry",
-#   "blank_prob" = "blank probability",
-#   "(Intercept)" = "(intercept)",
-#   "max_flake_size:min_suitable_flake_size" = "max. flake size:min. selectable flake size",
-#   .class = "character", 
-#   .overwrite = FALSE
-# )
-# term_levels = c(
-#   "(intercept)",
-#   "technology overlap scenario",
-#   "mu", 
-#   "blank probability", 
-#   "scavenging probability", 
-#   "max. artifact carry", 
-#   "max. use intensity", 
-#   "max. flake size", 
-#   "min. selectable flake size", 
-#   "flake preference: TRUE", 
-#   "size preference: TRUE", 
-#   "strict selection: TRUE", 
-#   "max. flake size:min. selectable flake size"
-# )
-# 
-# for(i in 1:nrow(df)) {
-#   if(!is.na(df$var[i])) {
-#     df$var_clean[i] = terms_dict[df$var[i]]
-#     df$var_clean[i] = terms_dict[df$var[i]]
-#   }
-# }
-# df$var_clean = factor(df$var_clean, levels = term_levels)
-# df$var_clean = factor(df$var_clean, levels = term_levels)
-# 
-# df$model = factor(df$model, levels = c("zero", "count"))
-# 
-# 
-# p = ggplot(df %>% filter(signif == T)) +
-#   geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
-#   geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = model, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
-#   coord_flip() +
-#   scale_color_brewer(palette = "Dark2") +
-#   facet_grid(name~model) +
-#   labs(x = "parameter", y = "estimate") +
-#   theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 
-#         axis.title = element_text(size = 7), 
-#         legend.position = "none") 
-# ggsave(filename = "../figures/recycled-retouched-overlap.tiff", p, 
-#        dpi = 300, width = 7, height = 3.5)
-# 
-# 
-# hist(odata$high_recycled)
-# hist(odata$high_retouched)
-# 
-# fit2 = zeroinfl(rcycl.ret.overlap ~ ., odata[c(15:17)])
-# summary(fit2)
-# 
-# hist(odata$high_retouched)
-# fit3 = zeroinfl(high_retouched ~ ., odata[c(2:4,6:13,16)])
-# summary(fit3)
+odata = read_csv("~/eclipse-workspace/recycling-Java/results/recycled-retouched-overlap.csv")
+
+mean(odata$rcycl.ret.overlap)
+summary(odata$rcycl.ret.overlap)
+hist(odata$rcycl.ret.overlap)
+
+rro = zeroinfl(rcycl.ret.overlap ~ ., odata[c(2:4, 6:13,17)])
+summary(rro)
+est = coef(rro, "zero")
+se = sqrt(diag(vcov(rro, "zero")))
+zrro.df = as.data.frame(cbind(est, se))
+zrro.df$name = "retouched and recycled object counts"
+zrro.df$var = rownames(zrro.df)
+rownames(zrro.df) = NULL
+zrro.df$model = "zero"
+
+est = coef(rro, "count")
+se = sqrt(diag(vcov(rro, "count")))
+crro.df = as.data.frame(cbind(est, se))
+crro.df$name = "retouched and recycled object counts"
+crro.df$var = rownames(crro.df)
+rownames(crro.df) = NULL
+crro.df$model = "count"
+
+df = rbind(zrro.df, crro.df)
+df = df  %>%
+  mutate(lower = est - se,
+         upper = est + se,
+         signif = ifelse(lower < 0 & upper > 0, FALSE, TRUE))
+
+terms_dict = dict(
+  "overlap" = "technology overlap scenario",
+  "mu" = "mu",
+  "strict_selectionTRUE" = "strict selection: TRUE",
+  "size_preferenceTRUE" = "size preference: TRUE",
+  "flake_preferenceTRUE" = "flake preference: TRUE",
+  "scavenge_prob" = "scavenging probability",
+  "min_suitable_flake_size" = "min. selectable flake size",
+  "max_use_intensity" = "max. use intensity",
+  "max_flake_size" = "max. flake size",
+  "max_artifact_carry" = "max. artifact carry",
+  "blank_prob" = "blank probability",
+  "(Intercept)" = "(intercept)",
+  "max_flake_size:min_suitable_flake_size" = "max. flake size:min. selectable flake size",
+  .class = "character",
+  .overwrite = FALSE
+)
+term_levels = c(
+  "(intercept)",
+  "technology overlap scenario",
+  "mu",
+  "blank probability",
+  "scavenging probability",
+  "max. artifact carry",
+  "max. use intensity",
+  "max. flake size",
+  "min. selectable flake size",
+  "flake preference: TRUE",
+  "size preference: TRUE",
+  "strict selection: TRUE",
+  "max. flake size:min. selectable flake size"
+)
+
+for(i in 1:nrow(df)) {
+  if(!is.na(df$var[i])) {
+    df$var_clean[i] = terms_dict[df$var[i]]
+    df$var_clean[i] = terms_dict[df$var[i]]
+  }
+}
+df$var_clean = factor(df$var_clean, levels = term_levels)
+df$var_clean = factor(df$var_clean, levels = term_levels)
+
+df$model = factor(df$model, levels = c("zero", "count"))
+
+
+p = ggplot(df %>% filter(signif == T)) +
+  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
+  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = model, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2") +
+  facet_grid(name~model) +
+  labs(x = "parameter", y = "estimate") +
+  theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6),
+        axis.title = element_text(size = 7),
+        legend.position = "none")
+ggsave(filename = "../figures/recycled-retouched-overlap.tiff", p,
+       dpi = 300, width = 7, height = 3.5)
+
+
+hist(odata$high_recycled)
+hist(odata$high_retouched)
+
+fit2 = zeroinfl(rcycl.ret.overlap ~ ., odata[c(2:4, 6:13,15:17)])
+summary(fit2)
+est = coef(fit2, "zero")
+se = sqrt(diag(vcov(fit2, "zero")))
+zfit2.df = as.data.frame(cbind(est, se))
+zfit2.df$name = "retouched and recycled object counts"
+zfit2.df$var = rownames(zfit2.df)
+rownames(zfit2.df) = NULL
+zfit2.df$model = "zero"
+
+est = coef(fit2, "count")
+se = sqrt(diag(vcov(fit2, "count")))
+cfit2.df = as.data.frame(cbind(est, se))
+cfit2.df$name = "retouched and recycled object counts"
+cfit2.df$var = rownames(cfit2.df)
+rownames(cfit2.df) = NULL
+cfit2.df$model = "count"
+
+df = rbind(zfit2.df, cfit2.df)
+df = df  %>%
+  mutate(lower = est - se,
+         upper = est + se) %>%
+  rowwise() %>%
+  mutate(signif = !between(0, lower, upper))
+
+terms_dict = dict(
+  "overlap" = "technology overlap scenario",
+  "mu" = "mu",
+  "strict_selectionTRUE" = "strict selection: TRUE",
+  "size_preferenceTRUE" = "size preference: TRUE",
+  "flake_preferenceTRUE" = "flake preference: TRUE",
+  "scavenge_prob" = "scavenging probability",
+  "min_suitable_flake_size" = "min. selectable flake size",
+  "max_use_intensity" = "max. use intensity",
+  "max_flake_size" = "max. flake size",
+  "max_artifact_carry" = "max. artifact carry",
+  "blank_prob" = "blank probability",
+  "(Intercept)" = "(intercept)",
+  "max_flake_size:min_suitable_flake_size" = "max. flake size:min. selectable flake size",
+  "high_recycled" = "high recycled object count squares", 
+  "high_retouched" = "high retouched object count squares",
+  .class = "character",
+  .overwrite = FALSE
+)
+term_levels = c(
+  "(intercept)",
+  "technology overlap scenario",
+  "mu",
+  "blank probability",
+  "scavenging probability",
+  "max. artifact carry",
+  "max. use intensity",
+  "max. flake size",
+  "min. selectable flake size",
+  "flake preference: TRUE",
+  "size preference: TRUE",
+  "strict selection: TRUE",
+  "max. flake size:min. selectable flake size", 
+  "high recycled object count squares",
+  "high retouched object count squares"
+)
+
+for(i in 1:nrow(df)) {
+  if(!is.na(df$var[i])) {
+    df$var_clean[i] = terms_dict[df$var[i]]
+    df$var_clean[i] = terms_dict[df$var[i]]
+  }
+}
+df$var_clean = factor(df$var_clean, levels = term_levels)
+
+df$model = factor(df$model, levels = c("zero", "count"))
+
+high = df %>% filter(str_detect(var, "high"))
+
+p2 = ggplot(high %>% filter(signif == T)) +
+  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
+  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = model, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2") +
+  facet_grid(name~model) +
+  labs(x = "parameter", y = "estimate") +
+  theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6),
+        axis.title = element_text(size = 7),
+        legend.position = "none")
+plot(p2)
+ggsave(filename = "../figures/supplementary-figures/recycled-retouched-overlap_high-squares.tiff", p2,
+       dpi = 300, width = 7, height = 3.5)
+
+
+
+hist(odata$high_retouched)
+fit3 = zeroinfl(high_retouched ~ ., odata[c(2:4,6:13,16)])
+summary(fit3)

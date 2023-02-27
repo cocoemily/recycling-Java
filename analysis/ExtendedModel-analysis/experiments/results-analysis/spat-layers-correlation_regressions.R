@@ -30,6 +30,9 @@ row.col = unique(layer.cor %>% dplyr::select(row, col, square))
 layer.cor.end = layer.cor[which(layer.cor$time == "end"),]
 layer.cor.mid = layer.cor[which(layer.cor$time == "mid"),]
 
+summary(layer.cor.end$ri.obj.cnt.cor)
+hist(layer.cor.end$ri.obj.cnt.cor)
+
 
 plotREheatmap = function(data) {
   data$groupID = as.numeric(data$groupID)
