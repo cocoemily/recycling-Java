@@ -51,6 +51,28 @@ ggsave(filename = "../figures/overlapping-grid-squares-dist.tiff", ccplot,
 
 table(long.overlap$vars, long.overlap$count.overlap, long.overlap$overlap)
 
+
+long.high = layers.overlap %>%
+  gather(key = "vars", value = "count.high", 
+         high_RI, high_flkcnt, high_nodcnt, high_disc, high_scvg, high_enct, high_ret)
+long.high$vars = factor(long.high$vars, levels = c("high_RI", "high_flkcnt", "high_nodcnt", "high_disc", "high_scvg", "high_enct", "high_ret"))
+
+var.labs = c("recycling intensity", "flake count", "nodule count", 
+             "discards", "scavenging events", "square encounters","retouches")
+names(var.labs) = unique(long.high$vars)
+tech.labs = c("two technologies", "many technologies")
+names(tech.labs) = c("1", "2")
+
+ccplot = ggplot(long.high) +
+  geom_bar(aes(x = count.high)) +
+  facet_grid(overlap~vars, labeller = labeller(vars = var.labs, overlap = tech.labs)) + 
+  labs(x = "number of hotspot grid squares", y = "") +
+  theme(strip.text = element_text(size = 6))
+plot(ccplot)
+
+ggsave(filename = "../figures/supplementary-figures/hotspot-grid-squares-dist.tiff", ccplot, 
+       dpi = 300, width = 8, height = 4.5)
+
 ##how to see which variable has most overlap with high RI values?
 summary(layers.overlap$RI.flkcnt.overlap)
 summary(layers.overlap$RI.nodcnt.overlap)
@@ -510,4 +532,43 @@ ggsave(filename = "../figures/supplementary-figures/local-G-overlap-regs_high-sq
 
 hist(layers.overlap$high_RI)
 hRI = glm(high_RI ~ ., data = layers.overlap[c(2:4, 6:13, 15)], family = "poisson")
-summary(hRI)                                                  
+summary(hRI) 
+
+
+####cortex ratio overlap####
+hist(layers.overlap$RI.CR.overlap)
+fitdistrplus::descdist(layers.overlap$RI.CR.overlap, discrete = T)
+
+crp1 = ggplot(layers.overlap) +
+  geom_bar(aes(x = RI.CR.overlap)) +
+  labs(x = "number of overlapping grid squares", y = "")
+plot(crp1)
+
+cro = glm(RI.CR.overlap ~ ., layers.overlap[c(2:4, 6:13, 16)], family = "poisson")
+summary(cro)
+cro.df = tidy(cro) %>%
+  mutate(lower = estimate - std.error, 
+         upper = estimate + std.error)
+cro.df$signif = ifelse(cro.df$p.value < 0.05, TRUE, FALSE)
+for(i in 1:nrow(cro.df)) {
+  if(!is.na(cro.df$term[i])) {
+    cro.df$var_clean[i] = terms_dict[cro.df$term[i]]
+  }
+}
+cro.df$var_clean = factor(cro.df$var_clean, levels = term_levels)
+
+
+crp2 = ggplot(cro.df %>% filter(signif == T)) +
+  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
+  #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
+  geom_pointrange(aes(x = var_clean, y = estimate, ymax = upper, ymin = lower), size = 0.1, position = position_dodge(width = 0.75)) +
+  coord_flip() +
+  labs(x = "parameter", y = "estimate") +
+  theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 
+        axis.title = element_text(size = 7), 
+        legend.position = "none") 
+plot(crp2)
+
+ggsave(filename = "../figures/cortex-ratio-overlaps.tiff", 
+       ggarrange(crp1, crp2, labels = "AUTO"), 
+       dpi = 300, width = 7, height = 3.5)

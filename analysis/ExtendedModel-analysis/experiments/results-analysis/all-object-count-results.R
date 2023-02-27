@@ -4,6 +4,8 @@ library(tidyverse)
 library(ggthemes)
 library(ggpubr)
 library(jtools)
+library(pscl)
+library(MASS)
 
 theme_set(theme_bw())
 
@@ -111,4 +113,19 @@ ggsave(filename = "../figures/supplementary-figures/all-object-count-data.tiff",
        plot = ggarrange(p2, p1, test.p1, test.p2, 
                         common.legend = T, labels = "AUTO", ncol = 2, nrow = 2), 
        dpi = 300, width = 10, height = 10)
+
+
+obj.avg = run.avg %>%
+  group_by_at(c("model_year", parameters)) %>%
+  summarize(all_avg = ceiling(sum(avg_count))) %>%
+  filter(model_year == 200000)
+
+fitdistrplus::descdist(obj.avg$all_avg, discrete = T)
+
+ao1 = glm(all_avg ~ ., data = obj.avg[c(2:4, 6:14)], family = "poisson")
+summary(ao1)
+df = as.data.frame(abs(lm.beta(ao1)))
+colnames(df) = c("beta")
+df$var = rownames(df)
+df2 = df[order(df$beta),]
 

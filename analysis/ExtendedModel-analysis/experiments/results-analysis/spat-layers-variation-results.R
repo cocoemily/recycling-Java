@@ -15,6 +15,8 @@ theme_set(theme_bw())
 
 #### ANALYSIS OF VARIATION OF OUTPUT VARIABLES BETWEEN GRID SQUARES ACROSS MODEL RUNS ####
 layer.var = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-variation-output.csv")
+#to analyze middle of model run variation
+#layer.var = read_csv("~/eclipse-workspace/recycling-Java/results/middle-layer-variation.csv")
 layer.var = layer.var %>% group_by(row, col) %>%
   mutate(square = cur_group_id())
 
