@@ -28,7 +28,8 @@ foreach (d=1:length(dirs)) %dopar% {
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1)
   print(dirs[d])
   
-  end_data = data[which(data$model_year == 200000), ]
+  #end_data = data[which(data$model_year == 200000), ]
+  end_data = data[which(data$model_year == 350000), ]
   rm(data)
   
   #analysis of variation at each grid square over the 50 runs
