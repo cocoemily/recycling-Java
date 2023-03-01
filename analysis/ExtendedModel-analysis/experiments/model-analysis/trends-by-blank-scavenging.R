@@ -13,6 +13,15 @@ alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
 two.tech = alldata[which(alldata$overlap == 1),]
 multi.tech = alldata[which(alldata$overlap == 2),]
+mu.1 = alldata[which(alldata$mu == 1),]
+mu.2 = alldata[which(alldata$mu == 2),]
+mu.3 = alldata[which(alldata$mu == 3),]
+flake.selection = alldata[which(alldata$flake_preference == TRUE),]
+nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
+size.selection = alldata[which(alldata$size_preference == TRUE),]
+nosize.selection = alldata[which(alldata$size_preference == FALSE),]
+strict.selection = alldata[which(alldata$strict_selection == TRUE),]
+nostrict.selection = alldata[which(alldata$strict_selection == FALSE),]
 
 rm(alldata)
 
@@ -259,11 +268,6 @@ rm(avg.two.tech, avg.multi.tech)
 rm(two.tech, multi.tech)
 
 ####mu####
-mu.1 = alldata[which(alldata$mu == 1),]
-mu.2 = alldata[which(alldata$mu == 2),]
-mu.3 = alldata[which(alldata$mu == 3),]
-
-
 #####recycling intensity####
 avg.mu.1 = mu.1 %>%
   group_by(model_year, blank_prob, scavenge_prob) %>%
@@ -359,9 +363,6 @@ mplot2 = ggplot() +
 rm(mu.1, mu.2, mu.3)
 
 ####flake preference####
-flake.selection = alldata[which(alldata$flake_preference == TRUE),]
-nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
-
 #####recycling intensity####
 avg.flk.select = flake.selection %>%
   group_by(model_year, blank_prob, scavenge_prob) %>%
@@ -515,9 +516,6 @@ ssplot2 = ggplot() +
 rm(size.selection, nosize.selection)
 
 ####strict selection####
-strict.selection = alldata[which(alldata$strict_selection == TRUE),]
-nostrict.selection = alldata[which(alldata$strict_selection == FALSE),]
-
 #####recycling intensity####
 avg.strict.select = strict.selection %>%
   group_by(model_year, blank_prob, scavenge_prob) %>%
