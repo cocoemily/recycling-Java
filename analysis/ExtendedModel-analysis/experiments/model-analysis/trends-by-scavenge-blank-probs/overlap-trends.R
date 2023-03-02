@@ -96,5 +96,5 @@ p2 = ggplot() +
   labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created") +
   theme(strip.text = element_text(size = 5))
 
-save(p1, file = "re-overlap.rdata")
+save(p2, file = "re-overlap.rdata")
 rm(avg.two.tech, avg.multi.tech)
