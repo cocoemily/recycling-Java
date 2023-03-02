@@ -16,12 +16,15 @@ load("trends-by-scavenge-blank-probs/ri-flake.rdata")
 load("trends-by-scavenge-blank-probs/re-flake.rdata")
 load("trends-by-scavenge-blank-probs/ri-size.rdata")
 load("trends-by-scavenge-blank-probs/re-size.rdata")
-#load("trends-by-scavenge-blank-probs/ri-strict.rdata")
-#load("trends-by-scavenge-blank-probs/re-strict.rdata")
+# load("trends-by-scavenge-blank-probs/ri-strict.rdata")
+# load("trends-by-scavenge-blank-probs/re-strict.rdata")
 
 
 rgrid = ggarrange(p2, p1, mplot1, mplot2, splot1, splot2, ssplot1, ssplot2,
-                  nrow = 4, ncol = 2, common.legend = T, 
-                  legend = "bottom", labels = "AUTO")
+                  nrow = 4, ncol = 2, legend = "right", labels = "AUTO")
 ggsave(filename = "recycling-trends-by-probs.tiff", rgrid,
-       dpi = 300, width = 12, height = 18)
+       dpi = 300, width = 12, height = 20)
+
+# strictgrid = ggarrange(ssp1, ssp2, common.legend = T, labels = "AUTO", 
+#                        ncol = 2, nrow = 1)
+

@@ -11,8 +11,8 @@ alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_da
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-size.selection = alldata[which(alldata$size_preference == TRUE),]
-nosize.selection = alldata[which(alldata$size_preference == FALSE),]
+size.selection = alldata[which(alldata$size_preference == TRUE & alldata$strict_selection == TRUE),]
+nosize.selection = alldata[which(alldata$size_preference == FALSE & alldata$flake_preference == TRUE),]
 
 rm(alldata)
 
