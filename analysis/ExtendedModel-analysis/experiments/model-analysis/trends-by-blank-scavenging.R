@@ -7,14 +7,14 @@ library(scales)
 
 theme_set(theme_bw())
 
-alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
-alldata = alldata[alldata$size != "size",]
-alldata = alldata[!is.na(alldata$max_artifact_carry),]
-
-two.tech = alldata[which(alldata$overlap == 1),]
-multi.tech = alldata[which(alldata$overlap == 2),]
-
-rm(alldata)
+# alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
+# alldata = alldata[alldata$size != "size",]
+# alldata = alldata[!is.na(alldata$max_artifact_carry),]
+# 
+# two.tech = alldata[which(alldata$overlap == 1),]
+# multi.tech = alldata[which(alldata$overlap == 2),]
+# 
+# rm(alldata)
 
 blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
 names(blank.labs) = c("0.25", "0.5", "0.75")
