@@ -54,8 +54,7 @@ p1 = ggplot() +
                   labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity") +
-  theme(strip.text = element_text(size = 5))
+  labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
 
 save(p1, file = "ri-overlap.rdata")
 
@@ -93,8 +92,7 @@ p2 = ggplot() +
                   labels = label_number(scale_cut = cut_short_scale())) +
   scale_y_continuous(labels = label_number(accuracy = 0.01)) +
   scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created") +
-  theme(strip.text = element_text(size = 5))
+  labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created")
 
 save(p2, file = "re-overlap.rdata")
 rm(avg.two.tech, avg.multi.tech)
