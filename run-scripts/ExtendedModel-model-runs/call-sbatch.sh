@@ -22,4 +22,4 @@ while IFS=, read -r line; do
   #do
   #  echo "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
   #done
-done < /scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters6.csv
+done < /scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters4.csv
