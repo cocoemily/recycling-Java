@@ -26,6 +26,11 @@ layers.overlap = layers.overlap[,-1]
 
 parameters = colnames(layers.overlap[c(3:14)])
 
+summary(layers.overlap$RI.numscvg.overlap)
+summary(layers.overlap$high_scvg)
+summary(layers.overlap$high_RI)
+summary(layers.overlap$RI.numenct.overlap)
+summary(layers.overlap$high_enct)
 
 
 ##frequency of overlaps with high recycling intensity
@@ -538,6 +543,8 @@ summary(hRI)
 ####cortex ratio overlap####
 hist(layers.overlap$RI.CR.overlap)
 fitdistrplus::descdist(layers.overlap$RI.CR.overlap, discrete = T)
+
+hist(layers.overlap$high_CR)
 
 crp1 = ggplot(layers.overlap) +
   geom_bar(aes(x = RI.CR.overlap)) +
