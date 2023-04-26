@@ -34,7 +34,7 @@ plot_exposure_counts = function (exposure.data) {
   names(strict.labs) = c("TRUE", "FALSE")
   
   ggplot(exposure.plot) +
-    geom_bar(aes(x = time, fill = signif), position = "dodge2") +
+    geom_bar(aes(x = time, fill = signif), position = position_dodge2(preserve = "single")) +
     facet_grid(flake_preference + size_preference ~ strict_selection , 
                labeller = labeller(flake_preference = flake.labs, 
                                    size_preference = size.labs, 
@@ -160,7 +160,7 @@ plot_exposure_counts_by_parameters = function (exposure.data) {
   names(msfs.labs) = c(1, 2)
   
   p1 = ggplot(exposure.plot) +
-    geom_bar(aes(x = mu, fill = signif), position = "dodge2") +
+    geom_bar(aes(x = mu, fill = signif), position = position_dodge2(preserve = "single")) +
     scale_fill_brewer(palette = "Set2", na.value = "grey") +
     facet_grid(scavenge_prob ~ blank_prob, labeller = labeller(blank_prob = bp.labs, 
                                                     scavenge_prob = sp.labs)) + 
@@ -171,7 +171,7 @@ plot_exposure_counts_by_parameters = function (exposure.data) {
           strip.text = element_text(size = 6))
   
   p2 = ggplot(exposure.plot) +
-    geom_bar(aes(x = max_flake_size, fill = signif), position = "dodge2") +
+    geom_bar(aes(x = max_flake_size, fill = signif), position = position_dodge2(preserve = "single")) +
     scale_fill_brewer(palette = "Set2", na.value = "grey") +
     facet_grid(size_preference ~ min_suitable_flake_size, 
                labeller = labeller(size_preference =size.labs,

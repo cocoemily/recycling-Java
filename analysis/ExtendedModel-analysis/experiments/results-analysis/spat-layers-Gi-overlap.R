@@ -289,13 +289,22 @@ term_levels = c(
   "max. flake size:min. selectable flake size"
 )
 
-
+for(i in 1:nrow(allzero)) {
+  if(!is.na(allzero$var[i])) {
+    allzero$var_clean[i] = terms_dict[allzero$var[i]]
+    allcount$var_clean[i] = terms_dict[allcount$var[i]]
+  }
+}
+allzero$var_clean = factor(allzero$var_clean, levels = term_levels)
+allcount$var_clean = factor(allcount$var_clean, levels = term_levels)
 
 
 zeroplot = ggplot(allzero %>% filter(signif == T)) +
-  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
   #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  geom_col(aes(x = var_clean, y = est, fill = name, group = name)) +
+  geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
   scale_color_brewer(palette = "Dark2") +
   facet_wrap(~name, nrow = 1) +
@@ -309,9 +318,11 @@ plot(zeroplot)
 
 
 countplot = ggplot(allcount %>% filter(signif == T)) +
-  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
   #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  geom_col(aes(x = var_clean, y = est, fill = name, group = name)) +
+  geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
   scale_color_brewer(palette = "Dark2") +
   facet_wrap(~name, nrow = 1) +
@@ -319,6 +330,7 @@ countplot = ggplot(allcount %>% filter(signif == T)) +
   theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 
         axis.title = element_text(size = 7), 
         legend.position = "none") 
+plot(countplot)
 # ggsave(filename = "../figures/count-est-G-overlap.tiff", countplot, 
 #        dpi = 300, width = 8.5, height = 4)
 
@@ -505,9 +517,11 @@ highzero = allzero %>% filter(str_detect(var, "high"))
 highcount = allcount %>% filter(str_detect(var, "high"))
 
 zeroplot = ggplot(highzero %>% filter(signif == T)) +
-  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
   #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  geom_col(aes(x = var_clean, y = est, fill = name, group = name)) +
+  geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
   scale_color_brewer(palette = "Dark2") +
   facet_wrap(~name, nrow = 1) +
@@ -518,9 +532,11 @@ zeroplot = ggplot(highzero %>% filter(signif == T)) +
 plot(zeroplot)
 
 countplot = ggplot(highcount %>% filter(signif == T)) +
-  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
   #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  geom_col(aes(x = var_clean, y = est, fill = name, group = name)) +
+  geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
   scale_color_brewer(palette = "Dark2") +
   facet_wrap(~name, nrow = 1) +
@@ -566,9 +582,14 @@ cro.df$var_clean = factor(cro.df$var_clean, levels = term_levels)
 
 
 crp2 = ggplot(cro.df %>% filter(signif == T)) +
-  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
+  #geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
   #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  geom_pointrange(aes(x = var_clean, y = estimate, ymax = upper, ymin = lower), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_pointrange(aes(x = var_clean, y = estimate, ymax = upper, ymin = lower), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
+  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  geom_col(aes(x = var_clean, y = estimate)) +
+  geom_errorbar(aes(x = var_clean, y = estimate, ymax = upper, ymin = lower), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
   labs(x = "parameter", y = "estimate") +
   theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 

@@ -9,7 +9,7 @@ library(rgdal)
 library(tmap)
 library(spdep)
 library(pscl)
-#library(Dict)
+library(Dict)
 library(MASS)
 library(QuantPsyc)
 
@@ -291,15 +291,19 @@ df$model = factor(df$model, levels = c("zero", "count"))
 
 
 p = ggplot(df %>% filter(signif == T)) +
-  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
-  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = model, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
+  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = model, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  geom_col(aes(x = var_clean, y = est, fill = model, group = model)) +
+  geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = model), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
-  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
   facet_grid(name~model) +
   labs(x = "parameter", y = "estimate") +
   theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6),
         axis.title = element_text(size = 7),
         legend.position = "none")
+plot(p)
 ggsave(filename = "../figures/recycled-retouched-overlap.tiff", p,
        dpi = 300, width = 7, height = 3.5)
 
@@ -382,10 +386,13 @@ df$model = factor(df$model, levels = c("zero", "count"))
 high = df %>% filter(str_detect(var, "high"))
 
 p2 = ggplot(high %>% filter(signif == T)) +
-  geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
-  geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = model, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  #geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
+  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = model, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+  geom_col(aes(x = var_clean, y = est, fill = model, group = model)) +
+  geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = model), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
-  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
   facet_grid(name~model) +
   labs(x = "parameter", y = "estimate") +
   theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6),
