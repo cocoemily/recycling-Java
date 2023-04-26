@@ -560,6 +560,104 @@ ggaplot = ggarrange(compare_mu_scenarios(cor.names[2]), compare_mu_scenarios(cor
 ggsave(filename = "../figures/correlation-fixed-effects_mu.tiff", ggaplot, width = 8.25, height =9.5, dpi = 300)
 
 
+compare_only_mu = function(correlation) {
+  
+  lmf = paste(correlation, "~ scavenge_prob + blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
+                flake_preference + size_preference + strict_selection +
+                min_suitable_flake_size + (1 | square) ")
+  
+  #####two technologies#####
+  mu1 = two.end %>%
+    filter(mu == 1)
+  
+  lmm1 = lmer(lmf,  data = mu1)
+  two.fe1 = FEsim(lmm1)
+  two.fe1$facet = "two technologies"
+  two.fe1$mu = "mu = 1"
+  
+  mu2 = two.end %>%
+    filter(mu == 2)
+  
+  lmm2 = lmer(lmf,  data = mu2)
+  # summary(lmm2)
+  # car::Anova(lmm2)
+  #plotREsim(REsim(lmm2))
+  two.fe2 = FEsim(lmm2)
+  two.fe2$facet = "two technologies"
+  two.fe2$mu = "mu = 2"
+  
+  mu3 = two.end %>% 
+    filter(mu == 3)
+  
+  lmm3 = lmer(lmf,  data = mu3)
+  # summary(lmm3)
+  # car::Anova(lmm3)
+  #plotREsim(REsim(lmm3))
+  two.fe3 = FEsim(lmm3)
+  two.fe3$facet = "two technologies"
+  two.fe3$mu = "mu = 3"
+  
+  #two.mu = plotFEmult("mu1" = two.fe1, "mu2" = two.fe2, "mu3" = two.fe3)
+  
+  #####many technologies#####
+  mu1 = many.end %>%
+    filter(mu == 1)
+  
+  lmm1 = lmer(lmf,  data = mu1)
+  # summary(lmm1)
+  # car::Anova(lmm1)
+  #plotREsim(REsim(lmm1))
+  many.fe1 = FEsim(lmm1)
+  many.fe1$facet = "many technologies"
+  many.fe1$mu = "mu = 1"
+  
+  mu2 = many.end %>%
+    filter(mu == 2)
+  
+  lmm2 = lmer(lmf,  data = mu2)
+  # summary(lmm2)
+  # car::Anova(lmm2)
+  #plotREsim(REsim(lmm2))
+  many.fe2 = FEsim(lmm2)
+  many.fe2$facet = "many technologies"
+  many.fe2$mu = "mu = 2"
+  
+  mu3 = many.end %>%
+    filter(mu == 3)
+  
+  lmm3 = lmer(lmf,  data = mu3)
+  # summary(lmm3)
+  # car::Anova(lmm3)
+  #plotREsim(REsim(lmm3))
+  many.fe3 = FEsim(lmm3)
+  many.fe3$facet = "many technologies"
+  many.fe3$mu = "mu = 3"
+  
+  allresults = rbind(many.fe1, many.fe2, many.fe3, two.fe1, two.fe2, two.fe3)
+  
+  intercept = allresults %>% filter(term == "(Intercept)")
+  intercept$upper = intercept$mean + intercept$sd
+  intercept$lower = intercept$mean - intercept$sd
+  
+  ggplot(intercept) +
+    geom_col(aes(y = mean, x = facet, group = mu, fill = mu), position = position_dodge2()) +
+    geom_errorbar(aes(x = facet, ymax = upper, ymin = lower, group = mu),color = "gray40", width = 0.25, size = 0.3, position = position_dodge(preserve = "single", width  = 0.9)) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    scale_fill_colorblind() +
+    labs(y = "estimate", title = correlation) +
+    theme(axis.title.x = element_blank(), legend.title = element_blank(), axis.text = element_text(size = 6), 
+          title = element_text(size = 9), axis.title.y = element_text(size = 8)) +
+    scale_y_continuous(limits = c(-0.5, 0.5))
+}
+
+ggaplot2 = ggarrange(compare_only_mu(cor.names[2]), compare_only_mu(cor.names[3]), 
+                     compare_only_mu(cor.names[4]), compare_only_mu(cor.names[5]), 
+                     compare_only_mu(cor.names[6]), compare_only_mu(cor.names[8]), 
+                    ncol = 2, nrow = 3,
+                    common.legend = T, labels = "AUTO")
+plot(ggaplot2)
+ggsave(filename = "../figures/correlation-fixed-effects_mu-intercept.tiff", ggaplot2, width = 8.25, height =9.5, dpi = 300)
+
 ####REGRESSIONS LOOKING AT SELECTION SCENARIOS#####
 
 # compare_type_pref_scenarios = function(correlation) {
@@ -682,6 +780,76 @@ ggaplot2 = ggarrange(compare_size_pref_scenarios(cor.names[2]), compare_size_pre
 ggsave(filename = "../figures/correlation-fixed-effects_size-pref.tiff", ggaplot2, width = 8.25, height = 9.5, dpi = 300)
 
 
+compare_only_size = function(correlation) {
+  
+  lmf = paste(correlation, "~ mu + max_use_intensity + max_artifact_carry  + 
+  scavenge_prob + blank_prob + max_flake_size*min_suitable_flake_size  + (1 | square)")
+  
+  
+  sizepref = two.end %>%
+    filter(size_preference == T, 
+           strict_selection == T, 
+           flake_preference == T)
+  
+  nosizepref = two.end %>%
+    filter(size_preference == F, 
+           strict_selection == T, 
+           flake_preference == T)
+  
+  size1 = lmer(lmf, data = sizepref)
+  two.fe1 = FEsim(size1)
+  two.fe1$facet = "two technologies"
+  two.fe1$size = "size preference"
+  nsize1 = lmer(lmf, data = nosizepref)
+  two.fe2 = FEsim(nsize1)
+  two.fe2$facet = "two technologies"
+  two.fe2$size = "no size preference"
+  
+  sizepref = many.end %>%
+    filter(size_preference == T, 
+           strict_selection == T, 
+           flake_preference == T)
+  
+  nosizepref = many.end %>%
+    filter(size_preference == F, 
+           strict_selection == T, 
+           flake_preference == T)
+  
+  size2 = lmer(lmf, data = sizepref)
+  many.fe1 = FEsim(size2)
+  many.fe1$facet = "many technologies"
+  many.fe1$size = "size preference"
+  nsize2 = lmer(lmf, data = nosizepref)
+  many.fe2 = FEsim(nsize2)
+  many.fe2$facet = "many technologies"
+  many.fe2$size = "no size preference"
+  
+  allresults = rbind(many.fe1, many.fe2, two.fe1, two.fe2)
+  
+  intercept = allresults %>% filter(term == "(Intercept)")
+  intercept$upper = intercept$mean + intercept$sd
+  intercept$lower = intercept$mean - intercept$sd
+  
+  ggplot(intercept) +
+    geom_col(aes(y = mean, x = facet, group = size, fill = size), position = position_dodge2()) +
+    geom_errorbar(aes(x = facet, ymax = upper, ymin = lower, group = size),color = "gray40", width = 0.25, size = 0.3, position = position_dodge(preserve = "single", width  = 0.9)) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    scale_fill_colorblind() +
+    labs(y = "estimate", title = correlation) +
+    theme(axis.title.x = element_blank(), legend.title = element_blank(), axis.text = element_text(size = 6), 
+          title = element_text(size = 9), axis.title.y = element_text(size = 8)) +
+    scale_y_continuous(limits = c(-0.5, 0.5))
+}
+
+ggaplot2 = ggarrange(compare_only_size(cor.names[2]), compare_only_size(cor.names[3]), 
+                     compare_only_size(cor.names[4]), compare_only_size(cor.names[5]), 
+                     compare_only_size(cor.names[6]), compare_only_size(cor.names[8]), 
+                     ncol = 2, nrow = 3,
+                     common.legend = T, labels = "AUTO")
+plot(ggaplot2)
+ggsave(filename = "../figures/correlation-fixed-effects_size-pref-intercept.tiff", ggaplot2, width = 8.25, height =9.5, dpi = 300)
+
+
 ##strict selection vs not strict selection
 compare_strict_select_scenarios = function(correlation) {
   lmf = paste(correlation, "~ mu + scavenge_prob + blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
@@ -744,3 +912,73 @@ ggaplot3 = ggarrange(compare_strict_select_scenarios(cor.names[2]), compare_stri
                      ncol = 2, nrow = 3,
                      common.legend = T, labels = "AUTO")
 ggsave(filename = "../figures/correlation-fixed-effects_strict.tiff", ggaplot3, width = 8.25, height = 9.5, dpi = 300)
+
+compare_only_strict = function(correlation) {
+  lmf = paste(correlation, "~ mu + scavenge_prob + blank_prob + max_use_intensity + max_artifact_carry + max_flake_size + 
+                  min_suitable_flake_size + (1 | square)")
+  
+  strict = two.end %>%
+    filter(flake_preference == T, 
+           size_preference == F, 
+           strict_selection == T)
+  
+  notstrict = two.end %>%
+    filter(flake_preference == T, 
+           size_preference == F, 
+           strict_selection == F)
+  
+  size1 = lmer(lmf, data = strict)
+  two.fe1 = FEsim(size1)
+  two.fe1$facet = "two technologies"
+  two.fe1$strict = "strict selection"
+  nsize1 = lmer(lmf, data = notstrict)
+  two.fe2 = FEsim(nsize1)
+  two.fe2$facet = "two technologies"
+  two.fe2$strict = "non-strict selection"
+  
+  
+  strict = many.end %>%
+    filter(flake_preference == T, 
+           size_preference == F, 
+           strict_selection == T)
+  
+  notstrict = many.end %>%
+    filter(flake_preference == T, 
+           size_preference == F, 
+           strict_selection == F)
+  
+  size2 = lmer(lmf, data = strict)
+  many.fe1 = FEsim(size2)
+  many.fe1$facet = "many technologies"
+  many.fe1$strict = "strict selection"
+  nsize2 = lmer(lmf, data = notstrict)
+  many.fe2 = FEsim(nsize2)
+  many.fe2$facet = "many technologies"
+  many.fe2$strict = "non-strict selection"
+  
+  allresults = rbind(many.fe1, many.fe2, two.fe1, two.fe2)
+  
+  intercept = allresults %>% filter(term == "(Intercept)")
+  intercept$upper = intercept$mean + intercept$sd
+  intercept$lower = intercept$mean - intercept$sd
+  
+  ggplot(intercept) +
+    geom_col(aes(y = mean, x = facet, group = strict, fill = strict), position = position_dodge2()) +
+    geom_errorbar(aes(x = facet, ymax = upper, ymin = lower, group = strict),color = "gray40", width = 0.25, size = 0.3, position = position_dodge(preserve = "single", width  = 0.9)) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    scale_fill_colorblind() +
+    labs(y = "estimate", title = correlation) +
+    theme(axis.title.x = element_blank(), legend.title = element_blank(), axis.text = element_text(size = 6), 
+          title = element_text(size = 9), axis.title.y = element_text(size = 8)) +
+    scale_y_continuous(limits = c(-0.7, 0.5))
+  
+}
+
+ggaplot2 = ggarrange(compare_only_strict(cor.names[2]), compare_only_strict(cor.names[3]), 
+                     compare_only_strict(cor.names[4]), compare_only_strict(cor.names[5]), 
+                     compare_only_strict(cor.names[6]), compare_only_strict(cor.names[8]), 
+                     ncol = 2, nrow = 3,
+                     common.legend = T, labels = "AUTO")
+plot(ggaplot2)
+ggsave(filename = "../figures/correlation-fixed-effects_strict-intercept.tiff", ggaplot2, width = 8.25, height =9.5, dpi = 300)
+
