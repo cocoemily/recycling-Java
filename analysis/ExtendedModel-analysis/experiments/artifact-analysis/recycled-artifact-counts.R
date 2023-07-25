@@ -45,7 +45,8 @@ foreach (f=1:length(files)) %dopar% {
     
     gridded.end = end_data %>% filter(run == i) %>%
       group_by(row, col, obj_type) %>%
-      summarize(count_recycled = sum(recycled), 
+      summarize(total_count = n(), 
+                count_recycled = sum(recycled), 
                 count_retouched = sum(stage > 0, na.rm = T))
     
     gridded.end[,parameters[1]] = c(exp_values[1, c(parameters[1])])
@@ -65,8 +66,9 @@ foreach (f=1:length(files)) %dopar% {
     
     gridded.mid = mid_data %>% filter(run == i) %>%
       group_by(row, col, obj_type) %>%
-      summarize(count_recycled = sum(recycled), 
-                count_retouched = sum(stage > 0, na.rm = T))  
+      summarize(total_count = n(), 
+                count_recycled = sum(recycled), 
+                count_retouched = sum(stage > 0, na.rm = T))
     
     gridded.mid[,parameters[1]] = c(exp_values[1, c(parameters[1])])
     gridded.mid[,parameters[2]] = c(exp_values[1, c(parameters[2])])
