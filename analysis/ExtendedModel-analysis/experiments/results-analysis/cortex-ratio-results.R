@@ -32,6 +32,14 @@ plot(p1)
 ggsave(filename = "../figures/average-cortex-ratios.tiff", p1, 
        dpi = 300, width = 6, height = 5)
 
+p2 = ggplot(cr %>% filter(flake_preference == T)) +
+  geom_hline(aes(yintercept = 1), color = "grey80", ) +
+  geom_boxplot(aes(x = size_preference, y = end_mean, group = size_preference)) +
+  facet_grid(strict_selection ~ blank_prob, labeller = label_both, scales = "free") + 
+  labs(y = "Cortex Ratio")
+plot(p2)
+
+
 
 
 #### GRID-BASED CORTEX RATIOS ####

@@ -54,6 +54,17 @@ plot(avg.cor)
 ggsave(filename = "../figures/average-correlations.tiff", plot = avg.cor, 
        dpi = 300, width = 7, height = 4)
 
+cor.probs = ggplot(cor.long %>% filter(correlations == "ri.cr.cor") %>% filter(strict_selection == T && flake_preference == T)
+                   , aes(x = correlations, y = value, group = interaction(time, correlations), fill = interaction(time, correlations))) +
+  geom_boxplot() +
+  geom_hline(aes(yintercept = 0), color = "red") +
+  labs(y = "correlation coefficient") +
+  scale_fill_brewer(palette = "Paired") +
+  theme(axis.title.x = element_blank(), 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.position = "none") +
+  facet_grid(size_preference ~ blank_prob, labeller = label_both)
+plot(cor.probs)
 
 data = layer.cor.end
 correlation = cor.names[2]

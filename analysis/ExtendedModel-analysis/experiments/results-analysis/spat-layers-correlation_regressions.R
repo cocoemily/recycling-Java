@@ -838,7 +838,7 @@ compare_only_size = function(correlation) {
     labs(y = "estimate", title = correlation) +
     theme(axis.title.x = element_blank(), legend.title = element_blank(), axis.text = element_text(size = 6), 
           title = element_text(size = 9), axis.title.y = element_text(size = 8)) +
-    scale_y_continuous(limits = c(-0.5, 0.5))
+    scale_y_continuous(limits = c(-0.7, 0.5))
 }
 
 ggaplot2 = ggarrange(compare_only_size(cor.names[2]), compare_only_size(cor.names[3]), 

@@ -45,16 +45,12 @@ p1 = ggplot(run.avg %>% filter(overlap == 1)) +
 plot(p1)
 
 ggplot(run.avg %>% filter(overlap == 1) %>% filter(model_year == 200000)) +
-  geom_boxplot(aes(x = as.factor(size_preference), y = avg_count)) +
-  # facet_grid(flake_preference + size_preference ~ strict_selection , 
-  #            labeller = labeller(
-  #              flake_preference = flake.labs, 
-  #              size_preference = size.labs, 
-  #              strict_selection = strict.labs
-  #            )) +
-  #scale_x_discrete(labels = c("middle", "end"), limits = rev) +
+  geom_boxplot(aes(x = as.factor(model_year), y = avg_count)) +
+  facet_grid(~strict_selection, 
+             labeller = label_both, scales = "free") +
+  scale_x_discrete(labels = c("middle", "end"), limits = rev) +
   scale_fill_brewer(palette = "Paired") +
-  #labs(x = "time", y = "number of objects") +
+  labs(x = "time", y = "number of objects") +
   theme(legend.title = element_blank(),
         strip.text = element_text(size = 8),
         axis.text = element_text(size = 6))
