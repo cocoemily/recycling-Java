@@ -9,9 +9,22 @@ alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_da
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-grouping_params = c("mu", "overlap")
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection", "mu", "overlap")
+
+middata = alldata[which(alldata$model_year == 350000), c(parameters, "total.RI")]
+middata$time = "mid"
+enddata = alldata[which(alldata$model_year == 200000), c(parameters, "total.RI")]
+enddata$time = "end"
+
+alldata = rbind(middata, enddata)
 
 
-enddata = alldata[which(alldata$model_year == 200000),]
-summary(enddata$total.RI)
+p1 = ggplot(cr) +
+  geom_boxplot(aes(x = time, y = total.RI, group = time)) +
+  facet_grid(blank_prob ~ scavenge_prob, 
+             labeller = label_both) + 
+  labs(y = "recycling intensity")
+plot(p1)
+
+ggsave(filename = "/scratch/ec3307/recycling-Java/figures/model-recycling intensity.tiff", p1, 
+       dpi = 300, width = 6, height = 5)
