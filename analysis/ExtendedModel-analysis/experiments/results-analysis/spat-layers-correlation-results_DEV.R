@@ -25,6 +25,35 @@ row.col = unique(layer.cor %>% dplyr::select(row, col, square))
 layer.cor.end = layer.cor[which(layer.cor$time == "end"),]
 layer.cor.mid = layer.cor[which(layer.cor$time == "mid"),]
 
+end.cor.long = layer.cor.end %>% 
+  pivot_longer(cols = c(cor.names[2], cor.names[3], cor.names[4], cor.names[5], cor.names[6], cor.names[8]), 
+               names_to = "correlations") %>%
+  mutate(correlations = factor(correlations, levels = c(
+    "ri.obj.cnt.cor", "ri.cr.cor", "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
+  )))
+mid.cor.long = layer.cor.mid %>% 
+  pivot_longer(cols = c(cor.names[2], cor.names[3], cor.names[4], cor.names[5], cor.names[6], cor.names[8]), 
+               names_to = "correlations") %>%
+  mutate(correlations = factor(correlations, levels = c(
+    "ri.obj.cnt.cor", "ri.cr.cor", "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
+  )))
+
+cor.long = rbind(mid.cor.long, end.cor.long) %>%
+  mutate(time = factor(time, levels = c("mid", "end")))
+
+avg.cor = ggplot(cor.long, aes(x = correlations, y = value, group = interaction(time, correlations), fill = interaction(time, correlations))) +
+  geom_boxplot() +
+  geom_hline(aes(yintercept = 0), color = "red") +
+  labs(y = "correlation coefficient") +
+  scale_fill_brewer(palette = "Paired") +
+  theme(axis.title.x = element_blank(), 
+        axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.position = "none")
+plot(avg.cor)
+
+ggsave(filename = "../figures/average-correlations.tiff", plot = avg.cor, 
+       dpi = 300, width = 7, height = 4)
+
 
 data = layer.cor.end
 correlation = cor.names[2]
