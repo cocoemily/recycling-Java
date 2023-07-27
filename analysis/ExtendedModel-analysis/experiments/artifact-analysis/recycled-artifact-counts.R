@@ -3,6 +3,7 @@ library(tidyverse)
 library(parallel)
 library(foreach)
 library(doParallel)
+library(moments)
 
 #param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
@@ -44,10 +45,13 @@ foreach (f=1:length(files)) %dopar% {
   for(i in runs) {
     
     gridded.end = end_data %>% filter(run == i) %>%
+      group_by(row, col) %>%
+      mutate(skew = skewness(initial_discard)) %>%
       group_by(row, col, obj_type) %>%
       summarize(total_count = n(), 
                 count_recycled = sum(recycled), 
-                count_retouched = sum(stage > 0, na.rm = T))
+                count_retouched = sum(stage > 0, na.rm = T), 
+                skew = first(skew))
     
     gridded.end[,parameters[1]] = c(exp_values[1, c(parameters[1])])
     gridded.end[,parameters[2]] = c(exp_values[1, c(parameters[2])])
@@ -65,10 +69,13 @@ foreach (f=1:length(files)) %dopar% {
     gridded.end$time = "end"
     
     gridded.mid = mid_data %>% filter(run == i) %>%
+      group_by(row, col) %>%
+      mutate(skew = skewness(initial_discard)) %>%
       group_by(row, col, obj_type) %>%
       summarize(total_count = n(), 
                 count_recycled = sum(recycled), 
-                count_retouched = sum(stage > 0, na.rm = T))
+                count_retouched = sum(stage > 0, na.rm = T), 
+                skew = first(skew))
     
     gridded.mid[,parameters[1]] = c(exp_values[1, c(parameters[1])])
     gridded.mid[,parameters[2]] = c(exp_values[1, c(parameters[2])])
