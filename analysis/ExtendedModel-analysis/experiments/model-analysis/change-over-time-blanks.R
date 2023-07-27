@@ -151,7 +151,11 @@ splot = ggplot() +
 
 # ggsave(filename = "blanks-trend-by-selection.png", splot, dpi = 300)
 
-ggsave(filename = "blanks-trends.tiff",
-       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
-       dpi = 300, width = 11, height = 4.5
-)
+save(oplot, file = "blanks-overlap.rdata")
+save(mplot, file = "blanks-mu.rdata")
+save(splot, file = "blanks-selection.rdata")
+
+# ggsave(filename = "blanks-trends.tiff",
+#        ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
+#        dpi = 300, width = 11, height = 4.5
+# )

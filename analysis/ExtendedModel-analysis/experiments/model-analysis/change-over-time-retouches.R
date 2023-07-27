@@ -151,7 +151,11 @@ splot = ggplot() +
 
 #ggsave(filename = "retouch-trend-by-selection.png", splot, dpi = 300)
 
-ggsave(filename = "retouch-trends.tiff",
-       ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
-       dpi = 300, width = 11, height = 4.5
-)
+save(oplot, file = "retouch-overlap.rdata")
+save(mplot, file = "retouch-mu.rdata")
+save(splot, file = "retouch-selection.rdata")
+
+# ggsave(filename = "retouch-trends.tiff",
+#        ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
+#        dpi = 300, width = 11, height = 4.5
+# )
