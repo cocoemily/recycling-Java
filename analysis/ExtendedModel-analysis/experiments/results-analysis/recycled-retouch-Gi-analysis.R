@@ -8,7 +8,7 @@ library(rgdal)
 library(tmap)
 library(spdep)
 library(pscl)
-library(Dict)
+#library(Dict)
 library(MASS)
 library(QuantPsyc)
 
@@ -79,23 +79,23 @@ for(i in 1:nrow(param_list)) {
                run = run)
       exp.df2 = exp.df[,c(6:22)]
       
-      #readr::write_csv(exp.df, paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/exp", i, "_", run, "_rr-local-G.csv"), num_threads=1)
+      readr::write_csv(exp.df, paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/exp", i, "_", run, "_rr-local-G.csv"), num_threads=1)
       
-      recycled.rast = rasterFromXYZ(exp.df2[,c(1,2,3)])
-      recycled.rast[recycled.rast < 2] = NA
-      retouched.rast = rasterFromXYZ(exp.df2[,c(1,2,4)])
-      retouched.rast[retouched.rast < 2] = NA
-
-      r = overlay(recycled.rast, retouched.rast, fun=sum)
-      rcycl.ret.o = 100 - freq(r, value = NA)
-
-      output[nrow(output) + 1, ] =
-        c(param_list[i,],
-          run,
-          100 - freq(recycled.rast, value = NA),
-          100 - freq(retouched.rast, value = NA),
-          rcycl.ret.o
-        )
+      # recycled.rast = rasterFromXYZ(exp.df2[,c(1,2,3)])
+      # recycled.rast[recycled.rast < 2] = NA
+      # retouched.rast = rasterFromXYZ(exp.df2[,c(1,2,4)])
+      # retouched.rast[retouched.rast < 2] = NA
+      # 
+      # r = overlay(recycled.rast, retouched.rast, fun=sum)
+      # rcycl.ret.o = 100 - freq(r, value = NA)
+      # 
+      # output[nrow(output) + 1, ] =
+      #   c(param_list[i,],
+      #     run,
+      #     100 - freq(recycled.rast, value = NA),
+      #     100 - freq(retouched.rast, value = NA),
+      #     rcycl.ret.o
+      #   )
     }
   }
 }
