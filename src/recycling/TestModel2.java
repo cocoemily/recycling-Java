@@ -10,7 +10,7 @@ import java.io.FileWriter;
  * @author emilycoco
  *
  */
-public class TestModel {
+public class TestModel2 {
 
 	public static void main(String[] args) {
 
@@ -43,15 +43,17 @@ public class TestModel {
 
 		model.print();
 		System.out.println("model created.");
+		
+		int totalAgents = 200;
 
 		//create agents per overlap parameter
 		//create agents per overlap parameter
 		if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
 			ArrayList<Integer> techs = new ArrayList<Integer>();
-			for(int i=0; i < (int) (model.totalAgents * model.groupPerc); i++) {
+			for(int i=0; i < (int) (totalAgents * model.groupPerc); i++) {
 				techs.add(1);
 			}
-			for(int j=0; j < model.totalAgents - ((int) (model.totalAgents * model.groupPerc)); j++) {
+			for(int j=0; j < totalAgents - ((int) (totalAgents * model.groupPerc)); j++) {
 				techs.add(2);
 			}
 
@@ -61,12 +63,12 @@ public class TestModel {
 			}
 
 		} else if(model.overlap == 0) { //no overlap -> agents added in order starting with all type 1 agents
-			model.createAgents(1, (int) (model.totalAgents * model.groupPerc));
-			model.createAgents(2, model.totalAgents - ((int) (model.totalAgents * model.groupPerc)));
+			model.createAgents(1, (int) (totalAgents * model.groupPerc));
+			model.createAgents(2, totalAgents - ((int) (totalAgents * model.groupPerc)));
 
 		} else if(model.overlap == 0.5) { //partial overlap -> one third type 1 agents, one third random mix of agents, one third type 2 agents
-			int oneThird = (int) (model.totalAgents / 3.0);
-			int aLeft = model.totalAgents - (oneThird + oneThird);
+			int oneThird = (int) (totalAgents / 3.0);
+			int aLeft = totalAgents - (oneThird + oneThird);
 
 			model.createAgents(1, oneThird);
 
@@ -87,7 +89,7 @@ public class TestModel {
 
 		} else { //if model overlap is anything else, create agents with all different technology types
 			int tech = 1;
-			for(int i=0; i < model.totalAgents; i++) {
+			for(int i=0; i < totalAgents; i++) {
 				model.createAgent(tech);
 				tech++;
 			}
@@ -179,20 +181,22 @@ public class TestModel {
 					whichAgent++;
 					model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
 					System.out.println("\t agent " + model.agents.get(whichAgent).getGroup() + " has moved into the window");
+				} else {
+					break;
 				}
 			}
 
-			if(i % (model.totalSteps/2) == 0) {
-				model.getArtifactData();
-			}
+//			if(i % (model.totalSteps/2) == 0) {
+//				model.getArtifactData();
+//			}
+//
+//			if(i % (model.totalSteps/300) == 0) {
+//				model.getLayerData();
+//			}
 
-			if(i % (model.totalSteps/300) == 0) {
-				model.getLayerData();
-			}
-
-			if(i == model.totalSteps) {
-				model.getLayerData();
-			}
+//			if(i == model.totalSteps) {
+//				model.getLayerData();
+//			}
 
 			model.getModelData();
 			model.resetScavengeEventCounter();
@@ -202,8 +206,11 @@ public class TestModel {
 			model.resetBlankCounter();
 		}
 		
+		model.getArtifactData();
+		model.getLayerData();
+		
 		System.out.println("model used " + (whichAgent + 1) + " agents");
-		//outputModelData(model);
+		outputModelData(model);
 	}
 
 
