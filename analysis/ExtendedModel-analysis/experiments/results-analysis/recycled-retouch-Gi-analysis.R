@@ -14,15 +14,12 @@ library(QuantPsyc)
 
 theme_set(theme_bw())
 
-#count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-recycled-object-counts.csv")
-#count.data = read_csv("/scratch/ec3307/recycling-Java/results/all-recycled-object-counts.csv")
-
-count.data = read_csv("~/eclipse-workspace/recycling-Java/results/object-counts-with-skew.csv")
-
+#count.data = read_csv("~/eclipse-workspace/recycling-Java/results/object-counts-with-skew.csv")
+count.data = read_csv("/scratch/ec3307/recycling-Java/results/object-counts-with-skew.csv")
 
 parameters = colnames(count.data[,8:19])
-param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
-#param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+#param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 param_list = param_list[,c(6:17)]
 colnames(param_list) = parameters
 
