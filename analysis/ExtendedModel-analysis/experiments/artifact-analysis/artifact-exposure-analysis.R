@@ -46,48 +46,43 @@ foreach (f=1:length(files)) %dopar% {
   end_data = data[which(data$model_year == 200000), ]
   
   #statistical differences between initial discard of recycled and non-recycled objects
-  rcycl.end = mid_data[which(mid_data$recycled == T), ]
-  nrcycl.end = mid_data[which(mid_data$recycled == F), ]
-  
-  mid.conf.vals = c()
-  
-  for(r in unique(rcycl.end$run)) {
-    print(r)
-    rcycl.run = rcycl.end[which(rcycl.end$run == r),]
-    nrcycl.run = nrcycl.end[which(nrcycl.end$run == r),]
-    if(nrow(rcycl.run) != 0 && nrow(nrcycl.run) != 0) {
-      midresults = wilcox.test(rcycl.run$initial_discard,
-                               nrcycl.run$initial_discard,
-                               alternative = "greater")
-      
-      mid.conf.vals = c(mid.conf.vals, 
-                        ifelse(midresults$p.value < 0.05, TRUE, FALSE))
-    }
-  }
-  
+  rcycl.mid = mid_data[which(mid_data$recycled == T), ]
+  nrcycl.mid = mid_data[which(mid_data$recycled == F), ]
   rcycl.end = end_data[which(end_data$recycled == T), ]
   nrcycl.end = end_data[which(end_data$recycled == F), ]
   
-  end.conf.vals = c()
-  for(r in unique(rcycl.end$run)) {
+  exposure_results = data.frame(exp_values[1,], mid.signif.greater = NA, end.signif.greater = NA)
+  exposure_results = exposure_results[c(-1),]
+  
+  for(r in unique(rcycl.mid$run)) {
+    mid.conf.val = NA
+    end.conf.val = NA
+    
     print(r)
-    rcycl.run = rcycl.end[which(rcycl.end$run == r),]
-    nrcycl.run = nrcycl.end[which(nrcycl.end$run == r),]
-    if(nrow(rcycl.run) != 0 && nrow(nrcycl.run) != 0) {
+    rcycl.mid.run = rcycl.mid[which(rcycl.mid$run == r),]
+    nrcycl.mid.run = nrcycl.mid[which(nrcycl.mid$run == r),]
+    rcycl.end.run = rcycl.end[which(rcycl.end$run == r),]
+    nrcycl.end.run = nrcycl.end[which(nrcycl.end$run == r),]
+    
+    if(nrow(rcycl.mid.run) != 0 && nrow(nrcycl.mid) != 0) {
+      midresults = wilcox.test(rcycl.mid.run$initial_discard,
+                               nrcycl.mid.run$initial_discard,
+                               alternative = "greater")
+      
+      mid.conf.val = ifelse(midresults$p.value < 0.05, TRUE, FALSE)
+    }
+    
+    if(nrow(rcycl.end.run) != 0 && nrow(nrcycl.end.run) != 0) {
       endresults = wilcox.test(rcycl.run$initial_discard,
                                nrcycl.run$initial_discard,
                                alternative = "greater")
       
-      end.conf.vals = c(end.conf.vals, 
-                        ifelse(endresults$p.value < 0.05, TRUE, FALSE))
+      end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
     }
+    
+    exposure_results[nrow(exposure_results) + 1, ] = c(exp_values[1,], mid.conf.val, end.conf.val)
   }
   
-  exposure_results = data.frame(
-    exp_values[1,],
-    mid.signif.greater = mid.conf.vals, 
-    end.signif.greater = end.conf.vals 
-  )
   filename = str_split(files[f], "_")[[1]][1]
   write_csv(exposure_results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_exposure-results.csv"), num_threads=1)
 }
