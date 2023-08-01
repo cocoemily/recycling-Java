@@ -13,7 +13,7 @@ public class Nodule {
 	private int size;
 	private double volume;
 	private double surfaceArea;
-	private double flakePropVol = 0.2;
+	private double flakePropVol = 0.04;
 	private ArrayList<Flake> flakes;
 	
 	private ArrayList<Integer> groups;
@@ -51,7 +51,7 @@ public class Nodule {
 		int flakesOnNod = flakeSizes.size();
 		for(int f = 0; f<flakeSizes.size(); f++) {
 			int fSize = flakeSizes.get(f);
-			double fVol = (this.volume * (fSize * this.flakePropVol)) / flakesOnNod;
+			double fVol = (this.volume * (fSize * this.flakePropVol));
 			double fSA = (this.surfaceArea / this.size) * fSize;
 			flakes.add(new Flake(fSize, fVol, fSA));
 		}
