@@ -30,9 +30,12 @@ foreach (d=1:length(dirs)) %dopar% {
   allvar = data[1,c(parameters, outputs, "model_year")]
   allvar = allvar[0,]
   
+  allCV = data[1,c(parameters, outputs, "model_year")]
+  allCV = allCV[0,]
+  
   modelyears = unique(data$model_year)
   
-  for(year in 1:length(modelyears)) {
+  for(year in 2:length(modelyears)) {
     oneyear = data[which(data$model_year == modelyears[year]),]
     params = c(oneyear[1, parameters])
     vars = sapply(oneyear[,outputs], FUN=var)
@@ -43,9 +46,17 @@ foreach (d=1:length(dirs)) %dopar% {
       modelyears[year]
     )
     
+    CV = c(
+      params,
+      CVs, 
+      modelyears[year]
+    )
+    
     allvar[nrow(allvar) + 1, ] = var
+    allCV[nrow(allCV) + 1, ] = CV
   }
   
   readr::write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/", filename, "_variation.csv"))
+  readr::write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/", filename, "_COV.csv"))
   
 }
