@@ -1,8 +1,5 @@
 #analysis of variation among model runs
 library(tidyverse)
-library(ggpubr)
-library(ggplot2)
-library(ggthemes)
 library(parallel)
 library(foreach)
 library(doParallel)
@@ -33,12 +30,13 @@ foreach (d=1:length(dirs)) %dopar% {
   allvar = data[1,c(parameters, outputs, "model_year")]
   allvar = allvar[0,]
   
- modelyears = unique(data$model_year)
+  modelyears = unique(data$model_year)
   
   for(year in 1:length(modelyears)) {
     oneyear = data[which(data$model_year == modelyears[year]),]
     params = c(oneyear[1, parameters])
     vars = sapply(oneyear[,outputs], FUN=var)
+    CVs = sapply(oneyear[,outputs], FUN=function(x) sd(x) / mean(x))
     var = c(
       params, 
       vars,
