@@ -67,6 +67,7 @@ oplot = ggplot() +
   scale_x_reverse(breaks = c(500000, 350000, 200000), 
                   labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
+  ylim(0, 5) +
   labs(color = "overlap parameter", x = "model year", y = "average number of recycled objects created")
 
 # ggsave(filename = "recycled-objects-trend-by-overlap.png", oplot, dpi = 300)
@@ -110,6 +111,7 @@ mplot = ggplot() +
   scale_x_reverse(breaks = c(500000, 350000, 200000), 
                   labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
+  ylim(0, 5) +
   labs(color = "mu parameter", x = "model year", y = "average number of recycled objects created")
 
 # ggsave(filename = "recycled-objects-trend-by-mu.png", mplot, dpi = 300)
@@ -147,6 +149,7 @@ splot = ggplot() +
   scale_x_reverse(breaks = c(500000, 350000, 200000), 
                   labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
+  ylim(0, 5) +
   labs(color = "flake preference", x = "model year", y = "average number of recycled objects created")
 
 # ggsave(filename = "recycled-objects-trend-by-selection.png", splot, dpi = 300)
