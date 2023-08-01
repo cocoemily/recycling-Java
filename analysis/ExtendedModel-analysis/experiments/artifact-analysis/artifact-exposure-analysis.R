@@ -74,8 +74,8 @@ foreach (f=1:length(files)) %dopar% {
       }
       
       if(nrow(rcycl.end.run) != 0 && nrow(nrcycl.end.run) != 0) {
-        endresults = wilcox.test(rcycl.run$initial_discard,
-                                 nrcycl.run$initial_discard,
+        endresults = wilcox.test(rcycl.end.run$initial_discard,
+                                 nrcycl.end.run$initial_discard,
                                  alternative = "greater")
         
         end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
