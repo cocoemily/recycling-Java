@@ -16,7 +16,7 @@ colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", paramet
 param_list = param_list[, c("exp", parameters)]
 
 
-#files = list.files("../output/test-artifact-data/")
+#files = list.files("../output/test-data/")
 files = list.files("/scratch/ec3307/recycling-Java/output/artifact-data/")
 files = files[-length(files)]
 
@@ -24,7 +24,7 @@ files = files[-length(files)]
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {
   ncores <- as.integer(Sys.getenv("SLURM_CPUS_PER_TASK"))
 } else {
- ncores <- detectCores()
+  ncores <- detectCores()
 }
 print(ncores)
 registerDoParallel(ncores)
@@ -34,7 +34,7 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 foreach (f=1:length(files)) %dopar% {
   expnum = str_extract(files[f], "[0-9]+")
   
-  #data = read_csv(paste0("../output/test-artifact-data/", files[f]))
+  #data = read_csv(paste0("../output/test-data/", files[f], "/artifacts-data.csv"))
   data = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", files[f]), num_threads=1)
   print(files[f])
   
@@ -44,38 +44,51 @@ foreach (f=1:length(files)) %dopar% {
   
   mid_data = data[which(data$model_year == 350000), ]
   end_data = data[which(data$model_year == 200000), ]
-
+  
   #statistical differences between initial discard of recycled and non-recycled objects
-  rcycl.mid = mid_data[which(mid_data$recycled == T), ]
-  nrcycl.mid = mid_data[which(mid_data$recycled == F), ]
+  rcycl.end = mid_data[which(mid_data$recycled == T), ]
+  nrcycl.end = mid_data[which(mid_data$recycled == F), ]
   
-  mid.conf.val = NA
+  mid.conf.vals = c()
   
-  if(nrow(rcycl.mid) != 0 && nrow(nrcycl.mid) != 0) {
-    midresults = wilcox.test(rcycl.mid$initial_discard,
-                             nrcycl.mid$initial_discard,
-                             alternative = "greater")
-    
-    mid.conf.val = ifelse(midresults$p.value < 0.05, TRUE, FALSE)
+  for(r in unique(rcycl.end$run)) {
+    print(r)
+    rcycl.run = rcycl.end[which(rcycl.end$run == r),]
+    nrcycl.run = nrcycl.end[which(nrcycl.end$run == r),]
+    if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
+      midresults = wilcox.test(rcycl.run$initial_discard,
+                               nrcycl.run$initial_discard,
+                               alternative = "greater")
+      
+      mid.conf.vals = c(mid.conf.vals, 
+                        ifelse(midresults$p.value < 0.05, TRUE, FALSE))
+    }
   }
   
   rcycl.end = end_data[which(end_data$recycled == T), ]
   nrcycl.end = end_data[which(end_data$recycled == F), ]
   
-  end.conf.val = NA
-  
-  if(nrow(rcycl.end) != 0 && nrow(nrcycl.mid) != 0) {
-    endresults = wilcox.test(rcycl.end$initial_discard,
-                             nrcycl.end$initial_discard,
-                             alternative = "greater")
-    
-    end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
-    
+  end.conf.vals = c()
+  for(r in unique(rcycl.end$run)) {
+    print(r)
+    rcycl.run = rcycl.end[which(rcycl.end$run == r),]
+    nrcycl.run = nrcycl.end[which(nrcycl.end$run == r),]
+    if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
+      endresults = wilcox.test(rcycl.run$initial_discard,
+                               nrcycl.run$initial_discard,
+                               alternative = "greater")
+      
+      end.conf.vals = c(end.conf.vals, 
+                        ifelse(endresults$p.value < 0.05, TRUE, FALSE))
+    }
   }
   
-  exposure_results = data.frame(exp_values[1,], mid.conf.val, end.conf.val)
+  exposure_results = data.frame(
+    exp_values[1,],
+    mid.signif.greater = mid.conf.vals, 
+    end.signif.greater = end.conf.vals 
+  )
   filename = str_split(files[f], "_")[[1]][1]
   write_csv(exposure_results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-data/output/", filename, "_exposure-results.csv"), num_threads=1)
-  
 }
 
