@@ -10,14 +10,14 @@ theme_set(theme_bw())
 #the direction (positive or negative) indicates high or low clusters. 
 #Gi values are z scores
 
-#layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/sub_local-G.csv")
-layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-runs-local-G.csv")
-parameters = colnames(layers.Gi[c(1:12)])
+layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/all-runs-local-G.csv")
+#layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-runs-local-G.csv")
+parameters = colnames(layers.Gi[c(2:13)])
 
 exp = unique(layers.Gi$exp)
 
 output = layers.Gi[,c("exp", parameters)]
-output$run = 0
+output$run = ""
 output$high_RI = 0
 output$RI.CR.overlap  = 0
 output$high_CR = 0
@@ -33,23 +33,26 @@ output$RI.numenct.overlap = 0
 output$high_enct = 0
 output$RI.numret.overlap = 0 
 output$high_ret = 0
+output$RI.retprop.overlap = 0
+output$high_rp = 0
 output = output[0,]
 
 for(e in 1:length(exp)) {
   Gi = layers.Gi[which(layers.Gi$exp == exp[e]),]
   Gi.end = Gi[which(Gi$model_year == 200000),]
   
-  for(run in 1:length(unique(layers.Gi$run))) {
+  for(run in unique(layers.Gi$run)) {
     Gi.run = Gi.end[which(Gi.end$run == run),]
     
-    RI.rast = rasterFromXYZ(Gi.run[,c(25,26,27)])
-    CR.rast = rasterFromXYZ(Gi.run[,c(25,26,28)])
-    flkcnt.rast = rasterFromXYZ(Gi.run[,c(25,26,29)])
-    nodcnt.rast = rasterFromXYZ(Gi.run[,c(25,26,30)])
-    numdisc.rast = rasterFromXYZ(Gi.run[,c(25,26,31)])
-    numscvg.rast = rasterFromXYZ(Gi.run[,c(25,26,32)])
-    numenct.rast = rasterFromXYZ(Gi.run[,c(25,26,33)])
-    numret.rast = rasterFromXYZ(Gi.run[,c(25,26,34)])
+    RI.rast = rasterFromXYZ(Gi.run[,c(27,28,29)])
+    CR.rast = rasterFromXYZ(Gi.run[,c(27,28,30)])
+    flkcnt.rast = rasterFromXYZ(Gi.run[,c(27,28,31)])
+    nodcnt.rast = rasterFromXYZ(Gi.run[,c(27,28,32)])
+    numdisc.rast = rasterFromXYZ(Gi.run[,c(27,28,33)])
+    numscvg.rast = rasterFromXYZ(Gi.run[,c(27,28,34)])
+    numenct.rast = rasterFromXYZ(Gi.run[,c(27,28,35)])
+    numret.rast = rasterFromXYZ(Gi.run[,c(27,28,36)])
+    retprop.rast = rasterFromXYZ(Gi.run[,c(27,28,37)])
     
     RI.rast[RI.rast < 2] = NA
     CR.rast[CR.rast < 2] = NA
@@ -59,6 +62,7 @@ for(e in 1:length(exp)) {
     numscvg.rast[numscvg.rast < 2] = NA
     numenct.rast[numenct.rast < 2] = NA
     numret.rast[numret.rast < 2] = NA
+    retprop.rast[retprop.rast < 2] = NA
     
     r = overlay(RI.rast, CR.rast, fun=sum)
     RI.CR.o = 100 - freq(r, value = NA)
@@ -81,6 +85,9 @@ for(e in 1:length(exp)) {
     r = overlay(RI.rast, numret.rast, fun=sum)
     RI.numret.o = 100 - freq(r, value = NA)
     
+    r = overlay(RI.rast, retprop.rast, fun=sum)
+    RI.retprop.o = 100 - freq(r, value = NA)
+    
     output[nrow(output) + 1, ] <-
       c(
         exp[e], 
@@ -100,7 +107,9 @@ for(e in 1:length(exp)) {
         RI.numenct.o, 
         100 - freq(numenct.rast, value = NA),
         RI.numret.o,
-        100 - freq(numret.rast, value = NA)
+        100 - freq(numret.rast, value = NA),
+        RI.retprop.o,
+        100 - freq(retprop.rast, value = NA)
       )
   }
   

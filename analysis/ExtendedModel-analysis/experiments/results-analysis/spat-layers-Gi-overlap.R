@@ -44,15 +44,17 @@ names(var.labs) = unique(long.overlap$vars)
 tech.labs = c("two technologies", "many technologies")
 names(tech.labs) = c("1", "2")
 
-ccplot = ggplot(long.overlap) +
-  geom_bar(aes(x = count.overlap)) +
-  facet_grid(overlap~vars, labeller = labeller(vars = var.labs, overlap = tech.labs)) + 
-  labs(x = "number of overlapping grid squares", y = "") +
-  theme(strip.text = element_text(size = 6))
+ccplot = ggplot(long.overlap %>% filter(overlap == 2)) +
+  geom_bar(aes(x = count.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
+  facet_wrap(~vars, labeller = labeller(vars = var.labs, overlap = tech.labs)) + 
+  labs(x = "number of overlapping grid squares", y = "", 
+       fill = "mu") +
+  theme(strip.text = element_text(size = 6)) +
+  scale_fill_colorblind()
 plot(ccplot)
 
-ggsave(filename = "../figures/overlapping-grid-squares-dist.tiff", ccplot, 
-       dpi = 300, width = 8, height = 4.5)
+ggsave(filename = "../figures/overlapping-grid-squares-dist_V2.tiff", ccplot, 
+       dpi = 300, width = 7, height = 5)
 
 table(long.overlap$vars, long.overlap$count.overlap, long.overlap$overlap)
 
@@ -68,14 +70,18 @@ names(var.labs) = unique(long.high$vars)
 tech.labs = c("two technologies", "many technologies")
 names(tech.labs) = c("1", "2")
 
-ccplot = ggplot(long.high) +
-  geom_bar(aes(x = count.high)) +
+ccplot2 = ggplot(long.high) +
+  geom_density(aes(x = count.high, fill = as.factor(mu), group = as.factor(mu)), alpha = 0.4) +
+  geom_density(aes(x = count.high, color = as.factor(mu), group = as.factor(mu))) +
   facet_grid(overlap~vars, labeller = labeller(vars = var.labs, overlap = tech.labs)) + 
-  labs(x = "number of hotspot grid squares", y = "") +
+  labs(x = "number of hotspot grid squares", y = "", color = "mu", fill = "mu") +
+  scale_fill_colorblind() +
+  scale_color_colorblind() +
   theme(strip.text = element_text(size = 6))
-plot(ccplot)
+plot(ccplot2)
 
-ggsave(filename = "../figures/supplementary-figures/hotspot-grid-squares-dist.tiff", ccplot, 
+ggsave(filename = "../figures/supplementary-figures/hotspot-grid-squares-dist.tiff", 
+       ccplot2, 
        dpi = 300, width = 8, height = 4.5)
 
 ##how to see which variable has most overlap with high RI values?
