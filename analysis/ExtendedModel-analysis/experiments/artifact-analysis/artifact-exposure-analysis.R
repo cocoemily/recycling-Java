@@ -55,7 +55,7 @@ foreach (f=1:length(files)) %dopar% {
     print(r)
     rcycl.run = rcycl.end[which(rcycl.end$run == r),]
     nrcycl.run = nrcycl.end[which(nrcycl.end$run == r),]
-    if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
+    if(nrow(rcycl.run) != 0 && nrow(nrcycl.run) != 0) {
       midresults = wilcox.test(rcycl.run$initial_discard,
                                nrcycl.run$initial_discard,
                                alternative = "greater")
@@ -73,7 +73,7 @@ foreach (f=1:length(files)) %dopar% {
     print(r)
     rcycl.run = rcycl.end[which(rcycl.end$run == r),]
     nrcycl.run = nrcycl.end[which(nrcycl.end$run == r),]
-    if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
+    if(nrow(rcycl.run) != 0 && nrow(nrcycl.run) != 0) {
       endresults = wilcox.test(rcycl.run$initial_discard,
                                nrcycl.run$initial_discard,
                                alternative = "greater")
