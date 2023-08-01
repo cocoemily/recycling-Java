@@ -54,33 +54,35 @@ foreach (f=1:length(files)) %dopar% {
   exposure_results = data.frame(exp_values[1,], mid.signif.greater = NA, end.signif.greater = NA)
   exposure_results = exposure_results[c(-1),]
   
-  for(r in unique(rcycl.mid$run)) {
-    mid.conf.val = NA
-    end.conf.val = NA
-    
-    print(r)
-    rcycl.mid.run = rcycl.mid[which(rcycl.mid$run == r),]
-    nrcycl.mid.run = nrcycl.mid[which(nrcycl.mid$run == r),]
-    rcycl.end.run = rcycl.end[which(rcycl.end$run == r),]
-    nrcycl.end.run = nrcycl.end[which(nrcycl.end$run == r),]
-    
-    if(nrow(rcycl.mid.run) != 0 && nrow(nrcycl.mid) != 0) {
-      midresults = wilcox.test(rcycl.mid.run$initial_discard,
-                               nrcycl.mid.run$initial_discard,
-                               alternative = "greater")
+  if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
+    for(r in unique(rcycl.end$run)) {
+      mid.conf.val = NA
+      end.conf.val = NA
       
-      mid.conf.val = ifelse(midresults$p.value < 0.05, TRUE, FALSE)
-    }
-    
-    if(nrow(rcycl.end.run) != 0 && nrow(nrcycl.end.run) != 0) {
-      endresults = wilcox.test(rcycl.run$initial_discard,
-                               nrcycl.run$initial_discard,
-                               alternative = "greater")
+      print(r)
+      rcycl.mid.run = rcycl.mid[which(rcycl.mid$run == r),]
+      nrcycl.mid.run = nrcycl.mid[which(nrcycl.mid$run == r),]
+      rcycl.end.run = rcycl.end[which(rcycl.end$run == r),]
+      nrcycl.end.run = nrcycl.end[which(nrcycl.end$run == r),]
       
-      end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
+      if(nrow(rcycl.mid.run) != 0 && nrow(nrcycl.mid.run) != 0) {
+        midresults = wilcox.test(rcycl.mid.run$initial_discard,
+                                 nrcycl.mid.run$initial_discard,
+                                 alternative = "greater")
+        
+        mid.conf.val = ifelse(midresults$p.value < 0.05, TRUE, FALSE)
+      }
+      
+      if(nrow(rcycl.end.run) != 0 && nrow(nrcycl.end.run) != 0) {
+        endresults = wilcox.test(rcycl.run$initial_discard,
+                                 nrcycl.run$initial_discard,
+                                 alternative = "greater")
+        
+        end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
+      }
+      
+      exposure_results[nrow(exposure_results) + 1, ] = c(exp_values[1,], mid.conf.val, end.conf.val)
     }
-    
-    exposure_results[nrow(exposure_results) + 1, ] = c(exp_values[1,], mid.conf.val, end.conf.val)
   }
   
   filename = str_split(files[f], "_")[[1]][1]
