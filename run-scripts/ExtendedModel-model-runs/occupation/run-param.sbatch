@@ -43,18 +43,18 @@ do
   ED=$(echo $ED | tr -d \")
   GF=$(echo $GF | tr -d \")
   totalSteps=$(echo $totalSteps | tr -d \")
-  echo "$modelType" "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
+  echo $modelType "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
 
 ##run experiment 50 times
   for i in {1..50}
   do
     runnum=$(echo "run$i")
-    java -jar recycling-model_OCC.jar "$modelType" "exp$of" $runnum $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
+    java -jar recycling-model_OCC.jar $modelType "exp$of" $runnum $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
   done
 
 ##collect data into one spreadsheet
   cd output
-  cd "$modelType"
+  cd $modelType
   cd "exp$of"
 
   #concatenate all model files
