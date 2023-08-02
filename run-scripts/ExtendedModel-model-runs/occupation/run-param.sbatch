@@ -19,9 +19,9 @@ cd ..
 #cd ..
 
 ##run experiment 50 times
-while IFS=, read -r modeltype of name size startYear timestep maxUI maxAC maxFS maxNS bProb sProb overlap mu sizePref flakePref minFS minNS strict ED GF totalSteps;
+while IFS=, read -r modelType of name size startYear timestep maxUI maxAC maxFS maxNS bProb sProb overlap mu sizePref flakePref minFS minNS strict ED GF totalSteps;
 do
-  modeltype = $(echo $modeltype | tr -d \")
+  modelType = $(echo $modelType | tr -d \")
   of=$(echo $of | tr -d \")
   name=$(echo $name | tr -d \")
   size=$(echo $size | tr -d \")
@@ -43,18 +43,18 @@ do
   ED=$(echo $ED | tr -d \")
   GF=$(echo $GF | tr -d \")
   totalSteps=$(echo $totalSteps | tr -d \")
-  echo $modeltype "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
+  echo "$modelType" "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
 
 ##run experiment 50 times
   for i in {1..50}
   do
     runnum=$(echo "run$i")
-    java -jar recycling-model_OCC.jar $modeltype "exp$of" $runnum $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
+    java -jar recycling-model_OCC.jar "$modelType" "exp$of" $runnum $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
   done
 
 ##collect data into one spreadsheet
   cd output
-  cd $modeltype
+  cd "$modelType"
   cd "exp$of"
 
   #concatenate all model files
