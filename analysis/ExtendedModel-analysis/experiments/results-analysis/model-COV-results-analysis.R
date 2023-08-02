@@ -6,8 +6,8 @@ library(scales)
 theme_set(theme_bw())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-#model_var = read_csv("~/eclipse-workspace/recycling-Java/results/all-model-variation.csv", n_max = 300000)
-model_var = read_csv("/scratch/ec3307/recycling-Java/results/all-model-variation.csv")
+model_var = read_csv("~/eclipse-workspace/recycling-Java/results/model-variation-output/all-model-COV.csv")
+#model_var = read_csv("/scratch/ec3307/recycling-Java/results/all-model-variation.csv")
 
 rcycl.obj = model_var[,c(parameters, "num.rcycl.obj.made", "model_year")]
 blank.events = model_var[,c(parameters, "num.blank.events", "model_year")]
@@ -15,7 +15,7 @@ retouch.events = model_var[,c(parameters, "num.retouch.events", "model_year")]
 discard.events = model_var[,c(parameters, "num.discard.events", "model_year")]
 scavenge.events = model_var[,c(parameters, "num.scav.events", "model_year")]
 
-rm(model_var)
+#rm(model_var)
 
 #### Variation of recycled objects made ####
 r1 = ggplot(rcycl.obj) +
@@ -43,7 +43,7 @@ r3 = ggplot(rcycl.obj) +
   labs(color = "flake preference", x = "model year", y = "variance of number of recycled objects made")
 #ggsave(filename = "rcycl-obj-var_selection.png", plot=r3, dpi = 300)
 
-ggsave(filename = "rcycl-obj-var.tiff",
+ggsave(filename = "../results/model-variation-output/rcycl-obj-var.tiff",
   ggarrange(r1, r2, r3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
   dpi = 300, width = 10, height = 6)
 
@@ -73,7 +73,7 @@ b3 = ggplot(blank.events) +
   labs(color = "flake preference", x = "model year", y = "variance of number of blank events")
 #ggsave(filename = "blank-events-var_selection.png", plot=b3, dpi = 300)
 
-ggsave(filename = "blank-events-var.tiff",
+ggsave(filename = "../results/model-variation-output/blank-events-var.tiff",
        ggarrange(b1, b2, b3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
        dpi = 300, width = 10, height = 6)
 
@@ -103,7 +103,7 @@ rt3 = ggplot(retouch.events) +
   labs(color = "flake preference", x = "model year", y = "variance of number of retouch events")
 #ggsave(filename = "retouch-events-var_selection.png", plot=rt3, dpi = 300)
 
-ggsave(filename = "retouch-events-var.tiff",
+ggsave(filename = "../results/model-variation-output/retouch-events-var.tiff",
        ggarrange(rt1, rt2, rt3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
        dpi = 300, width = 10, height = 6)
 
@@ -133,7 +133,7 @@ d3 = ggplot(discard.events) +
   labs(color = "flake preference", x = "model year", y = "variance of number of discard events")
 #ggsave(filename = "discard-events-var_selection.png", plot=d3, dpi = 300)
 
-ggsave(filename = "discard-events-var.tiff",
+ggsave(filename = "../results/model-variation-output/discard-events-var.tiff",
        ggarrange(d1, d2, d3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
        dpi = 300, width = 10, height = 6)
 
@@ -163,7 +163,7 @@ s3 = ggplot(scavenge.events) +
   labs(color = "flake preference", x = "model year", y = "variance of number of scavenging events")
 #ggsave(filename = "scavenge-events-var_selection.png", plot=d3, dpi = 300)
 
-ggsave(filename = "scavenge-events-var.tiff",
+ggsave(filename = "../results/model-variation-output/scavenge-events-var.tiff",
        ggarrange(s1, s2, s3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
        dpi = 300, width = 10, height = 6)
 

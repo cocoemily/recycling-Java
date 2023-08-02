@@ -14,8 +14,6 @@ module load r/gcc/4.2.0
 
 #R --no-save -q -f layers-variation.R
 #R --no-save -q -f layers-gridded-correlations.R
-#R --no-save -q -f layers-spatial-association.R #change, not using
-#R --no-save -q -f layers-spatial-association_ALL-RUNS.R
 #R --no-save -q -f layers-other-gridded-correlations.R
 #R --no-save -q -f total-artifact-counts.R
 
