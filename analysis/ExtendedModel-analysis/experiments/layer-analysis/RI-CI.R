@@ -7,9 +7,9 @@ library(doParallel)
 
 theme_set(theme_bw())
 
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "mu", "overlap", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "mu", "overlap", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
-#dirs = list.dirs("../output/test-layer-data")
+#dirs = list.dirs("../output/test-data")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
@@ -28,36 +28,26 @@ foreach (d=1:length(dirs)) %dopar% {
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
   print(filename)
   
-  results = data[1,c(parameters)]
+  results = data[1, c("run", parameters)]
+  results$mean = 0
+  results$median = 0
+  results$lower = 0
+  results$upper = 0
+  results = results[0,]
   
-  end_data = data[which(data$model_year == 200000), ]
-  end_data = end_data[which(!is.na(end_data$recycling.intensity)),]
-  mid_data = data[which(data$model_year == 350000), ]
-  mid_data = mid_data[which(!is.na(mid_data$recycling.intensity)),]
-  
-  avg = mean(end_data$recycling.intensity, na.rm = T)
-  med = median(end_data$recycling.intensity, na.rm = T)
-  
-  error = qt(0.975,df=length(end_data$recycling.intensity)-1)*sd(end_data$recycling.intensity)/sqrt(length(end_data$recycling.intensity))
-  left = avg - error
-  right = avg + error
-  
-  results$end_mean = avg
-  results$end_media = med
-  results$end_left = left
-  results$end_right = right
-  
-  avg = mean(mid_data$recycling.intensity, na.rm = T)
-  med = median(mid_data$recycling.intensity, na.rm = T)
-  
-  error = qt(0.975,df=length(mid_data$recycling.intensity)-1)*sd(mid_data$recycling.intensity)/sqrt(length(mid_data$recycling.intensity))
-  left = avg - error
-  right = avg + error
-  
-  results$mid_mean = avg
-  results$mid_media = med
-  results$mid_left = left
-  results$mid_right = right
+  for(run in unique(data$run)) {
+    rundata = data[which(data$run == run),]
+    
+    avg = mean(rundata$recycling.intensity, na.rm = T)
+    med = median(rundata$recycling.intensity, na.rm = T)
+    
+    n = length(rundata$recycling.intensity)
+    error = qt(0.975,df=n-1) * sd(rundata$recycling.intensity, na.rm = T)/sqrt(n)
+    lower = avg - error
+    upper = avg + error
+    
+    results[nrow(results) + 1,] = c(run, rundata[1, c(parameters)], avg, med, lower, upper)
+  }
   
   write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_RI-CI-results.csv"), num_threads=1)
   

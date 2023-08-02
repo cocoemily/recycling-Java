@@ -3,12 +3,7 @@ library(parallel)
 library(foreach)
 library(doParallel)
 
-param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
-
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-
-colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
-param_list = param_list[, c("exp", parameters)]
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
 #dirs = list.dirs("../output/test-data/")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
@@ -28,61 +23,49 @@ foreach (d=1:length(dirs)) %dopar% {
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1)
   print(dirs[d])
   
-  end_data = data[which(data$model_year == 200000), ]
-  #mid_data = data[which(data$model_year == 350000), ]
-  rm(data)
+  #analysis of variation across all grid squares within each run
+  glist = list()
   
-  #analysis of variation at each grid square over the 50 runs
-  grid = expand.grid(0:9, 0:9)
-  colnames(grid) = c("row", "col")
-  
-  dirsplit = str_split(dirs[d], "\\/")[[1]]
-  expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
-  exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
-  print(exp_values)
-  
-  variation_vals = data.frame(
-    nodule.count.cv = NA, 
-    flake.count.cv = NA,
-    #assemblage.vol.sd = NA,
-    cortex.ratio.cv = NA,
-    recycling.intensity.cv = NA,
-    num.discards.cv = NA,
-    num.scavenge.cv = NA,
-    num.encounters.cv = NA, 
-    #num.manufacture.cv = NA, 
-    num.retouch.cv = NA 
-    #num.occupation.cv = NA
-  )
-  var_outputs = colnames(variation_vals)
-  
-  grid = cbind(grid, rep(exp_values), rep(variation_vals), row = 0, col = 0)
-  
-  for(i in 1:nrow(grid)){
-    square_data = end_data[which(end_data$row == grid$row[i] & end_data$col == grid$col[i]),]
-    square_data = distinct(square_data)
+  for(run in unique(data$run)) {
+    rundata = data[which(data$run == run),]
     
-    grid[i, var_outputs] = c(
-      sd(square_data$nodule.count, na.rm = T)/mean(square_data$nodule.count, na.rm = T), 
-      sd(square_data$flake.count, na.rm = T)/mean(square_data$flake.count, na.rm = T), 
-      #sd(square_data$assemblage.vol, na.rm = T)/mean(square_data$assemblage.vol, na.rm = T), 
-      sd(square_data$cortex.ratio, na.rm = T)/mean(square_data$cortex.ratio, na.rm = T), 
-      sd(square_data$recycling.intensity, na.rm = T)/mean(square_data$recycling.intensity, na.rm = T), 
-      sd(square_data$num.discards, na.rm = T)/mean(square_data$num.discards, na.rm = T), 
-      sd(square_data$num.scavenge, na.rm = T)/mean(square_data$num.scavenge, na.rm = T), 
-      sd(square_data$num.encounters, na.rm = T)/mean(square_data$num.encounters, na.rm = T), 
-      #sd(square_data$num.manufacture, na.rm = T)/mean(square_data$num.manufacture, na.rm = T), 
-      sd(square_data$num.retouch, na.rm = T)/mean(square_data$num.retouch, na.rm = T)
-      #sd(square_data$num.occupation, na.rm = T)/mean(square_data$num.occupation, na.rm = T)
+    dirsplit = str_split(dirs[d], "\\/")[[1]]
+    expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
+    exp_values = data[1,c(parameters)]
+    
+    variation_vals = data.frame(
+      nodule.count.cv = NA, 
+      flake.count.cv = NA,
+      cortex.ratio.cv = NA,
+      recycling.intensity.cv = NA,
+      num.discards.cv = NA,
+      num.scavenge.cv = NA,
+      num.encounters.cv = NA, 
+      num.retouch.cv = NA
+    )
+    var_outputs = colnames(variation_vals)
+    
+    grid = cbind(exp_values, variation_vals)
+    grid$exp = expnum
+    grid$run = run
+    
+    grid[1, var_outputs] = c(
+      sd(rundata$nodule.count, na.rm = T)/mean(rundata$nodule.count, na.rm = T), 
+      sd(rundata$flake.count, na.rm = T)/mean(rundata$flake.count, na.rm = T), 
+      sd(rundata$cortex.ratio, na.rm = T)/mean(rundata$cortex.ratio, na.rm = T), 
+      sd(rundata$recycling.intensity, na.rm = T)/mean(rundata$recycling.intensity, na.rm = T), 
+      sd(rundata$num.discards, na.rm = T)/mean(rundata$num.discards, na.rm = T), 
+      sd(rundata$num.scavenge, na.rm = T)/mean(rundata$num.scavenge, na.rm = T), 
+      sd(rundata$num.encounters, na.rm = T)/mean(rundata$num.encounters, na.rm = T), 
+      sd(rundata$num.retouch, na.rm = T)/mean(rundata$num.retouch, na.rm = T)
     )
     
-    
-    grid[i, 27:28] = c(square_data$row[1], square_data$col[1])
-    
+    glist[[length(glist)+1]] = grid
   }
   
-
-    
+  COVresults = do.call("rbind", glist[1:length(glist)])
+  
+  
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-  write_csv(grid, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-CV.csv"), num_threads=1)
+  write_csv(COVresults, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_layer-COV.csv"), num_threads=1)
 }

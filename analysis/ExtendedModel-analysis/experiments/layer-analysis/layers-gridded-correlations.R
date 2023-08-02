@@ -5,14 +5,9 @@ library(parallel)
 library(foreach)
 library(doParallel)
 
-param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-
-colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
-param_list = param_list[, c("exp", parameters)]
-
-#dirs = list.dirs("../output/test-layer-data/")
+#dirs = list.dirs("../output/test-data/")
 dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
@@ -29,16 +24,9 @@ foreach (d=1:length(dirs)) %dopar% {
   data = read_csv(paste0(dirs[d], "/layers-data.csv"), num_threads=1, show_col_types = F)
   
   dirsplit = str_split(dirs[d], "\\/")[[1]]
-  #print(dirsplit)
   expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
-  exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
-  #print(expnum)
-  #print(exp_values)
-  
-  end_data = data[which(data$model_year == 200000), ]
-  mid_data = data[which(data$model_year == 350000), ]
-  rm(data)
- 
+  exp_values = data[1, parameters]
+
   grid = expand.grid(0:9, 0:9)
   colnames(grid) = c("row", "col")
   
@@ -48,63 +36,63 @@ foreach (d=1:length(dirs)) %dopar% {
     ri.cr.cor = NA, 
     ri.num.disc.cor = NA, 
     ri.num.scvg.cor = NA, 
-    ri.num.enct.cor = NA, 
-    ri.num.manu.cor = NA, 
-    ri.num.ret.cor = NA, 
-    ri.num.occp.cor = NA
-    
+    ri.num.enct.cor = NA,
+    ri.num.ret.cor = NA
   )
   cor_outputs = colnames(cor_vals)
   
-  end_grid = cbind(grid, rep(exp_values), rep(cor_vals), row = 0, col = 0)
+  end_grid = cbind(grid, rep(exp_values), rep(cor_vals))
   
   for(i in 1:nrow(end_grid)){
-    square_data = end_data[which(end_data$row == grid$row[i] & end_data$col == grid$col[i]),] 
+    square_data = data[which(data$row == grid$row[i] & data$col == grid$col[i]),] 
     square_data$obj.cnt = square_data$nodule.count + square_data$flake.count
     
-    end_grid[i, cor_outputs] = c(
-      cor(square_data$cortex.ratio, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$cortex.ratio, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$num.discards, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$num.scavenge, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$num.encounters, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$num.manufacture, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$num.retouch, use = "complete.obs", method = "spearman"), 
-      cor(square_data$recycling.intensity, square_data$num.occupation, use = "complete.obs", method = "spearman")
-    )
+    cr.obj.cnt = NA
+    ri.obj.cnt = NA
+    ri.cr = NA
+    ri.disc = NA
+    ri.scavenge = NA
+    ri.enct = NA
+    ri.ret = NA
     
-    end_grid[i, 26:27] = c(square_data$row[1], square_data$col[1])
-    
-  }
-    
-    mid_grid = cbind(grid, rep(exp_values), rep(cor_vals), row = 0, col = 0)
-    
-    for(i in 1:nrow(mid_grid)){
-      square_data = mid_data[which(mid_data$row == grid$row[i] & mid_data$col == grid$col[i]),] 
-      square_data$obj.cnt = square_data$nodule.count + square_data$flake.count
-      
-      mid_grid[i, cor_outputs] = c(
-        cor(square_data$cortex.ratio, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$obj.cnt, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$cortex.ratio, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$num.discards, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$num.scavenge, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$num.encounters, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$num.manufacture, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$num.retouch, use = "complete.obs", method = "spearman"), 
-        cor(square_data$recycling.intensity, square_data$num.occupation, use = "complete.obs", method = "spearman")
-      )
-      
-      mid_grid[i, 26:27] = c(square_data$row[1], square_data$col[1])
-    
+    if(sd(square_data$recycling.intensity, na.rm = T) != 0) {
+      if(sd(square_data$obj.cnt, na.rm = T) != 0) {
+        ri.obj.cnt = cor(square_data$recycling.intensity, square_data$obj.cnt, use = "complete.obs", method = "spearman")
+      }
+      if(sd(square_data$cortex.ratio, na.rm = T) != 0) {
+        ri.cr = cor(square_data$recycling.intensity, square_data$cortex.ratio, use = "complete.obs", method = "spearman")
+      }
+      if(sd(square_data$num.discards, na.rm = T) != 0) {
+        ri.disc = cor(square_data$recycling.intensity, square_data$num.discards, use = "complete.obs", method = "spearman")
+      }
+      if(sd(square_data$num.scavenge, na.rm = T) != 0) {
+        ri.scavenge = cor(square_data$recycling.intensity, square_data$num.scavenge, use = "complete.obs", method = "spearman")
+      }
+      if(sd(square_data$num.encounters, na.rm = T) != 0) {
+        ri.enct =  cor(square_data$recycling.intensity, square_data$num.encounters, use = "complete.obs", method = "spearman")
+      }
+      if(sd(square_data$num.retouch, na.rm = T) != 0) {
+        ri.ret =  cor(square_data$recycling.intensity, square_data$num.retouch, use = "complete.obs", method = "spearman")
+      }
     }
-    mid_grid$time = "mid"
-    end_grid$time = "end"
     
-    results = rbind(mid_grid, end_grid)
+    if(sd(square_data$obj.cnt, na.rm = T) != 0 && sd(square_data$cortex.ratio, na.rm = T) != 0) {
+      cr.obj.cnt = cor(square_data$cortex.ratio, square_data$obj.cnt, use = "complete.obs", method = "spearman")
+    }
     
-    #filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-    write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/exp", expnum, "_layer-gridded-cor.csv"), num_threads=1)
-    
+    end_grid[i, cor_outputs] = c(
+      cr.obj.cnt,
+      ri.obj.cnt,
+      ri.cr,
+      ri.disc,
+      ri.scavenge,
+      ri.enct,
+      ri.ret
+    )
+  }
+  
+  
+  #filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+  write_csv(end_grid, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/exp", expnum, "_layer-gridded-cor.csv"), num_threads=1)
+  
 }
