@@ -205,7 +205,7 @@ public class RunExtendedModel_Occupation {
 
 
 	public static void outputModelData(ExtendedModel em) { 
-		String path = System.getProperty("user.dir") + "/output/" + em.modelType + "/" + em.outputFile;
+		String path = System.getProperty("user.dir") + "/output/occupation/" + em.outputFile;
 		File file = new File(path);
 		file.mkdir();
 
@@ -221,7 +221,7 @@ public class RunExtendedModel_Occupation {
 
 	public static void createFile(String modelType, String filename, ArrayList<String> data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/occupation/" + filename + ".csv");
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}
@@ -236,7 +236,7 @@ public class RunExtendedModel_Occupation {
 
 	public static void createFile2(String modelType, String filename, StringBuilder data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/occupation/" + filename + ".csv");
 			fw.write(data.toString());
 			fw.close();
 		} catch (IOException e) {
