@@ -33,7 +33,7 @@ public class TestModel2 {
 				false, 		//sizePref
 				false, 		//flakePref
 				1, 			//minFS
-//				10, 		//minNS
+				//				10, 		//minNS
 				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
@@ -43,7 +43,7 @@ public class TestModel2 {
 
 		model.print();
 		System.out.println("model created.");
-		
+
 		int totalAgents = 200;
 
 		//create agents per overlap parameter
@@ -186,17 +186,11 @@ public class TestModel2 {
 				}
 			}
 
-//			if(i % (model.totalSteps/2) == 0) {
+//			if(whichAgent % (100) == 0) {
 //				model.getArtifactData();
-//			}
-//
-//			if(i % (model.totalSteps/300) == 0) {
 //				model.getLayerData();
 //			}
 
-//			if(i == model.totalSteps) {
-//				model.getLayerData();
-//			}
 
 			model.getModelData();
 			model.resetScavengeEventCounter();
@@ -205,10 +199,10 @@ public class TestModel2 {
 			model.resetRetouchEventCounter();
 			model.resetBlankCounter();
 		}
-		
+
 		model.getArtifactData();
 		model.getLayerData();
-		
+
 		System.out.println("model used " + (whichAgent + 1) + " agents");
 		outputModelData(model);
 	}

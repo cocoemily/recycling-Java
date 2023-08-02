@@ -89,7 +89,7 @@ public class RunExtendedModel2 {
 
 			} else { //if model overlap is anything else, create agents with all different technology types
 				int tech = 1;
-				for(int i=0; i < model.totalAgents; i++) {
+				for(int i=0; i < totalAgents; i++) {
 					model.createAgent(tech);
 					tech++;
 				}
