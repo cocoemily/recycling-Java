@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileWriter;
 
-public class RunExtendedModel2 {
+public class RunExtendedModel_Accumulation {
 
 	/**
 	 * Class for running the Extended Model on HPC
@@ -14,46 +14,49 @@ public class RunExtendedModel2 {
 	 */
 	public static void main(String[] args) {
 		//arguments
-		if(args.length != 20) {
+		if(args.length != 21) {
 			System.out.println("Missing arguments");
 
 
 		} else {
 			ExtendedModel model = new ExtendedModel(
-					args[0], 						//outputFile
-					args[1], 						//name
-					Integer.parseInt(args[2]), 		//size 
-					Integer.parseInt(args[3]), 		//startYear
-					Integer.parseInt(args[4]), 		//timestep
-					Integer.parseInt(args[5]), 		//maxUI
-					Integer.parseInt(args[6]), 		//maxAC
-					Integer.parseInt(args[7]), 		//maxFS
-					Integer.parseInt(args[8]), 		//maxNS
-					Double.parseDouble(args[9]),	//bProb
-					Double.parseDouble(args[10]),	//sProb
-					Double.parseDouble(args[11]), 	//overlap
-					Double.parseDouble(args[12]),  	//mu
-					Boolean.parseBoolean(args[13]), //sizePref
-					Boolean.parseBoolean(args[14]), //flakePref
-					Integer.parseInt(args[15]), 	//minFS
-					//Integer.parseInt(args[16]), 	//minNS
-					Boolean.parseBoolean(args[16]), //strict
-					Double.parseDouble(args[17]), 	//ED
-					Integer.parseInt(args[18]),	 	//GF
-					Integer.parseInt(args[19])	    //totalSteps
+					args[0],						//modelType
+					args[1], 						//outputFile
+					args[2], 						//name
+					Integer.parseInt(args[3]), 		//size 
+					Integer.parseInt(args[4]), 		//startYear
+					Integer.parseInt(args[5]), 		//timestep
+					Integer.parseInt(args[6]), 		//maxUI
+					Integer.parseInt(args[7]), 		//maxAC
+					Integer.parseInt(args[8]), 		//maxFS
+					Integer.parseInt(args[9]), 		//maxNS
+					Double.parseDouble(args[10]),	//bProb
+					Double.parseDouble(args[11]),	//sProb
+					Double.parseDouble(args[12]), 	//overlap
+					Double.parseDouble(args[13]),  	//mu
+					Boolean.parseBoolean(args[14]), //sizePref
+					Boolean.parseBoolean(args[15]), //flakePref
+					Integer.parseInt(args[16]), 	//minFS
+					Boolean.parseBoolean(args[17]), //strict
+					Double.parseDouble(args[18]), 	//ED
+					Integer.parseInt(args[19]), 	//GF
+					Integer.parseInt(args[20])		//totalSteps
 					);
 			model.print();
 			System.out.println("model created.");
 			
-			int totalAgents = 200;
+			//int totalAgents = (int) Math.ceil((0.315 * model.totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number from testing runs
+			//int totalAgents = (int) Math.min((50 + (Math.random() * 151)), 500); //make sure too many agents are not made
+
+			model.setNumberAgents((int) Math.min((50 + (Math.random() * 151)), 500));
 
 			//create agents per overlap parameter
 			if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
 				ArrayList<Integer> techs = new ArrayList<Integer>();
-				for(int i=0; i < (int) (totalAgents * model.groupPerc); i++) {
+				for(int i=0; i < (int) (model.totalAgents * model.groupPerc); i++) {
 					techs.add(1);
 				}
-				for(int j=0; j < totalAgents - ((int) (totalAgents * model.groupPerc)); j++) {
+				for(int j=0; j < model.totalAgents - ((int) (model.totalAgents * model.groupPerc)); j++) {
 					techs.add(2);
 				}
 
@@ -63,12 +66,12 @@ public class RunExtendedModel2 {
 				}
 
 			} else if(model.overlap == 0) { //no overlap -> agents added in order starting with all type 1 agents
-				model.createAgents(1, (int) (totalAgents * model.groupPerc));
-				model.createAgents(2, totalAgents - ((int) (totalAgents * model.groupPerc)));
+				model.createAgents(1, (int) (model.totalAgents * model.groupPerc));
+				model.createAgents(2, model.totalAgents - ((int) (model.totalAgents * model.groupPerc)));
 
 			} else if(model.overlap == 0.5) { //partial overlap -> one third type 1 agents, one third random mix of agents, one third type 2 agents
-				int oneThird = (int) (totalAgents / 3.0);
-				int aLeft = totalAgents - (oneThird + oneThird);
+				int oneThird = (int) (model.totalAgents / 3.0);
+				int aLeft = model.totalAgents - (oneThird + oneThird);
 
 				model.createAgents(1, oneThird);
 
@@ -89,12 +92,12 @@ public class RunExtendedModel2 {
 
 			} else { //if model overlap is anything else, create agents with all different technology types
 				int tech = 1;
-				for(int i=0; i < totalAgents; i++) {
+				for(int i=0; i < model.totalAgents; i++) {
 					model.createAgent(tech);
 					tech++;
 				}
 			}
-			//model.printAgents();
+			model.printAgents();
 			System.out.println("agents created.");
 
 
@@ -104,7 +107,7 @@ public class RunExtendedModel2 {
 			for(int i=0; i <= model.totalSteps; i++) {
 
 				model.currentYear = model.startYear + (i*model.timestep); //update current year of model
-				//System.out.println("current year: " + model.currentYear);
+				System.out.println("current year: " + model.currentYear);
 				System.out.println("current year: " + model.currentYear);
 				System.out.println("\t current agent: " + model.agents.get(whichAgent).getGroup());
 
@@ -169,8 +172,6 @@ public class RunExtendedModel2 {
 					//drop all exhausted objects
 					model.dropExhaustedArifacts(a, model.currentYear);
 					//drop up to maxArtifactCarry
-					int agentObjects = a.getAgentFlakes().size() + a.getAgentNodules().size();
-					System.out.println("agent is holding " + agentObjects + " objects");
 					model.dropArtifacts(a, model.currentYear);
 
 					model.moveAgent(model.agents.get(whichAgent), false);
@@ -185,18 +186,6 @@ public class RunExtendedModel2 {
 						break;
 					}
 				}
-
-//				if(i % (model.totalSteps/2) == 0) {
-//					model.getArtifactData();
-//				}
-	//
-//				if(i % (model.totalSteps/300) == 0) {
-//					model.getLayerData();
-//				}
-
-//				if(i == model.totalSteps) {
-//					model.getLayerData();
-//				}
 
 				model.getModelData();
 				model.resetScavengeEventCounter();
@@ -216,23 +205,23 @@ public class RunExtendedModel2 {
 
 
 	public static void outputModelData(ExtendedModel em) { 
-		String path = System.getProperty("user.dir") + "/output/" + em.outputFile;
+		String path = System.getProperty("user.dir") + "/output/" + em.modelType + "/" + em.outputFile;
 		File file = new File(path);
 		file.mkdir();
 
 		//output model data
-		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 
 		//output layer data
-		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 
 		//output artifact data
-		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
-	public static void createFile(String filename, ArrayList<String> data) {
+	public static void createFile(String modelType, String filename, ArrayList<String> data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}
@@ -245,9 +234,9 @@ public class RunExtendedModel2 {
 
 	}
 
-	public static void createFile2(String filename, StringBuilder data) {
+	public static void createFile2(String modelType, String filename, StringBuilder data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
 			fw.write(data.toString());
 			fw.close();
 		} catch (IOException e) {

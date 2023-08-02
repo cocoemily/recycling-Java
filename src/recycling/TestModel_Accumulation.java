@@ -10,15 +10,16 @@ import java.io.FileWriter;
  * @author emilycoco
  *
  */
-public class TestModel {
+public class TestModel_Accumulation {
 
 	public static void main(String[] args) {
 
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
+				"accumulation",
 				"model-testing",	//outputFile
-				"run_0", 	//name
+				"run_2", 	//name
 				10, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
@@ -38,13 +39,18 @@ public class TestModel {
 				0.5, 		//ED
 				0, 			//GF
 				3000		//totalSteps
+				
 				);
 
 
 		model.print();
 		System.out.println("model created.");
 
-		//create agents per overlap parameter
+		//int totalAgents = (int) Math.ceil((0.315 * model.totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number from testing runs
+		//int totalAgents = (int) Math.min((50 + (Math.random() * 151)), 500); //make sure too many agents are not made
+
+		model.setNumberAgents((int) Math.min((50 + (Math.random() * 151)), 500));
+
 		//create agents per overlap parameter
 		if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
 			ArrayList<Integer> techs = new ArrayList<Integer>();
@@ -179,19 +185,9 @@ public class TestModel {
 					whichAgent++;
 					model.agents.get(whichAgent).randomMove(model.landscape.getNumRows(), model.landscape.getNumCols());
 					System.out.println("\t agent " + model.agents.get(whichAgent).getGroup() + " has moved into the window");
+				} else {
+					break;
 				}
-			}
-
-			if(i % (model.totalSteps/2) == 0) {
-				model.getArtifactData();
-			}
-
-			if(i % (model.totalSteps/300) == 0) {
-				model.getLayerData();
-			}
-
-			if(i == model.totalSteps) {
-				model.getLayerData();
 			}
 
 			model.getModelData();
@@ -202,29 +198,32 @@ public class TestModel {
 			model.resetBlankCounter();
 		}
 		
+		model.getArtifactData();
+		model.getLayerData();
+		
 		System.out.println("model used " + (whichAgent + 1) + " agents");
-		//outputModelData(model);
+		outputModelData(model);
 	}
 
 
 	public static void outputModelData(ExtendedModel em) { 
-		String path = System.getProperty("user.dir") + "/output/" + em.outputFile;
+		String path = System.getProperty("user.dir") + "/output/" + em.modelType + "/" + em.outputFile;
 		File file = new File(path);
 		file.mkdir();
 
 		//output model data
-		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 
 		//output layer data
-		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 
 		//output artifact data
-		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
-	public static void createFile(String filename, ArrayList<String> data) {
+	public static void createFile(String modelType, String filename, ArrayList<String> data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}
@@ -237,9 +236,9 @@ public class TestModel {
 
 	}
 
-	public static void createFile2(String filename, StringBuilder data) {
+	public static void createFile2(String modelType, String filename, StringBuilder data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
 			fw.write(data.toString());
 			fw.close();
 		} catch (IOException e) {

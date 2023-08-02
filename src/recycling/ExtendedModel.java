@@ -4,6 +4,7 @@ import java.util.*;
 
 public class ExtendedModel {
 
+	public String modelType;
 	public String outputFile;
 	public String name;
 
@@ -65,7 +66,7 @@ public class ExtendedModel {
 	//			boolean sizePref, boolean flakePref, int minFS, int minNS, boolean strict, //selection parameters
 	//			double ED, int GF, //geology parameters
 	//			int totalSteps) {
-	public ExtendedModel(
+	public ExtendedModel( String modelType,
 			String of, String name, int size, int startYear, int timestep, //run parameters
 			int maxUI, int maxAC, int maxFS, int maxNS, 
 			double bProb, double sProb, //action probability parameters
@@ -74,6 +75,7 @@ public class ExtendedModel {
 			double ED, int GF, //geology parameters
 			int totalSteps) {
 
+		this.modelType = modelType;
 		this.outputFile = of;
 		this.name = name;
 
@@ -84,7 +86,6 @@ public class ExtendedModel {
 
 		this.nextId = 1;
 		this.agents = new ArrayList<Agent>();
-		this.totalAgents = (int) Math.ceil((0.315 * totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number from testing runs
 		this.groupPerc = 0.5;
 
 		this.maxArtifactCarry = maxAC;
@@ -119,6 +120,7 @@ public class ExtendedModel {
 		this.geoFreq = GF;
 
 		this.totalSteps = totalSteps;
+		//this.totalAgents = totalAgents;
 
 		this.numberScavengingEvents = 0;
 
@@ -132,6 +134,10 @@ public class ExtendedModel {
 		this.artifactdata = new StringBuilder();
 		this.artifactdata.append("run,row,col,model_year,layer_year,obj_type,initial_discard,size,volume,surface_area,cortex,stage,numgroups,first_tech,last_tech,recycled\n");
 
+	}
+	
+	public void setNumberAgents(int n) {
+		this.totalAgents = n;
 	}
 
 	/**
@@ -981,7 +987,6 @@ public class ExtendedModel {
 				"max_nodules_size," +
 				"blank_prob," +
 				"scavenge_prob," +
-				"num_agents," +
 				"overlap," +
 				"mu," +
 				"size_preference," +
@@ -991,7 +996,8 @@ public class ExtendedModel {
 				"strict_selection," +
 				"erosion_deposition_ratio," +
 				"geo_event_freq," +
-				"total_steps");
+				"total_steps," +
+				"num_agents");
 
 		data.add(this.name + "," +
 				this.size*this.size + "," + 
@@ -1003,7 +1009,6 @@ public class ExtendedModel {
 				this.maxNoduleSize + "," +
 				this.blankProb + "," +
 				this.scavengeProb + "," +
-				this.totalAgents + "," +
 				this.overlap + "," +
 				this.mu + "," +
 				this.sizePref + "," +
@@ -1013,7 +1018,8 @@ public class ExtendedModel {
 				this.strictSelect + "," +
 				this.EDratio + "," +
 				this.geoFreq + "," +
-				this.totalSteps + ",");
+				this.totalSteps + "," +
+				this.totalAgents + ",");
 
 
 		return data;
@@ -1044,7 +1050,7 @@ public class ExtendedModel {
 		System.out.println(this.outputFile + " " + this.name + " parameters:");
 		System.out.println("\t time steps: " + this.totalSteps);
 		System.out.println("\t squares: " + this.size*this.size);
-		System.out.println("\t agents: " + this.totalAgents);
+		//System.out.println("\t agents: " + this.totalAgents);
 		System.out.println("\t overlap: " + this.overlap);
 		System.out.println("\t Levy mu: " + this.mu);
 

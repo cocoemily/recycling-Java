@@ -10,14 +10,15 @@ import java.io.FileWriter;
  * @author emilycoco
  *
  */
-public class TestModel2 {
+public class TestModel_Occupation {
 
 	public static void main(String[] args) {
 
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"model-testing",	//outputFile
+				"occupation",
+				"model-testing", //outputFile
 				"run_0", 	//name
 				10, 			//size 
 				500000, 	//startYear
@@ -44,16 +45,16 @@ public class TestModel2 {
 		model.print();
 		System.out.println("model created.");
 
-		int totalAgents = 200;
+		//int totalAgents = 200;
+		model.setNumberAgents(200);
 
-		//create agents per overlap parameter
 		//create agents per overlap parameter
 		if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
 			ArrayList<Integer> techs = new ArrayList<Integer>();
-			for(int i=0; i < (int) (totalAgents * model.groupPerc); i++) {
+			for(int i=0; i < (int) (model.totalAgents * model.groupPerc); i++) {
 				techs.add(1);
 			}
-			for(int j=0; j < totalAgents - ((int) (totalAgents * model.groupPerc)); j++) {
+			for(int j=0; j < model.totalAgents - ((int) (model.totalAgents * model.groupPerc)); j++) {
 				techs.add(2);
 			}
 
@@ -63,12 +64,12 @@ public class TestModel2 {
 			}
 
 		} else if(model.overlap == 0) { //no overlap -> agents added in order starting with all type 1 agents
-			model.createAgents(1, (int) (totalAgents * model.groupPerc));
-			model.createAgents(2, totalAgents - ((int) (totalAgents * model.groupPerc)));
+			model.createAgents(1, (int) (model.totalAgents * model.groupPerc));
+			model.createAgents(2, model.totalAgents - ((int) (model.totalAgents * model.groupPerc)));
 
 		} else if(model.overlap == 0.5) { //partial overlap -> one third type 1 agents, one third random mix of agents, one third type 2 agents
-			int oneThird = (int) (totalAgents / 3.0);
-			int aLeft = totalAgents - (oneThird + oneThird);
+			int oneThird = (int) (model.totalAgents / 3.0);
+			int aLeft = model.totalAgents - (oneThird + oneThird);
 
 			model.createAgents(1, oneThird);
 
@@ -89,7 +90,7 @@ public class TestModel2 {
 
 		} else { //if model overlap is anything else, create agents with all different technology types
 			int tech = 1;
-			for(int i=0; i < totalAgents; i++) {
+			for(int i=0; i < model.totalAgents; i++) {
 				model.createAgent(tech);
 				tech++;
 			}
@@ -209,23 +210,23 @@ public class TestModel2 {
 
 
 	public static void outputModelData(ExtendedModel em) { 
-		String path = System.getProperty("user.dir") + "/output/" + em.outputFile;
+		String path = System.getProperty("user.dir") + "/output/" + em.modelType + "/" + em.outputFile;
 		File file = new File(path);
 		file.mkdir();
 
 		//output model data
-		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 
 		//output layer data
-		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 
 		//output artifact data
-		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
-	public static void createFile(String filename, ArrayList<String> data) {
+	public static void createFile(String modelType, String filename, ArrayList<String> data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}
@@ -238,9 +239,9 @@ public class TestModel2 {
 
 	}
 
-	public static void createFile2(String filename, StringBuilder data) {
+	public static void createFile2(String modelType, String filename, StringBuilder data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
 			fw.write(data.toString());
 			fw.close();
 		} catch (IOException e) {
