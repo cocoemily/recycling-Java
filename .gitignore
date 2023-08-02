@@ -13,5 +13,6 @@ analysis/ExtendedModel-analysis/experiments/unused-code/*
 analysis/ExtendedModel-analysis/experiments/results-analysis/dev/*
 analysis/ExtendedModel-analysis/experiments/results-analysis/*.xlsx
 results/*
+figures/*
 
 

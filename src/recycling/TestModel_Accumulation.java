@@ -17,7 +17,6 @@ public class TestModel_Accumulation {
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"accumulation",
 				"model-testing",	//outputFile
 				"run_2", 	//name
 				10, 			//size 
@@ -38,8 +37,8 @@ public class TestModel_Accumulation {
 				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
-				3000		//totalSteps
-				
+				3000,		//totalSteps, 
+				200
 				);
 
 
@@ -207,23 +206,23 @@ public class TestModel_Accumulation {
 
 
 	public static void outputModelData(ExtendedModel em) { 
-		String path = System.getProperty("user.dir") + "/output/" + em.modelType + "/" + em.outputFile;
+		String path = System.getProperty("user.dir") + "/output/" + em.outputFile;
 		File file = new File(path);
 		file.mkdir();
 
 		//output model data
-		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 
 		//output layer data
-		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 
 		//output artifact data
-		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
-	public static void createFile(String modelType, String filename, ArrayList<String> data) {
+	public static void createFile(String filename, ArrayList<String> data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}
@@ -236,9 +235,9 @@ public class TestModel_Accumulation {
 
 	}
 
-	public static void createFile2(String modelType, String filename, StringBuilder data) {
+	public static void createFile2(String filename, StringBuilder data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
 			fw.write(data.toString());
 			fw.close();
 		} catch (IOException e) {

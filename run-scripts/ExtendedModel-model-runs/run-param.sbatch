@@ -18,7 +18,7 @@ cd ..
 #cd ..
 
 ##run experiment 50 times
-while IFS=, read -r of name size startYear timestep maxUI maxAC maxFS maxNS bProb sProb overlap mu sizePref flakePref minFS minNS strict ED GF totalSteps;
+while IFS=, read -r of name size startYear timestep maxUI maxAC maxFS maxNS bProb sProb overlap mu sizePref flakePref minFS minNS strict ED GF totalSteps totalAgents;
 do
   of=$(echo $of | tr -d \")
   name=$(echo $name | tr -d \")
@@ -41,13 +41,14 @@ do
   ED=$(echo $ED | tr -d \")
   GF=$(echo $GF | tr -d \")
   totalSteps=$(echo $totalSteps | tr -d \")
-  echo "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
+  totalAgents=$(echo $totalAgents | tr -d \")
+  echo "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps $totalAgents
 
 ##run experiment 50 times
   for i in {1..50}
   do
     runnum=$(echo "run$i")
-    java -jar recycling-model_ACC.jar "exp$of" $runnum $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
+    java -jar recycling-model.jar "exp$of" $runnum $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps $totalAgents
   done
 
 ##collect data into one spreadsheet

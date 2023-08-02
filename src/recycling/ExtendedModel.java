@@ -4,7 +4,6 @@ import java.util.*;
 
 public class ExtendedModel {
 
-	public String modelType;
 	public String outputFile;
 	public String name;
 
@@ -66,16 +65,15 @@ public class ExtendedModel {
 	//			boolean sizePref, boolean flakePref, int minFS, int minNS, boolean strict, //selection parameters
 	//			double ED, int GF, //geology parameters
 	//			int totalSteps) {
-	public ExtendedModel( String modelType,
+	public ExtendedModel(
 			String of, String name, int size, int startYear, int timestep, //run parameters
 			int maxUI, int maxAC, int maxFS, int maxNS, 
 			double bProb, double sProb, //action probability parameters
 			double overlap, double mu, //agent creation and movement parameters
 			boolean sizePref, boolean flakePref, int minFS, boolean strict, //selection parameters
 			double ED, int GF, //geology parameters
-			int totalSteps) {
+			int totalSteps, int totalAgents) {
 
-		this.modelType = modelType;
 		this.outputFile = of;
 		this.name = name;
 
@@ -120,7 +118,7 @@ public class ExtendedModel {
 		this.geoFreq = GF;
 
 		this.totalSteps = totalSteps;
-		//this.totalAgents = totalAgents;
+		this.totalAgents = totalAgents;
 
 		this.numberScavengingEvents = 0;
 

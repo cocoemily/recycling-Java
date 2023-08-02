@@ -15,11 +15,11 @@ while IFS=, read -r line; do
   if [[ $line != \"of* ]]
   then
     echo $line
-    sbatch /scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/accumulation/run-param.sbatch $line
+    sbatch /scratch/ec3307/updated-recycling-Java/recycling-Java/run-scripts/ExtendedModel-model-runs/run-param.sbatch $line
   fi
 
   #while IFS=, read -r of name size startYear timestep maxUI maxAC maxFS maxNS bProb sProb overlap mu sizePref flakePref minFS minNS strict ED GF totalSteps
   #do
   #  echo "exp$of" "run$name" $size $startYear $timestep $maxUI $maxAC $maxFS $maxNS $bProb $sProb $overlap $mu $sPref $fPref $minFS $minNS $strict $ED $GF $totalSteps
   #done
-done < /scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/accumulation/parameters4.csv
+done < /scratch/ec3307/updated-recycling-Java/recycling-Java/run-scripts/ExtendedModel-model-runs/test.csv

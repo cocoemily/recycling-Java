@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileWriter;
 
-public class RunExtendedModel_Accumulation {
+public class RunExtendedModel {
 
 	/**
 	 * Class for running the Extended Model on HPC
@@ -14,13 +14,12 @@ public class RunExtendedModel_Accumulation {
 	 */
 	public static void main(String[] args) {
 		//arguments
-		if(args.length != 21) {
+		if(args.length != 22) {
 			System.out.println("Missing arguments");
 
 
 		} else {
 			ExtendedModel model = new ExtendedModel(
-					args[0],						//modelType
 					args[1], 						//outputFile
 					args[2], 						//name
 					Integer.parseInt(args[3]), 		//size 
@@ -40,15 +39,12 @@ public class RunExtendedModel_Accumulation {
 					Boolean.parseBoolean(args[17]), //strict
 					Double.parseDouble(args[18]), 	//ED
 					Integer.parseInt(args[19]), 	//GF
-					Integer.parseInt(args[20])		//totalSteps
+					Integer.parseInt(args[20]), 	//totalSteps
+					Integer.parseInt(args[21])		//totalAgents
 					);
 			model.print();
 			System.out.println("model created.");
 			
-			//int totalAgents = (int) Math.ceil((0.315 * model.totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number from testing runs
-			//int totalAgents = (int) Math.min((50 + (Math.random() * 151)), 500); //make sure too many agents are not made
-
-			model.setNumberAgents((int) Math.min((50 + (Math.random() * 151)), 500));
 
 			//create agents per overlap parameter
 			if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
@@ -205,23 +201,23 @@ public class RunExtendedModel_Accumulation {
 
 
 	public static void outputModelData(ExtendedModel em) { 
-		String path = System.getProperty("user.dir") + "/output/" + em.modelType + "/" + em.outputFile;
+		String path = System.getProperty("user.dir") + "/output/" + em.outputFile;
 		File file = new File(path);
 		file.mkdir();
 
 		//output model data
-		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "model-data"), em.modelOutput());
 
 		//output layer data
-		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "layers-data"), em.layersOutput());
 
 		//output artifact data
-		createFile2(em.modelType, (em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
+		createFile2((em.outputFile + "/" + em.name + "_" + "artifacts-data"), em.artifactsOutput());
 	}
 
-	public static void createFile(String modelType, String filename, ArrayList<String> data) {
+	public static void createFile(String filename, ArrayList<String> data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
 			for(int i=0; i < data.size(); i++) {
 				fw.write(data.get(i) + "\n");
 			}
@@ -234,9 +230,9 @@ public class RunExtendedModel_Accumulation {
 
 	}
 
-	public static void createFile2(String modelType, String filename, StringBuilder data) {
+	public static void createFile2(String filename, StringBuilder data) {
 		try {
-			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + modelType + "/" + filename + ".csv");
+			FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/output/" + filename + ".csv");
 			fw.write(data.toString());
 			fw.close();
 		} catch (IOException e) {
