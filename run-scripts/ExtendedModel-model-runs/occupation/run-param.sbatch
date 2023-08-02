@@ -13,6 +13,7 @@ module load jdk/11.0.9
 
 cd ..
 cd ..
+cd ..
 #cd src
 #javac -d ../classes/ recycling/*.java
 #cd ..
