@@ -14,33 +14,33 @@ public class RunExtendedModel {
 	 */
 	public static void main(String[] args) {
 		//arguments
-		if(args.length != 22) {
+		if(args.length != 21) {
 			System.out.println("Missing arguments");
 
 
 		} else {
 			ExtendedModel model = new ExtendedModel(
-					args[1], 						//outputFile
-					args[2], 						//name
-					Integer.parseInt(args[3]), 		//size 
-					Integer.parseInt(args[4]), 		//startYear
-					Integer.parseInt(args[5]), 		//timestep
-					Integer.parseInt(args[6]), 		//maxUI
-					Integer.parseInt(args[7]), 		//maxAC
-					Integer.parseInt(args[8]), 		//maxFS
-					Integer.parseInt(args[9]), 		//maxNS
-					Double.parseDouble(args[10]),	//bProb
-					Double.parseDouble(args[11]),	//sProb
-					Double.parseDouble(args[12]), 	//overlap
-					Double.parseDouble(args[13]),  	//mu
-					Boolean.parseBoolean(args[14]), //sizePref
-					Boolean.parseBoolean(args[15]), //flakePref
-					Integer.parseInt(args[16]), 	//minFS
-					Boolean.parseBoolean(args[17]), //strict
-					Double.parseDouble(args[18]), 	//ED
-					Integer.parseInt(args[19]), 	//GF
-					Integer.parseInt(args[20]), 	//totalSteps
-					Integer.parseInt(args[21])		//totalAgents
+					args[0], 						//outputFile
+					args[1], 						//name
+					Integer.parseInt(args[2]), 		//size 
+					Integer.parseInt(args[3]), 		//startYear
+					Integer.parseInt(args[4]), 		//timestep
+					Integer.parseInt(args[5]), 		//maxUI
+					Integer.parseInt(args[6]), 		//maxAC
+					Integer.parseInt(args[7]), 		//maxFS
+					Integer.parseInt(args[8]), 		//maxNS
+					Double.parseDouble(args[9]),	//bProb
+					Double.parseDouble(args[10]),	//sProb
+					Double.parseDouble(args[11]), 	//overlap
+					Double.parseDouble(args[12]),  	//mu
+					Boolean.parseBoolean(args[13]), //sizePref
+					Boolean.parseBoolean(args[14]), //flakePref
+					Integer.parseInt(args[15]), 	//minFS
+					Boolean.parseBoolean(args[16]), //strict
+					Double.parseDouble(args[17]), 	//ED
+					Integer.parseInt(args[18]), 	//GF
+					Integer.parseInt(args[19]), 	//totalSteps
+					Integer.parseInt(args[20])		//totalAgents
 					);
 			model.print();
 			System.out.println("model created.");
