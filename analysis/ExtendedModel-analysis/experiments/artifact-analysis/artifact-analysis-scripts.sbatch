@@ -13,5 +13,4 @@ module purge
 module load r/gcc/4.2.0
 
 #R --no-save -q -f artifact-exposure-analysis.R
-#R --no-save -q -f artifact-retouch-intensity-analysis.R
 R --no-save -q -f recycled-artifact-counts.R
