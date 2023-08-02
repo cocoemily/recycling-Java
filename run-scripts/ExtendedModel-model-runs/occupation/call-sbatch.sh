@@ -12,7 +12,7 @@ module load jdk/11.0.9
 
 while IFS=, read -r line; do
   #echo $line
-  if [[ $line != \"of* ]]
+  if [[ $line != \"modelType* ]]
   then
     echo $line
     sbatch /scratch/ec3307/updated-recycling-Java/recycling-Java/run-scripts/ExtendedModel-model-runs/occupation/run-param.sbatch $line
