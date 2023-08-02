@@ -22,6 +22,7 @@ cd ..
 while IFS=, read -r modelType of name size startYear timestep maxUI maxAC maxFS maxNS bProb sProb overlap mu sizePref flakePref minFS minNS strict ED GF totalSteps;
 do
   modelType = $(echo $modelType | tr -d \")
+  modelType = $(echo "$opt" | tr -d '"')
   of=$(echo $of | tr -d \")
   name=$(echo $name | tr -d \")
   size=$(echo $size | tr -d \")
