@@ -61,6 +61,7 @@ foreach (d=1:length(dirs)) %dopar% {
     gridded.end[,parameters[10]] = c(exp_values[1, c(parameters[10])])
     gridded.end[,parameters[11]] = c(exp_values[1, c(parameters[11])])
     gridded.end[,parameters[12]] = c(exp_values[1, c(parameters[12])])
+    gridded.end[,parameters[13]] = c(exp_values[1, c(parameters[13])])
     gridded.end$run = i
     
     run.list[[length(run.list) + 1]] <- gridded.end
