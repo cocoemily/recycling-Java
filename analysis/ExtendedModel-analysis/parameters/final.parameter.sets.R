@@ -104,9 +104,8 @@ fparameters = parameters %>% filter(!(flakePref == "false" & sizePref == "true")
 fparameters = fparameters %>%
   mutate(of = seq(1, nrow(fparameters), by = 1))
 
-save(fparameters, file = "analysis/ExtendedModel-analysis/parameters/modelrun-params.RData")
-
 setwd("..") #moves up a directory
+save(fparameters, file = "analysis/ExtendedModel-analysis/parameters/modelrun-params.RData")
 write.csv(fparameters, file = "run-scripts/ExtendedModel-model-runs/parameters.csv", row.names=F)
 
 
