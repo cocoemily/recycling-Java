@@ -1,7 +1,7 @@
 #testing artifact exposure time for recycled and non-recycled artifacs
 
 #param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
-param_list = read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
+param_list = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 colnames(param_list) = c("exp", "run", "size", "start_year", "timestep", "max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "size_preference", "flake_preference","min_suitable_flake_size",  "strict_selection", "erosion_ratio", "geo_freq", "total_steps", "num_agents")
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size",  "strict_selection")
