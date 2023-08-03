@@ -14,7 +14,7 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 param_list = param_list[, c("exp", parameters)]
 
 #dirs = list.dirs("../output/test-data")
-dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
+dirs = list.dirs("/scratch/ec3307/updated-recycling-Java/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
 
