@@ -1,4 +1,6 @@
 #testing artifact exposure time for recycled and non-recycled artifacs
+library(tidyverse)
+library(readr)
 
 #param_list = read_csv("~/eclipse-workspace/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
 param_list = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
