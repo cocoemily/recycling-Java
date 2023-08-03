@@ -30,7 +30,7 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 
 foreach (d=1:length(dirs)) %dopar% { 
   #if(file.exists(paste0(dirs[d], "/artifacts-data.csv"))) {
-  data = read_csv(paste0(dirs[d], "/artifacts-data.csv"), num_threads=1)
+  data = read_csv(paste0(dirs[d], "/artifacts-data.csv"), num_threads=1, col_types = cols())
   
   expnum = str_extract(dirs[d], "[0-9]+")
   filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
@@ -61,7 +61,7 @@ foreach (d=1:length(dirs)) %dopar% {
           
           
         }
-        print(paste0(r, " output is ", end.conf.val))
+        #print(paste0(r, " output is ", end.conf.val))
         exposure_results[nrow(exposure_results) + 1, ] = c(as.numeric(expnum), r, end.conf.val)
       }
     }
