@@ -61,6 +61,6 @@ foreach (d=1:length(dirs)) %dopar% {
     }
   }
   
-  write_csv(exposure_results, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-output/", filename, "_exposure-results.csv"), num_threads=1)
+  write_csv(exposure_results, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/artifact-output/", filename, "_exposure-results.csv"), num_threads=1)
 }
 

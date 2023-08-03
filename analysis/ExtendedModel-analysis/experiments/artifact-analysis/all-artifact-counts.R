@@ -69,6 +69,6 @@ foreach (d=1:length(dirs)) %dopar% {
   
   allresults = do.call("rbind", run.list[1:length(run.list)])
   
-  write_csv(allresults, file = paste0("/scratch/ec3307/recycling-Java/output/artifact-output/", filename, "_object-counts.csv"), num_threads=1)
+  write_csv(allresults, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/artifact-output/", filename, "_object-counts.csv"), num_threads=1)
   
 }
