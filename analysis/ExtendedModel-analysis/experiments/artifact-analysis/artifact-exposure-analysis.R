@@ -43,7 +43,7 @@ foreach (d=1:length(dirs)) %dopar% {
       rcycl.end = data[which(data$recycled == T), ]
       nrcycl.end = data[which(data$recycled == F), ]
       
-      exposure_results = data.frame(exp = 0, run = 0, recycled.signif.greater = NA)
+      exposure_results = data.frame(exp = NA, run = NA, recycled.signif.greater = NA)
       exposure_results = exposure_results[c(-1),]
       
       if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
@@ -62,13 +62,13 @@ foreach (d=1:length(dirs)) %dopar% {
             
           }
           #print(paste0(r, " output is ", end.conf.val))
-          exposure_results[nrow(exposure_results) + 1, ] = c(as.numeric(expnum), r, end.conf.val)
+          exposure_results[nrow(exposure_results) + 1, ] = c(filename, r, end.conf.val)
         }
       }
       
     }
   }
   #write_csv(exposure_results, file = paste0(filename, "_exposure-results.csv"), num_threads=1)
-  write.csv(exposure_results, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/artifact-output/", filename, "_exposure-results.csv"), num_threads=1)
+  write_csv(exposure_results, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/artifact-output/", filename, "_exposure-results.csv"), num_threads=1)
 }
 
