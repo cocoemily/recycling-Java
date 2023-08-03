@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name=local-G
+#SBATCH --job-name=mCOV
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
 #SBATCH --mem=100GB

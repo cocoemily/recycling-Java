@@ -6,8 +6,8 @@ library(scales)
 theme_set(theme_bw())
 
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-model_var = read_csv("~/eclipse-workspace/recycling-Java/results/model-coefficients-of-variation.csv")
-#model_var = read_csv("/scratch/ec3307/recycling-Java/results/all-model-variation.csv")
+#model_var = read_csv("~/eclipse-workspace/recycling-Java/results/model-coefficients-of-variation.csv")
+model_var = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-coefficients-of-variation.csv")
 
 rcycl.obj = model_var[,c(parameters, "COV.num.rcycl.obj.made", "model_year")]
 blank.events = model_var[,c(parameters, "COV.num.blank.events", "model_year")]
