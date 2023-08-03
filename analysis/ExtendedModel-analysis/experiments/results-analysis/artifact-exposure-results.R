@@ -8,11 +8,9 @@ library(Dict)
 
 theme_set(theme_bw())
 
-exposure.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-artifact-exposure.csv")
+exposure.data = read_csv("~/eclipse-workspace/recycling-Java/results/artifact-exposure-Wilcoxon-results.csv")
 
-##mid.conf.val = whether (TRUE) or not (FALSE) the recycled artifacts at the middle of model run 
-## have ~significantly~ greater initial discard dates than the non-recycled artifacts
-##end.conf.val = whether (TRUE) or not (FALSE) the recycled artifacts at the middle of model run 
+##recycled.signif.greater = whether (TRUE) or not (FALSE) the recycled artifacts 
 ## have ~significantly~ greater initial discard dates than the non-recycled artifacts
 
 two.tech = exposure.data %>% filter(overlap == 1)
@@ -20,11 +18,6 @@ many.tech = exposure.data %>% filter(overlap == 2)
 
 
 plot_exposure_counts = function (exposure.data) {
-  exposure.plot = exposure.data %>% 
-    gather(key = "time", value = "signif", mid.conf.val, end.conf.val)
-  exposure.plot$time = factor(exposure.plot$time, levels = c("mid.conf.val", "end.conf.val"))
-  exposure.plot$signif = factor(exposure.plot$signif, levels = c("TRUE", "FALSE"))
-  
   
   flake.labs = c("flake preference", "nodule preference")
   names(flake.labs) = c("TRUE", "FALSE")
@@ -33,13 +26,12 @@ plot_exposure_counts = function (exposure.data) {
   strict.labs = c("strict selection", "no strict selection")
   names(strict.labs) = c("TRUE", "FALSE")
   
-  ggplot(exposure.plot) +
-    geom_bar(aes(x = time, fill = signif), position = position_dodge2(preserve = "single")) +
+  ggplot(exposure.data) +
+    geom_bar(aes(x = recycled.signif.greater, fill = recycled.signif.greater), position = position_dodge2(preserve = "single")) +
     facet_grid(flake_preference + size_preference ~ strict_selection , 
                labeller = labeller(flake_preference = flake.labs, 
                                    size_preference = size.labs, 
                                    strict_selection = strict.labs)) +
-    scale_x_discrete(labels = c("middle", "end")) +
     scale_fill_brewer(palette = "Set2", na.value = "grey") +
     labs(fill = "significantly greater?") +
     theme(legend.key.size = unit(0.25, "cm"),
