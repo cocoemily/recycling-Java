@@ -11,37 +11,17 @@ theme_set(theme_bw())
 
 #### ANALYSIS OF CORRELATION BETWEEN OUTPUTS WITHIN GRID SQUARES ACROSS MODEL RUNS ####
 layer.cor = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-gridded-cor-output.csv")
-parameters = colnames(layer.cor[,4:15])
-cor.names = colnames(layer.cor[,16:24])
-cor.names = cor.names[-length(cor.names)] #removing occupations correlation because encounters = occupations
+parameters = colnames(layer.cor[,3:15])
+cor.names = colnames(layer.cor[,16:22])
 
-layer.cor1 = layer.cor[-c(25:27)]
-layer.cor = layer.cor1  %>% group_by(row, col) %>% 
-  mutate(square = cur_group_id())
-
-row.col = unique(layer.cor %>% dplyr::select(row, col, square))
-
-
-layer.cor.end = layer.cor[which(layer.cor$time == "end"),]
-layer.cor.mid = layer.cor[which(layer.cor$time == "mid"),]
-
-end.cor.long = layer.cor.end %>% 
-  pivot_longer(cols = c(cor.names[2], cor.names[3], cor.names[4], cor.names[5], cor.names[6], cor.names[8]), 
-               names_to = "correlations") %>%
-  mutate(correlations = factor(correlations, levels = c(
-    "ri.obj.cnt.cor", "ri.cr.cor", "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
-  )))
-mid.cor.long = layer.cor.mid %>% 
-  pivot_longer(cols = c(cor.names[2], cor.names[3], cor.names[4], cor.names[5], cor.names[6], cor.names[8]), 
-               names_to = "correlations") %>%
-  mutate(correlations = factor(correlations, levels = c(
+cor.long = layer.cor %>% 
+  pivot_longer(cols = c(cor.names), names_to = "correlation") %>%
+  filter(correlation != "cr.obj.cnt.cor") %>%
+  mutate(correlation = factor(correlation, levels = c(
     "ri.obj.cnt.cor", "ri.cr.cor", "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
   )))
 
-cor.long = rbind(mid.cor.long, end.cor.long) %>%
-  mutate(time = factor(time, levels = c("mid", "end")))
-
-avg.cor = ggplot(cor.long, aes(x = correlations, y = value, group = interaction(time, correlations), fill = interaction(time, correlations))) +
+avg.cor = ggplot(cor.long, aes(x = correlation, y = value, group = correlation, fill = correlation)) +
   geom_boxplot() +
   geom_hline(aes(yintercept = 0), color = "red") +
   labs(y = "correlation coefficient") +
@@ -52,21 +32,11 @@ avg.cor = ggplot(cor.long, aes(x = correlations, y = value, group = interaction(
 plot(avg.cor)
 
 ggsave(filename = "../figures/average-correlations.tiff", plot = avg.cor, 
-       dpi = 300, width = 7, height = 4)
+       dpi = 300, width = 5, height = 4)
 
-cor.probs = ggplot(cor.long %>% filter(correlations == "ri.cr.cor") %>% filter(strict_selection == T && flake_preference == T)
-                   , aes(x = correlations, y = value, group = interaction(time, correlations), fill = interaction(time, correlations))) +
-  geom_boxplot() +
-  geom_hline(aes(yintercept = 0), color = "red") +
-  labs(y = "correlation coefficient") +
-  scale_fill_brewer(palette = "Paired") +
-  theme(axis.title.x = element_blank(), 
-        axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.position = "none") +
-  facet_grid(size_preference ~ blank_prob, labeller = label_both)
-plot(cor.probs)
 
-data = layer.cor.end
+
+data = layer.cor
 correlation = cor.names[2]
 
 plot_recycling_correlations = function(data, correlation) {
@@ -78,6 +48,8 @@ plot_recycling_correlations = function(data, correlation) {
   names(strict.labs) = c("TRUE", "FALSE")
   tech.labs = c("two technology types", "many technology types")
   names(tech.labs) = c("1", "2")
+  occup.labs = c("100 agents", "200 agents")
+  names(occup.labs) = c(100, 200)
   
   cor_dict = dict(
     "ri.obj.cnt.cor" = "correlation between recycling intensity and object count",
@@ -92,13 +64,15 @@ plot_recycling_correlations = function(data, correlation) {
   
   data$mu = factor(data$mu, levels = c(1, 2, 3))
   
-  ggplot(data) +
+  data2 = data %>% filter(overlap == 1)
+  
+  ggplot(data2) +
     geom_boxplot(aes_string(x = "mu", y = correlation, group = "mu", color = "mu")) +
-    facet_grid(overlap ~ flake_preference + size_preference + strict_selection, 
+    facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
                labeller = labeller(flake_preference = flake.labs, 
                                    size_preference = size.labs, 
                                    strict_selection = strict.labs, 
-                                   overlap = tech.labs)) +
+                                   num_agents = occup.labs)) +
     labs(y = cor_dict[correlation]) +
     scale_color_colorblind() +
     theme(axis.title = element_text(size = 6), strip.text = element_text(size = 6), 

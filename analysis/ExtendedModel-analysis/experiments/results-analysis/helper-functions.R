@@ -37,3 +37,35 @@ pairwiseKS = function(data, group_var, variable) {
   return(results2)
   
 }
+
+
+####currently unused####
+plotREheatmap = function(data) {
+  data$groupID = as.numeric(data$groupID)
+  data = data %>% left_join(row.col, by = c("groupID" = "square"))
+  
+  data[, "sd"] <- data[, "sd"] * qnorm(1-((1-0.95)/2))
+  data[, "ymax"] <- data[, "median"] + data[, "sd"]
+  data[, "ymin"] <- data[, "median"] - data[, "sd"]
+  data[, "sig"] <- data[, "ymin"] > 0 | data[, "ymax"] < 0
+  hlineInt <- 0
+  data$sig.lab = ifelse(data$sig, "", "X")
+  
+  p2 = ggplot(data, aes(x = as.factor(col), y = as.factor(row))) +
+    geom_tile(aes(fill = median, alpha = sig), color = "black") +
+    geom_text(aes(label = sig.lab), color = "red") +
+    coord_fixed() +
+    scale_fill_gradient2(low = "#075AFF",
+                         mid = "#FFFFCC",
+                         high = "#FF0000", 
+                         limits = c(-0.15, 0.15)) +
+    theme_minimal() +
+    theme(panel.grid = element_blank(), legend.title = element_text(size = 6)) +
+    labs(x = NULL, y = NULL, fill = "random effect", alpha = "signf.") +
+    scale_y_discrete(limits = rev) +
+    scale_x_discrete(position = "top") +
+    guides(alpha = "none")
+  #plot(p2)
+  return(p2)
+  
+}
