@@ -11,22 +11,13 @@ alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_da
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
-grouping_params = c("mu", "overlap")
-
-exp = readr::read_csv("/scratch/ec3307/recycling-Java/run-scripts/ExtendedModel-model-runs/parameters.csv")
-colnames(exp) = c("exp", "run", "size", "start_year", "timestep", parameters, "erosion_ratio", "geo_freq", "total_steps")
-
-outputs = c("num.scav.events","total.recycled", "num.deposits",	"total.encounters",	"total.discards",	"total.manu.events", "total.retouches", "total.CR",	"total.RI")
-
-move_outputs = c("num.deposits", "total.encounters")
-scavenge_outputs = c("num.scav.events", "total.recycled", "total.discards", "total.manu.events", "total.retouches")
-
 two.tech = alldata[which(alldata$overlap == 1),]
 multi.tech = alldata[which(alldata$overlap == 2),]
+
 mu.1 = alldata[which(alldata$mu == 1),]
 mu.2 = alldata[which(alldata$mu == 2),]
 mu.3 = alldata[which(alldata$mu == 3),]
+
 flake.selection = alldata[which(alldata$flake_preference == TRUE),]
 nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
 
@@ -38,6 +29,8 @@ size.labs = c("size preference", "no size preference")
 names(size.labs) = c("TRUE", "FALSE")
 strict.labs = c("strict selection", "no strict selection")
 names(strict.labs) = c("TRUE", "FALSE")
+occup.labs = c("100 agents", "200 agents")
+names(occup.labs) = c(100, 200)
 
 ####OVERLAP####
 avg.two.tech = two.tech %>%
@@ -64,8 +57,7 @@ oplot = ggplot() +
   geom_ribbon(data = avg.two.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
   geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-  scale_x_reverse(breaks = c(500000, 350000, 200000), 
-                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   ylim(0, 0.2) +
   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
@@ -108,8 +100,9 @@ mplot = ggplot() +
   geom_ribbon(data = avg.mu.2, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
   geom_line(data = avg.mu.3, aes(x = model_year, y = mean.RI, color = as.factor(mu))) +
   geom_ribbon(data = avg.mu.3, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-  scale_x_reverse(breaks = c(500000, 350000, 200000), 
-                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
+  facet_wrap(~ num_agents, 
+             labeller = labeller(num_agents = occup.labs)) +
   scale_color_colorblind() +
   ylim(0, 0.2) +
   labs(color = "mu parameter", x = "model year", y = "average recycling intensity")
@@ -146,8 +139,7 @@ splot = ggplot() +
   geom_ribbon(data = avg.nod.select, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
   facet_grid(size_preference ~ strict_selection, 
              labeller = labeller(strict_selection = strict.labs, size_preference = size.labs)) +
-  scale_x_reverse(breaks = c(500000, 350000, 200000), 
-                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   ylim(0, 0.2) +
   labs(color = "flake preference", x = "model year", y = "average recycling intensity")
@@ -155,45 +147,11 @@ splot = ggplot() +
 # ggsave(filename = "recycling-intensity-trend-by-selection.png", splot, dpi = 300)
 
 
-ggsave(filename = "recycling-intensity-trends.tiff",
-  ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
-  dpi = 300, width = 11, height = 4.5
-)
+# ggsave(filename = "recycling-intensity-trends.tiff",
+#   ggarrange(oplot, mplot, splot, legend = "bottom", ncol = 3, nrow = 1, labels = "AUTO"), 
+#   dpi = 300, width = 11, height = 4.5
+# )
 
-
-
-# ####BLANK AND SCAVENGING####
-# ##need to make another dataframe that has blank_prob and scavenge_prob in it
-# exp.avg.two = two.tech %>%
-#   group_by(blank_prob, scavenge_prob, model_year) %>%
-#   summarize(mean.RI = mean(total.RI),
-#             sd.RI = sd(total.RI),
-#             n.RI = n()) %>%
-#   mutate(overlap = 1,
-#          se.RI = sd.RI / sqrt(n.RI),
-#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
-#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-# 
-# exp.avg.multi = multi.tech %>%
-#   group_by(blank_prob, scavenge_prob, model_year) %>%
-#   summarize(mean.RI = mean(total.RI),
-#             sd.RI = sd(total.RI),
-#             n.RI = n()) %>%
-#   mutate(overlap = 2,
-#          se.RI = sd.RI / sqrt(n.RI),
-#          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
-#          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
-#   
-# 
-# 
-# bsplot = ggplot() +
-#   geom_line(data = exp.avg.two, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
-#   geom_ribbon(data = exp.avg.two, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-#   geom_line(data = exp.avg.multi, aes(x = model_year, y = mean.RI, color = as.factor(overlap))) +
-#   geom_ribbon(data = exp.avg.multi, aes(x = model_year, ymin = lower.ci.RI, ymax = upper.ci.RI), alpha = 0.2) +
-#   facet_grid(blank_prob ~ scavenge_prob) +
-#   scale_x_reverse() +
-#   scale_color_colorblind() +
-#   labs(color = "overlap parameter", x = "model year", y = "average recycling intensity")
-# 
-# #ggsave(filename = "recycling-intensity-trend-by-recycling-probs.png", bsplot, dpi = 300)
+save(oplot, file = "ri-overlap.rdata")
+save(mplot, file = "ri-mu.rdata")
+save(splot, file = "ri-selection.rdata")
