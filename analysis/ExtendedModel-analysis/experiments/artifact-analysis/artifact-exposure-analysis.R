@@ -29,43 +29,46 @@ Sys.setenv(OMP_NUM_THREADS = "1")
 
 
 foreach (d=1:length(dirs)) %dopar% { 
-  data = read_csv(paste0(dirs[d], "/artifacts-data.csv"), num_threads=1)
-  
-  expnum = str_extract(dirs[d], "[0-9]+")
-  filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
-  print(filename)
-  
-  exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
-  
-  #statistical differences between initial discard of recycled and non-recycled objects
-  rcycl.end = data[which(data$recycled == T), ]
-  nrcycl.end = data[which(data$recycled == F), ]
-  
-  exposure_results = data.frame(exp_values[1,], recycled.signif.greater = NA)
-  exposure_results = exposure_results[c(-1),]
-  
-  if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
-    for(r in unique(data$run)) {
-      mid.conf.val = NA
-      end.conf.val = NA
+  if(file.exists(paste0(dirs[d], "/artifacts-data.csv"))) {
+    data = read_csv(paste0(dirs[d], "/artifacts-data.csv"), num_threads=1)
+    
+    expnum = str_extract(dirs[d], "[0-9]+")
+    filename = str_split(dirs[d], "/")[[1]][length(str_split(dirs[d], "/")[[1]])]
+    print(filename)
+    
+    exp_values = param_list[which(param_list$exp == as.numeric(expnum)), ]
+    
+    if(nrow(data) > 0) {
+      #statistical differences between initial discard of recycled and non-recycled objects
+      rcycl.end = data[which(data$recycled == T), ]
+      nrcycl.end = data[which(data$recycled == F), ]
       
-      print(r)
-      rcycl.end.run = rcycl.end[which(rcycl.end$run == r),]
-      nrcycl.end.run = nrcycl.end[which(nrcycl.end$run == r),]
+      exposure_results = data.frame(exp_values[1,], recycled.signif.greater = NA)
+      exposure_results = exposure_results[c(-1),]
       
-      if(nrow(rcycl.end.run) != 0 && nrow(nrcycl.end.run) != 0) {
-        endresults = wilcox.test(rcycl.end.run$initial_discard,
-                                 nrcycl.end.run$initial_discard,
-                                 alternative = "greater")
-        
-        end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
-        print(end.conf.val)
+      if(nrow(rcycl.end) != 0 && nrow(nrcycl.end) != 0) {
+        for(r in unique(data$run)) {
+          end.conf.val = NA
+          
+          print(r)
+          rcycl.end.run = rcycl.end[which(rcycl.end$run == r),]
+          nrcycl.end.run = nrcycl.end[which(nrcycl.end$run == r),]
+          
+          if(nrow(rcycl.end.run) != 0 && nrow(nrcycl.end.run) != 0) {
+            endresults = wilcox.test(rcycl.end.run$initial_discard,
+                                     nrcycl.end.run$initial_discard,
+                                     alternative = "greater")
+            
+            end.conf.val = ifelse(endresults$p.value < 0.05, TRUE, FALSE)
+            print(end.conf.val)
+          }
+          
+          exposure_results[nrow(exposure_results) + 1, ] = c(exp_values[1,], end.conf.val)
+        }
       }
       
-      exposure_results[nrow(exposure_results) + 1, ] = c(exp_values[1,], end.conf.val)
+      write_csv(exposure_results, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/artifact-output/", filename, "_exposure-results.csv"), num_threads=1)
     }
   }
-  
-  write_csv(exposure_results, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/artifact-output/", filename, "_exposure-results.csv"), num_threads=1)
 }
 
