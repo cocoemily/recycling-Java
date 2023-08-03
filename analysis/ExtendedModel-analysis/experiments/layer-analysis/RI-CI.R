@@ -49,6 +49,6 @@ foreach (d=1:length(dirs)) %dopar% {
     results[nrow(results) + 1,] = c(run, rundata[1, c(parameters)], avg, med, lower, upper)
   }
   
-  write_csv(results, file = paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_RI-CI-results.csv"), num_threads=1)
+  write_csv(results, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/layer-output/", filename, "_RI-CI-results.csv"), num_threads=1)
   
 }

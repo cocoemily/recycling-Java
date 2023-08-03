@@ -50,6 +50,6 @@ foreach (d=1:length(dirs)) %dopar% {
     allCV[nrow(allCV) + 1, ] = CV
   }
   
-  readr::write_csv(allvar, file = paste0("/scratch/ec3307/recycling-Java/output/model-output/", filename, "_COV.csv"))
+  readr::write_csv(allvar, file = paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/model-output/", filename, "_COV.csv"))
   
 }

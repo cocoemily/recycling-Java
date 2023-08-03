@@ -88,5 +88,5 @@ foreach (d=1:length(dirs)) %dopar% {
   localG.df = as.data.frame(localGresults)
   
   print("writing local Gi results")
-  readr::write_csv(localG.df, paste0("/scratch/ec3307/recycling-Java/output/layer-output/", filename, "_all-runs-layer-local-G.csv"), num_threads=1)
+  readr::write_csv(localG.df, paste0("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/layer-output/", filename, "_all-runs-layer-local-G.csv"), num_threads=1)
 }
