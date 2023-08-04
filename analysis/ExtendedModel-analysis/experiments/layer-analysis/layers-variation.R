@@ -6,7 +6,7 @@ library(doParallel)
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
 #dirs = list.dirs("../output/test-data/")
-dirs = list.dirs("/scratch/ec3307/recycling-Java/output")
+dirs = list.dirs("/scratch/ec3307/updated-recycling-Java/recycling-Java/output")
 dirs = dirs[grepl("exp", dirs)]
 
 if(Sys.getenv("SLURM_CPUS_PER_TASK") != "") {

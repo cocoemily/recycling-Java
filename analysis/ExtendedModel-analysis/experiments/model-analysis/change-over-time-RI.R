@@ -66,7 +66,7 @@ oplot = ggplot() +
 
 ####MU####
 avg.mu.1 = mu.1 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.RI = mean(total.RI),
             sd.RI = sd(total.RI),
             n.RI = n()) %>%
@@ -75,7 +75,7 @@ avg.mu.1 = mu.1 %>%
          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
 avg.mu.2 = mu.2 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.RI = mean(total.RI),
             sd.RI = sd(total.RI),
             n.RI = n()) %>%
@@ -84,7 +84,7 @@ avg.mu.2 = mu.2 %>%
          lower.ci.RI = mean.RI - qt(1 - (0.05 / 2), n.RI - 1) * se.RI,
          upper.ci.RI = mean.RI + qt(1 - (0.05 / 2), n.RI - 1) * se.RI)
 avg.mu.3 = mu.3 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.RI = mean(total.RI),
             sd.RI = sd(total.RI),
             n.RI = n()) %>%
