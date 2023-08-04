@@ -1,4 +1,4 @@
-##recycled object counts
+##object counts
 
 library(tidyverse)
 library(ggthemes)
@@ -10,11 +10,10 @@ library(MASS)
 theme_set(theme_bw())
 
 count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
+parameters = colnames(count.data[,9:21])
 
-ad = count.data %>% filter(model_year == 200000 | model_year == 350000) %>%
-  pivot_longer(cols = flake.count:nodule.count, names_to = "object", values_to = "count")
-ad$object = ifelse(str_detect(ad$object, "flake"), "flakes", "nodules")
-parameters = colnames(ad[,1:12])
+ad = count.data %>% group_by_at(c(parameters, "run")) %>%
+  summarize(total_count = sum(total_count))
 
 run.avg = ad %>%
   group_by_at(c("object", "model_year", parameters)) %>%

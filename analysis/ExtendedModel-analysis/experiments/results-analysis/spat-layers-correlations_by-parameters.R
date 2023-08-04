@@ -5,8 +5,6 @@ library(betareg)
 library(jtools)
 library(rstatix)
 
-source("ExtendedModel-analysis/experiments/results-analysis/helper-functions.R")
-
 theme_set(theme_bw())
 
 #### ANALYSIS OF CORRELATION BETWEEN OUTPUTS WITHIN GRID SQUARES ACROSS MODEL RUNS ####
@@ -35,9 +33,8 @@ ggsave(filename = "../figures/average-correlations.tiff", plot = avg.cor,
        dpi = 300, width = 5, height = 4)
 
 
-
-data = layer.cor
-correlation = cor.names[2]
+####supplementary figure by parameters ####
+sub.layer.cor = layer.cor %>% filter(overlap == 1)
 
 plot_recycling_correlations = function(data, correlation) {
   size.labs = c("size preference", "no size preference")
@@ -80,14 +77,14 @@ plot_recycling_correlations = function(data, correlation) {
   
 }
 
-endgrid = ggarrange(plot_recycling_correlations(layer.cor.end, cor.names[2]),
-                     plot_recycling_correlations(layer.cor.end, cor.names[3]),
-                     plot_recycling_correlations(layer.cor.end, cor.names[4]),
-                     plot_recycling_correlations(layer.cor.end, cor.names[5]),
-                     plot_recycling_correlations(layer.cor.end, cor.names[6]),
-                     plot_recycling_correlations(layer.cor.end, cor.names[8]), 
+endgrid = ggarrange(plot_recycling_correlations(sub.layer.cor, cor.names[2]),
+                     plot_recycling_correlations(sub.layer.cor, cor.names[3]),
+                     plot_recycling_correlations(sub.layer.cor, cor.names[4]),
+                     plot_recycling_correlations(sub.layer.cor, cor.names[5]),
+                     plot_recycling_correlations(sub.layer.cor, cor.names[6]),
+                     plot_recycling_correlations(sub.layer.cor, cor.names[7]), 
                      ncol = 2, nrow = 3, common.legend = T, legend = "bottom", labels = "AUTO")
 plot(endgrid)
 
-ggsave(filename = "../figures/supplementary-figures/end-grid-RI-cor.tiff", 
+ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-parameters.tiff", 
        endgrid, dpi = 300, width = 12, height = 10)

@@ -3,26 +3,13 @@ library(ggthemes)
 library(ggpubr)
 library(Dict)
 
-layer.cor = read_csv("~/eclipse-workspace/recycling-Java/results/all-other-gridded-cor.csv")
-parameters = colnames(layer.cor[,4:15])
+layer.cor = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-other-cor-output.csv")
+parameters = colnames(layer.cor[,3:15])
 cor.names = colnames(layer.cor[,16:25])
 
-layer.cor1 = layer.cor[-c(26:28)]
-layer.cor = layer.cor1  %>% group_by(row, col) %>% 
+layer.cor = layer.cor %>% group_by(row, col) %>% 
   mutate(square = cur_group_id())
 
-row.col = unique(layer.cor %>% dplyr::select(row, col, square))
-
-layer.cor.end = layer.cor[which(layer.cor$time == "end"),]
-layer.cor.mid = layer.cor[which(layer.cor$time == "mid"),]
-
-
-# long.end = layer.cor.end %>%
-#   pivot_longer(cor.names, names_to = "cor", values_to = "value")
-# 
-# ggplot(long.end) +
-#   geom_boxplot(aes(x = cor, y = value, group = cor, color = cor)) +
-#   facet_grid(row ~ col, labeller = label_both)
 
 plot_other_correlations = function(data, correlation) {
   size.labs = c("size preference", "no size preference")
@@ -33,6 +20,8 @@ plot_other_correlations = function(data, correlation) {
   names(strict.labs) = c("TRUE", "FALSE")
   tech.labs = c("two technology types", "many technology types")
   names(tech.labs) = c("1", "2")
+  occup.labs = c("100 agents", "200 agents")
+  names(occup.labs) = c(100, 200)
   
   cor_dict = dict(
     "obj.cnt.num.disc.cor" = "correlation between object count and discard events",
@@ -53,11 +42,11 @@ plot_other_correlations = function(data, correlation) {
   
   ggplot(data) +
     geom_boxplot(aes_string(x = "mu", y = correlation, group = "mu", color = "mu")) +
-    facet_grid(overlap ~ flake_preference + size_preference + strict_selection, 
+    facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
                labeller = labeller(flake_preference = flake.labs, 
                                    size_preference = size.labs, 
                                    strict_selection = strict.labs, 
-                                   overlap = tech.labs)) +
+                                   num_agents = occup.labs)) +
     labs(y = cor_dict[correlation]) +
     scale_color_colorblind() +
     theme(axis.title = element_text(size = 6), strip.text = element_text(size = 6), 
@@ -65,90 +54,21 @@ plot_other_correlations = function(data, correlation) {
   
 }
 
-#plot_other_correlations(layer.cor.end, cor.names[1])
-p1 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[1]),
-          plot_other_correlations(layer.cor.end, cor.names[1]), 
-          common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[1], ".tiff"), 
-#        p1 , dpi = 300, width = 8, height = 8)
-
-p2 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[2]),
-               plot_other_correlations(layer.cor.end, cor.names[2]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[2], ".tiff"), 
-#        p2 , dpi = 300, width = 8, height = 8)
-
-p3 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[3]),
-               plot_other_correlations(layer.cor.end, cor.names[3]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[3], ".tiff"), 
-#        p3 , dpi = 300, width = 8, height = 8)
-
-p4 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[4]),
-               plot_other_correlations(layer.cor.end, cor.names[4]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[4], ".tiff"), 
-#        p4 , dpi = 300, width = 8, height = 8)
-
-p5 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[5]),
-               plot_other_correlations(layer.cor.end, cor.names[5]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[5], ".tiff"), 
-#        p5 , dpi = 300, width = 8, height = 8)
-
-p6 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[6]),
-               plot_other_correlations(layer.cor.end, cor.names[6]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[6], ".tiff"), 
-#        p6 , dpi = 300, width = 8, height = 8)
-
-p7 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[7]),
-               plot_other_correlations(layer.cor.end, cor.names[7]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[7], ".tiff"), 
-#        p7 , dpi = 300, width = 8, height = 8)
-
-p8 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[8]),
-               plot_other_correlations(layer.cor.end, cor.names[8]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[8], ".tiff"), 
-#        p8 , dpi = 300, width = 8, height = 8)
-
-p9 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[9]),
-               plot_other_correlations(layer.cor.end, cor.names[9]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[9], ".tiff"), 
-#        p9 , dpi = 300, width = 8, height = 8)
-
-p10 = ggarrange(plot_other_correlations(layer.cor.mid, cor.names[10]),
-               plot_other_correlations(layer.cor.end, cor.names[10]), 
-               common.legend = T, labels = "AUTO", nrow = 2, legend = "right")
-
-# ggsave(filename = paste0("../figures/supplementary-figures/", cor.names[10], ".tiff"), 
-#        p10 , dpi = 300, width = 8, height = 8)
+sub.layer.cor = layer.cor %>% filter(overlap == 1)
 
 
-endgrid = ggarrange(plot_other_correlations(layer.cor.end, cor.names[1]), 
-          plot_other_correlations(layer.cor.end, cor.names[2]),
-          plot_other_correlations(layer.cor.end, cor.names[3]),
-          plot_other_correlations(layer.cor.end, cor.names[4]),
-          plot_other_correlations(layer.cor.end, cor.names[5]),
-          plot_other_correlations(layer.cor.end, cor.names[6]),
-          plot_other_correlations(layer.cor.end, cor.names[7]),
-          plot_other_correlations(layer.cor.end, cor.names[8]),
-          plot_other_correlations(layer.cor.end, cor.names[9]), 
-          plot_other_correlations(layer.cor.end, cor.names[10]), 
+endgrid = ggarrange(plot_other_correlations(sub.layer.cor, cor.names[1]), 
+          plot_other_correlations(sub.layer.cor, cor.names[2]),
+          plot_other_correlations(sub.layer.cor, cor.names[3]),
+          plot_other_correlations(sub.layer.cor, cor.names[4]),
+          plot_other_correlations(sub.layer.cor, cor.names[5]),
+          plot_other_correlations(sub.layer.cor, cor.names[6]),
+          plot_other_correlations(sub.layer.cor, cor.names[7]),
+          plot_other_correlations(sub.layer.cor, cor.names[8]),
+          plot_other_correlations(sub.layer.cor, cor.names[9]), 
+          plot_other_correlations(sub.layer.cor, cor.names[10]), 
           ncol = 2, nrow = 5, common.legend = T, legend = "bottom", labels = "AUTO")
 
-ggsave(filename = "../figures/supplementary-figures/end-grid-other-cor.tiff", 
+ggsave(filename = "../figures/supplementary-figures/other-correlations_by-parameters.tiff", 
        endgrid, dpi = 300, width = 12, height = 15)
 
