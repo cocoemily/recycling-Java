@@ -40,14 +40,15 @@ foreach (d=1:length(dirs)) %dopar% {
   runs = unique(data$run)
   run.list = list()
   for(i in runs) {
-    gridded.end = data %>% filter(run == i) %>%
-      group_by(row, col) %>%
+    gridded.end = data %>% dplyr::filter(run == i) %>%
+      dplyr::group_by(row, col) %>%
       mutate(skew = skewness(initial_discard)) %>%
       group_by(row, col, obj_type) %>%
       summarize(total_count = n(), 
                 count_recycled = sum(recycled), 
                 count_retouched = sum(stage > 0, na.rm = T), 
                 skew = first(skew))
+    gridded.end$run = i
     
     run.list[[length(run.list) + 1]] <- gridded.end
   }
