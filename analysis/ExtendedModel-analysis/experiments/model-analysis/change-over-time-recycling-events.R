@@ -66,7 +66,7 @@ oplot = ggplot() +
 
 ####MU####
 avg.mu.1 = mu.1 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.ro = mean(num.rcycl.obj.made),
             sd.ro = sd(num.rcycl.obj.made),
             n.ro = n()) %>%
@@ -75,7 +75,7 @@ avg.mu.1 = mu.1 %>%
          lower.ci.ro = mean.ro - qt(1 - (0.05 / 2), n.ro - 1) * se.ro,
          upper.ci.ro = mean.ro + qt(1 - (0.05 / 2), n.ro - 1) * se.ro)
 avg.mu.2 = mu.2 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.ro = mean(num.rcycl.obj.made),
             sd.ro = sd(num.rcycl.obj.made),
             n.ro = n()) %>%
@@ -84,7 +84,7 @@ avg.mu.2 = mu.2 %>%
          lower.ci.ro = mean.ro - qt(1 - (0.05 / 2), n.ro - 1) * se.ro,
          upper.ci.ro = mean.ro + qt(1 - (0.05 / 2), n.ro - 1) * se.ro)
 avg.mu.3 = mu.3 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.ro = mean(num.rcycl.obj.made),
             sd.ro = sd(num.rcycl.obj.made),
             n.ro = n()) %>%

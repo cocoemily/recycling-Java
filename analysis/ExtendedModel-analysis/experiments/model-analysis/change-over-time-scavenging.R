@@ -65,7 +65,7 @@ oplot = ggplot() +
 
 ####MU####
 avg.mu.1 = mu.1 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.scvg = mean(num.scav.events),
             sd.scvg = sd(num.scav.events),
             n.scvg = n()) %>%
@@ -74,7 +74,7 @@ avg.mu.1 = mu.1 %>%
          lower.ci.scvg = mean.scvg - qt(1 - (0.05 / 2), n.scvg - 1) * se.scvg,
          upper.ci.scvg = mean.scvg + qt(1 - (0.05 / 2), n.scvg - 1) * se.scvg)
 avg.mu.2 = mu.2 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.scvg = mean(num.scav.events),
             sd.scvg = sd(num.scav.events),
             n.scvg = n()) %>%
@@ -83,7 +83,7 @@ avg.mu.2 = mu.2 %>%
          lower.ci.scvg = mean.scvg - qt(1 - (0.05 / 2), n.scvg - 1) * se.scvg,
          upper.ci.scvg = mean.scvg + qt(1 - (0.05 / 2), n.scvg - 1) * se.scvg)
 avg.mu.3 = mu.3 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.scvg = mean(num.scav.events),
             sd.scvg = sd(num.scav.events),
             n.scvg = n()) %>%

@@ -65,7 +65,7 @@ oplot = ggplot() +
 
 ####MU####
 avg.mu.1 = mu.1 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.disc = mean(num.blank.events),
             sd.disc = sd(num.blank.events),
             n.disc = n()) %>%
@@ -74,7 +74,7 @@ avg.mu.1 = mu.1 %>%
          lower.ci.disc = mean.disc - qt(1 - (0.05 / 2), n.disc - 1) * se.disc,
          upper.ci.disc = mean.disc + qt(1 - (0.05 / 2), n.disc - 1) * se.disc)
 avg.mu.2 = mu.2 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.disc = mean(num.blank.events),
             sd.disc = sd(num.blank.events),
             n.disc = n()) %>%
@@ -83,7 +83,7 @@ avg.mu.2 = mu.2 %>%
          lower.ci.disc = mean.disc - qt(1 - (0.05 / 2), n.disc - 1) * se.disc,
          upper.ci.disc = mean.disc + qt(1 - (0.05 / 2), n.disc - 1) * se.disc)
 avg.mu.3 = mu.3 %>%
-  group_by(model_year) %>%
+  group_by(num_agents, model_year) %>%
   summarize(mean.disc = mean(num.blank.events),
             sd.disc = sd(num.blank.events),
             n.disc = n()) %>%
