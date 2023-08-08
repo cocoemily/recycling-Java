@@ -18,7 +18,8 @@ names(scvg.labs) = c("0.25", "0.5", "0.75")
 mu.labs = c("mu = 1", "mu = 2", "mu = 3")
 names(mu.labs) = c("1", "2", "3")
 
-data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
+#data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
+data = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/results/all-object-counts.csv")
 parameters = colnames(data[,c(10:22)])
 
 
