@@ -6,25 +6,43 @@ library(ggthemes)
 theme_set(theme_bw())
 
 load("../results/graph-objects/ri-mu.rdata")
-ri.mplot = mplot
+ri.mplot = mplot +
+  theme(legend.position = "bottom")
 load("../results/graph-objects/ri-overlap.rdata")
-ri.oplot = oplot
+ri.oplot = oplot +
+  theme(legend.position = "bottom")
 load("../results/graph-objects/ri-selection.rdata")
-ri.splot = splot
+ri.splot = splot +
+  theme(legend.position = "bottom")
 
-# load("../results/graph-objects/discard-mu.rdata")
-# discard.mplot = mplot +
-#   ylim(0, 12)
-# load("../results/graph-objects/discard-overlap.rdata")
-# discard.oplot = oplot
-# load("../results/graph-objects/discard-selection.rdata")
-# discard.splot = splot +
-#   ylim(0, 12)
+load("../results/graph-objects/recycling-events-mu.rdata")
+re.mplot = mplot +
+  ylim(0, 10) +
+  theme(legend.position = "bottom")
+load("../results/graph-objects/recycling-events-overlap.rdata")
+re.oplot = oplot +
+  ylim(0, 10) +
+  theme(legend.position = "bottom")
+load("../results/graph-objects/recycling-events-selection.rdata")
+re.splot = splot +
+  ylim(0, 10) +
+  theme(legend.position = "bottom")
 
+# plot(ri.mplot)
+# plot(ri.oplot)
+# plot(ri.splot)
+# 
+# plot(re.mplot)
+# plot(re.oplot)
+# plot(re.splot)
 
-plot(ri.oplot)
-plot(ri.splot)
+grid = ggarrange(
+  ri.oplot, re.oplot, 
+  ri.mplot, re.mplot, 
+  ri.splot, re.splot,
+  ncol = 2, nrow = 3, labels = "AUTO"
+)
 
-ggsave(filename = "../figures/behavior-trends-by-selection.tiff", 
-       plot = sel.plot, 
-       dpi = 300, width = 12, height = 5)
+ggsave(filename = "../figures/recycling-trends.tiff", 
+       plot = grid, 
+       dpi = 300, width = 10, height = 13)
