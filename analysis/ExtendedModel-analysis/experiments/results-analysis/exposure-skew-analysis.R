@@ -18,7 +18,7 @@ names(scvg.labs) = c("0.25", "0.5", "0.75")
 mu.labs = c("mu = 1", "mu = 2", "mu = 3")
 names(mu.labs) = c("1", "2", "3")
 
-#data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
+#data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv", n_max = 1000)
 data = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/results/all-object-counts.csv")
 parameters = colnames(data[,c(10:22)])
 
@@ -33,8 +33,8 @@ sub.skew = skew %>%
   filter(num_agents == 200)
   
 
-da.lr2 = ggplot(sub.skew, aes(x = skew, y = log(count_recycled))) +
-  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
+da.lr2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
+  geom_point(color = "grey80", size = 0.1, alpha = 0.25) +
   stat_poly_line() +
   stat_poly_eq(use_label(c("R2")), color = "grey40") +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
@@ -42,15 +42,16 @@ da.lr2 = ggplot(sub.skew, aes(x = skew, y = log(count_recycled))) +
     mu = mu.labs
   )) +
   labs(x = "skewness of distribution of years of initial discard", 
-       y = "log(recycled artifact count)") +
+       y = "recycling intensity") +
   theme(legend.position = "none")
+#plot(da.lr2)
 
 ggsave(filename = "SKEW_age-of-discard.tiff",
        plot = da.lr2,
        dpi = 300, width = 7, height = 6)
 
 
-p2 = ggplot(sub.skew, aes(x = skew, y = log(count_recycled))) +
+p2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
   geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
   stat_poly_line() +
   stat_poly_eq(use_label(c("R2")), color = "grey40") +
@@ -62,7 +63,7 @@ p2 = ggplot(sub.skew, aes(x = skew, y = log(count_recycled))) +
   #              mu = mu.labs
   #            )) +
   labs(x = "skewness of distribution of years of initial discard", 
-       y = "log(recycled artifact count)") +
+       y = "recycling intensity") +
   theme(legend.position = "none")
 #plot(p2)
 
