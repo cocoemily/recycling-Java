@@ -10,9 +10,9 @@ theme_set(theme_bw())
 #the direction (positive or negative) indicates high or low clusters. 
 #Gi values are z scores
 
-layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/all-runs-local-G.csv")
-#layers.Gi = read_csv("/scratch/ec3307/recycling-Java/results/all-runs-local-G.csv")
-parameters = colnames(layers.Gi[c(2:13)])
+#layers.Gi = read_csv("~/eclipse-workspace/recycling-Java/results/sub-local-G.csv")
+layers.Gi = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/results/all-local-G-results.csv")
+parameters = colnames(layers.Gi[c(2:14)])
 
 exp = unique(layers.Gi$exp)
 
@@ -39,20 +39,19 @@ output = output[0,]
 
 for(e in 1:length(exp)) {
   Gi = layers.Gi[which(layers.Gi$exp == exp[e]),]
-  Gi.end = Gi[which(Gi$model_year == 200000),]
   
   for(run in unique(layers.Gi$run)) {
-    Gi.run = Gi.end[which(Gi.end$run == run),]
+    Gi.run = Gi[which(Gi$run == run),]
     
-    RI.rast = rasterFromXYZ(Gi.run[,c(27,28,29)])
-    CR.rast = rasterFromXYZ(Gi.run[,c(27,28,30)])
-    flkcnt.rast = rasterFromXYZ(Gi.run[,c(27,28,31)])
-    nodcnt.rast = rasterFromXYZ(Gi.run[,c(27,28,32)])
-    numdisc.rast = rasterFromXYZ(Gi.run[,c(27,28,33)])
-    numscvg.rast = rasterFromXYZ(Gi.run[,c(27,28,34)])
-    numenct.rast = rasterFromXYZ(Gi.run[,c(27,28,35)])
-    numret.rast = rasterFromXYZ(Gi.run[,c(27,28,36)])
-    retprop.rast = rasterFromXYZ(Gi.run[,c(27,28,37)])
+    RI.rast = rasterFromXYZ(Gi.run[,c(28,29,30)])
+    CR.rast = rasterFromXYZ(Gi.run[,c(28,29,31)])
+    flkcnt.rast = rasterFromXYZ(Gi.run[,c(28,29,32)])
+    nodcnt.rast = rasterFromXYZ(Gi.run[,c(28,29,33)])
+    numdisc.rast = rasterFromXYZ(Gi.run[,c(28,29,34)])
+    numscvg.rast = rasterFromXYZ(Gi.run[,c(28,29,35)])
+    numenct.rast = rasterFromXYZ(Gi.run[,c(28,29,36)])
+    numret.rast = rasterFromXYZ(Gi.run[,c(28,29,37)])
+    retprop.rast = rasterFromXYZ(Gi.run[,c(28,29,38)])
     
     RI.rast[RI.rast < 2] = NA
     CR.rast[CR.rast < 2] = NA

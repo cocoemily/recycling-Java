@@ -32,7 +32,7 @@ foreach (d=1:length(dirs)) %dopar% {
   print(filename)
   
   #adata = read_csv(paste0("/scratch/ec3307/recycling-Java/output/artifact-data/", filename, "_artifacts-data.csv"), num_threads=1)
-  #adata = read_csv(paste0(dirs[d], "/artifacts-data.csv"))
+  adata = read_csv(paste0(dirs[d], "/artifacts-data.csv"))
   
   allgrids = ldata[,c("run", parameters, "model_year", "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
   
