@@ -11,7 +11,7 @@ alldata = readr::read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-data = alldata[which(overlap == 1 & num_agents == 100),]
+data = alldata[which(alldata$overlap == 1 & alldata$num_agents == 100),]
 
 size.selection = data[which(data$size_preference == TRUE & data$flake_preference == TRUE),]
 nosize.selection = data[which(data$size_preference == FALSE & data$flake_preference == TRUE),]

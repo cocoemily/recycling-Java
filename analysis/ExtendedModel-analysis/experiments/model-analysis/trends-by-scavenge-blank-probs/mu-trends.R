@@ -9,7 +9,7 @@ alldata = readr::read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-data = alldata[which(overlap == 1 & num_agents == 100),]
+data = alldata[which(alldata$overlap == 1 & alldata$num_agents == 100),]
 
 mu.1 = data[which(data$mu == 1),]
 mu.2 = data[which(data$mu == 2),]
