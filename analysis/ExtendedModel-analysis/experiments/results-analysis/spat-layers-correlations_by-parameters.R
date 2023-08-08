@@ -1,4 +1,6 @@
 library(tidyverse)
+library(ggpubr)
+library(ggthemes)
 library(rcompanion)
 library(fitdistrplus)
 library(betareg)
@@ -49,42 +51,87 @@ plot_recycling_correlations = function(data, correlation) {
   names(occup.labs) = c(100, 200)
   
   cor_dict = dict(
-    "ri.obj.cnt.cor" = "correlation between recycling intensity and object count",
-    "ri.cr.cor" = "correlation between recycling intensity and cortex ratio",
-    "ri.num.disc.cor" = "correlation between recycling intensity and discards",
-    "ri.num.scvg.cor" = "correlation between recycling intensity and scavenging events",
-    "ri.num.enct.cor" = "correlation between recycling intensity and encounters",
-    "ri.num.ret.cor" = "correlation between recycling intensity and retouches",
+    "ri.obj.cnt.cor" = "correlation between RI and object count",
+    "ri.cr.cor" = "correlation between RI and cortex ratio",
+    "ri.num.disc.cor" = "correlation between RI and discards",
+    "ri.num.scvg.cor" = "correlation between RI and scavenging events",
+    "ri.num.enct.cor" = "correlation between RI and encounters",
+    "ri.num.ret.cor" = "correlation between RI and retouches",
     .class = "character", 
     .overwrite = FALSE
   )
   
   data$mu = factor(data$mu, levels = c(1, 2, 3))
   
-  data2 = data %>% filter(overlap == 1)
-  
-  ggplot(data2) +
-    geom_boxplot(aes_string(x = "mu", y = correlation, group = "mu", color = "mu")) +
-    facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
-               labeller = labeller(flake_preference = flake.labs, 
+  ggplot(data) +
+    geom_boxplot(aes_string(x = "strict_selection", y = correlation, group = "strict_selection", color = "strict_selection")) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    facet_grid(overlap ~ size_preference + flake_preference, 
+               labeller = labeller(flake_preference = flake.labs,
                                    size_preference = size.labs, 
                                    strict_selection = strict.labs, 
-                                   num_agents = occup.labs)) +
-    labs(y = cor_dict[correlation]) +
+                                   overlap = tech.labs)) +
+    labs(y = cor_dict[correlation], x = "strict selection") +
     scale_color_colorblind() +
-    theme(axis.title = element_text(size = 6), strip.text = element_text(size = 6), 
-          legend.title = element_text(size = 8))
+    theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
+          legend.title = element_text(size = 10))
   
 }
 
-endgrid = ggarrange(plot_recycling_correlations(sub.layer.cor, cor.names[2]),
-                     plot_recycling_correlations(sub.layer.cor, cor.names[3]),
-                     plot_recycling_correlations(sub.layer.cor, cor.names[4]),
-                     plot_recycling_correlations(sub.layer.cor, cor.names[5]),
-                     plot_recycling_correlations(sub.layer.cor, cor.names[6]),
-                     plot_recycling_correlations(sub.layer.cor, cor.names[7]), 
-                     ncol = 2, nrow = 3, common.legend = T, legend = "bottom", labels = "AUTO")
+endgrid = ggarrange(plot_recycling_correlations(layer.cor, cor.names[2]),
+                     plot_recycling_correlations(layer.cor, cor.names[3]), 
+                     ncol = 2, nrow = 1, common.legend = T, legend = "bottom", labels = "AUTO")
 plot(endgrid)
 
-ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-parameters.tiff", 
-       endgrid, dpi = 300, width = 12, height = 10)
+ggsave(filename = "../figures/RI-correlations_by-selection.tiff", 
+       endgrid, dpi = 300,  width = 10, height = 5)
+
+
+plot_recycling_correlations_MU = function(data, correlation) {
+  size.labs = c("size preference", "no size preference")
+  names(size.labs) = c("TRUE", "FALSE")
+  flake.labs = c("flake preference", "nodule preference")
+  names(flake.labs) = c("TRUE", "FALSE")
+  strict.labs = c("strict selection", "non-strict selection")
+  names(strict.labs) = c("TRUE", "FALSE")
+  tech.labs = c("two technology types", "many technology types")
+  names(tech.labs) = c("1", "2")
+  occup.labs = c("100 agents", "200 agents")
+  names(occup.labs) = c(100, 200)
+  
+  cor_dict = dict(
+    "ri.obj.cnt.cor" = "correlation between RI and object count",
+    "ri.cr.cor" = "correlation between RI and cortex ratio",
+    "ri.num.disc.cor" = "correlation between RI and discards",
+    "ri.num.scvg.cor" = "correlation between RI and scavenging events",
+    "ri.num.enct.cor" = "correlation between RI and encounters",
+    "ri.num.ret.cor" = "correlation between RI and retouches",
+    .class = "character", 
+    .overwrite = FALSE
+  )
+  
+  data$mu = factor(data$mu, levels = c(1, 2, 3))
+  
+  ggplot(data) +
+    geom_boxplot(aes_string(x = "mu", y = correlation, group = "mu", color = "mu")) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    facet_grid(overlap ~ num_agents, 
+               labeller = labeller(overlap = tech.labs, 
+                                   num_agents = occup.labs)) +
+    labs(y = cor_dict[correlation]) +
+    scale_color_colorblind() +
+    theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
+          legend.title = element_text(size = 10))
+  
+}
+
+endgrid = ggarrange(plot_recycling_correlations_MU(layer.cor, cor.names[2]),
+                    plot_recycling_correlations_MU(layer.cor, cor.names[3]),
+                    plot_recycling_correlations_MU(layer.cor, cor.names[4]),
+                    plot_recycling_correlations_MU(layer.cor, cor.names[5]),
+                    plot_recycling_correlations_MU(layer.cor, cor.names[6]),
+                    plot_recycling_correlations_MU(layer.cor, cor.names[7]), 
+                    ncol = 2, nrow = 3, common.legend = T, legend = "bottom", labels = "AUTO")
+plot(endgrid)
+ggsave(filename = "../figures/RI-correlations_by-movement.tiff", 
+       endgrid, dpi = 300, width = 10, height = 12)

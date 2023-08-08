@@ -68,3 +68,7 @@ p2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
 #plot(p2)
 
 save(p2, file = "SUPP-skew.rdata")
+
+#### to run locally ####
+load("~/eclipse-workspace/recycling-Java/results/graph-objects/SUPP-skew.rdata")
+plot(p2)

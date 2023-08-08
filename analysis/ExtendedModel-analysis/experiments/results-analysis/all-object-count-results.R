@@ -74,6 +74,21 @@ ggsave(filename = "../figures/supplementary-figures/all-object-counts.tiff",
        dpi = 300, width = 10, height = 8)
 
 
+
+pp1 = ggplot(count.data %>% filter(overlap == 1)) +
+  geom_boxplot(aes(x = as.factor(num_agents), y = total_count)) +
+  facet_wrap(~mu, 
+             labeller = label_both) +
+  scale_x_discrete(labels = occup.labs) +
+  #scale_fill_brewer(palette = "Paired") +
+  labs(x = "time", y = "number of objects") +
+  theme(legend.title = element_blank(),
+        strip.text = element_text(size = 8),
+        axis.text = element_text(size = 6), 
+        legend.position = "bottom")
+plot(pp1)
+
+
 ####recycled objects ####
 my_colors <- RColorBrewer::brewer.pal(4, "Paired")[3:4]
 
