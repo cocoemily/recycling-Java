@@ -7,7 +7,7 @@ library(scales)
 
 theme_set(theme_bw())
 
-alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_data.csv")
+alldata = readr::read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/joined_model_data.csv")
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 

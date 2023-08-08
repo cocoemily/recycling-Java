@@ -5,6 +5,9 @@ library(plyr)
 library(fitdistrplus)
 library(MASS)
 library(rstatix)
+library(betareg)
+library(lmtest)
+library(emmeans)
 
 theme_set(theme_bw())
 
@@ -28,7 +31,6 @@ ri.ci = read_csv("~/eclipse-workspace/recycling-Java/results/recycling-intensity
 summary(ri.ci$mean)
 hist(ri.ci$mean)
 ri.ci$range = ri.ci$upper - ri.ci$lower
-summary(ri.ci$sd)
 
 wilcox_test(ri.ci, mean ~ overlap, p.adjust.method = "bonferroni")
 
@@ -139,5 +141,3 @@ ggsave(
 
 fit1 = glm.nb(mean ~ ., data = ri.ci[,c(2:4, 6:15)])
 summary(fit1)
-
-
