@@ -11,8 +11,10 @@ alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_da
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-flake.selection = alldata[which(alldata$flake_preference == TRUE),]
-nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
+data = alldata[which(overlap == 1 & num_agents == 100),]
+
+flake.selection = data[which(data$flake_preference == TRUE),]
+nodule.selection = data[which(data$flake_preference == FALSE),]
 
 rm(alldata)
 
@@ -52,8 +54,7 @@ splot1 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse(breaks = c(500000, 350000, 200000), 
-                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   labs(color = "flake preference", x = "model year", y = "average recycling intensity")
 
@@ -89,8 +90,7 @@ splot2 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse(breaks = c(500000, 350000, 200000), 
-                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   labs(color = "flake preference", x = "model year", y = "average number of recycled objects created")
 

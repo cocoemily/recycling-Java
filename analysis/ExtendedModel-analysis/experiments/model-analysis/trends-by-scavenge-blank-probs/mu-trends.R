@@ -9,9 +9,11 @@ alldata = readr::read_csv("/scratch/ec3307/recycling-Java/output/joined_model_da
 alldata = alldata[alldata$size != "size",]
 alldata = alldata[!is.na(alldata$max_artifact_carry),]
 
-mu.1 = alldata[which(alldata$mu == 1),]
-mu.2 = alldata[which(alldata$mu == 2),]
-mu.3 = alldata[which(alldata$mu == 3),]
+data = alldata[which(overlap == 1 & num_agents == 100),]
+
+mu.1 = data[which(data$mu == 1),]
+mu.2 = data[which(data$mu == 2),]
+mu.3 = data[which(data$mu == 3),]
 
 rm(alldata)
 
@@ -60,8 +62,7 @@ mplot1 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse(breaks = c(500000, 350000, 200000), 
-                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   labs(color = "mu parameter", x = "model year", y = "average recycling intensity")
 
@@ -106,8 +107,7 @@ mplot2 = ggplot() +
   facet_grid(blank_prob ~ scavenge_prob, labeller = labeller(
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
-  scale_x_reverse(breaks = c(500000, 350000, 200000), 
-                  labels = label_number(scale_cut = cut_short_scale())) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
   labs(color = "mu parameter", x = "model year", y = "average number of recycled objects created")
 
