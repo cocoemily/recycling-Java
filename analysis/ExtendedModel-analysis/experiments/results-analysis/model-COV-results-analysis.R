@@ -45,7 +45,7 @@ rplot = ggarrange(r1, r2, r3, ncol = 3, nrow = 1, legend = "bottom", labels = "A
 plot(rplot)
 ggsave(filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-variation-output/rcycl-obj-var.tiff",
   rplot, 
-  dpi = 300, width = 12, height = 5)
+  dpi = 300, width = 14, height = 4)
 
 #### Variation of blank creation events ####
 b1 = ggplot(blank.events) +
@@ -73,7 +73,7 @@ b3 = ggplot(blank.events) +
 
 ggsave(filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-variation-output/blank-events-var.tiff",
        ggarrange(b1, b2, b3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
-       dpi = 300, width = 12, height = 5)
+       dpi = 300, width = 14, height = 4)
 
 #### Variation of retouch events ####
 rt1 = ggplot(retouch.events) +
@@ -101,7 +101,7 @@ rt3 = ggplot(retouch.events) +
 
 ggsave(filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-variation-output/retouch-events-var.tiff",
        ggarrange(rt1, rt2, rt3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
-       dpi = 300, width = 12, height = 5)
+       dpi = 300, width = 14, height = 4)
 
 #### Variation of discard events ####
 d1 = ggplot(discard.events) +
@@ -129,7 +129,7 @@ d3 = ggplot(discard.events) +
 
 ggsave(filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-variation-output/discard-events-var.tiff",
        ggarrange(d1, d2, d3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
-       dpi = 300, width = 12, height = 5)
+       dpi = 300, width = 14, height = 4)
 
 #### Variation of scavenging events ####
 s1 = ggplot(scavenge.events) +
@@ -157,5 +157,5 @@ s3 = ggplot(scavenge.events) +
 
 ggsave(filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-variation-output/scavenge-events-var.tiff",
        ggarrange(s1, s2, s3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO"), 
-       dpi = 300, width = 12, height = 5)
+       dpi = 300, width = 14, height = 4)
 
