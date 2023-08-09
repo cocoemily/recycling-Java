@@ -12,4 +12,5 @@ module purge
 module load r/gcc/4.2.0
 
 #R --no-save -q -f spat-layers-Gi-analysis.R
-R --no-save -q -f retouch-encounter-overlap.R
+R --no-save -q -f spat-layers-Gi-analysis_location.R
+#R --no-save -q -f retouch-encounter-overlap.R
