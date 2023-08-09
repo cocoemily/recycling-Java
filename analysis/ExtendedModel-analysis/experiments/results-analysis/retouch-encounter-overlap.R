@@ -42,10 +42,12 @@ for(e in 1:length(exp)) {
     
     r = overlay(ret.rast, enct.rast, fun=sum)
     locs = as.data.frame(rasterToPoints(r))[,c(1,2)]
-    locs[,c(parameters)] = Gi.run[1, parameters]
-    locs$run = run
-    
-    locations[[length(locations)+1]] = locs
+    if(nrow(locs) > 0) {
+      locs[,c(parameters)] = Gi.run[1, parameters]
+      locs$run = run
+      
+      locations[[length(locations)+1]] = locs
+    }
     
     ret.enct.o = 100 - freq(r, value = NA)
     
