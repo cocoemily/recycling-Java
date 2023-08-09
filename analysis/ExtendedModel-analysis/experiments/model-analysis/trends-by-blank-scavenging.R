@@ -7,23 +7,46 @@ library(scales)
 
 theme_set(theme_bw())
 
-load("trends-by-scavenge-blank-probs/ri-overlap.rdata")
-load("trends-by-scavenge-blank-probs/re-overlap.rdata")
-load("trends-by-scavenge-blank-probs/ri-mu.rdata")
-load("trends-by-scavenge-blank-probs/re-mu.rdata")
-load("trends-by-scavenge-blank-probs/ri-flake.rdata")
-load("trends-by-scavenge-blank-probs/re-flake.rdata")
-load("trends-by-scavenge-blank-probs/ri-size.rdata")
-load("trends-by-scavenge-blank-probs/re-size.rdata")
-# load("trends-by-scavenge-blank-probs/ri-strict.rdata")
-# load("trends-by-scavenge-blank-probs/re-strict.rdata")
+# load("../results/graph-objects/ri-overlap.rdata")
+# load("../results/graph-objects/re-overlap.rdata")
+load("../results/graph-objects/ri-mu.rdata")
+load("../results/graph-objects/re-mu.rdata")
+load("../results/graph-objects/ri-flake.rdata")
+load("../results/graph-objects/re-flake.rdata")
+load("../results/graph-objects/ri-size.rdata")
+load("../results/graph-objects/re-size.rdata")
+load("../results/graph-objects/ri-strict.rdata")
+load("../results/graph-objects/re-strict.rdata")
+
+plot(mplot1 + ylim(0, 0.3))
+plot(mplot2 + ylim(0, 30))
+
+plot(splot1 + ylim(0, 0.3))
+plot(splot2 + ylim(0, 30))
+
+plot(ssplot1 + ylim(0, 0.3))
+plot(ssplot2 + ylim(0, 30))
+
+plot(ssp1 + ylim(0, 0.3))
+plot(ssp2 + ylim(0, 30))
 
 
-rgrid = ggarrange(p1, p2, mplot1, mplot2, splot1, splot2, ssplot1, ssplot2,
-                  nrow = 4, ncol = 2, legend = "right", labels = "AUTO")
-ggsave(filename = "recycling-trends-by-probs.tiff", rgrid,
-       dpi = 300, width = 15, height = 20)
+rgrid = ggarrange(mplot1 + ylim(0, 0.3), 
+                  mplot2 + ylim(0, 30),
+                  ncol = 2, common.legend = T, labels = "AUTO")
+plot(rgrid)
+ggsave(filename = "../figures/recycling-trends_by-probs-mu.tiff", rgrid,
+       dpi = 300, width = 12, height = 6)
 
-# strictgrid = ggarrange(ssp1, ssp2, common.legend = T, labels = "AUTO", 
-#                        ncol = 2, nrow = 1)
+
+srgrid = ggarrange(splot1 + ylim(0, 0.3), 
+                  splot2 + ylim(0, 30),
+                  ssplot1 + ylim(0, 0.3), 
+                  ssplot2 + ylim(0, 30),
+                  ssp1 + ylim(0, 0.3), 
+                  ssp2 + ylim(0, 30),
+                  ncol = 2, nrow = 3, legend = "bottom", labels = "AUTO")
+plot(srgrid)
+ggsave(filename = "../figures/supplementary-figures/recycling-trends_by-probs-selection.tiff", srgrid,
+       dpi = 300, width = 12, height = 16)
 

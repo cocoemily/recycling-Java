@@ -31,7 +31,7 @@ skew = data %>%
 sub.skew = skew %>% 
   filter(overlap == 1) %>%
   filter(num_agents == 200)
-  
+
 
 da.lr2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
   geom_point(color = "grey80", size = 0.1, alpha = 0.25) +
@@ -70,5 +70,15 @@ p2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
 save(p2, file = "SUPP-skew.rdata")
 
 #### to run locally ####
-load("~/eclipse-workspace/recycling-Java/results/graph-objects/SUPP-skew.rdata")
-plot(p2)
+#load("~/eclipse-workspace/recycling-Java/results/graph-objects/SUPP-skew.rdata")
+supp.plot1 = p2 + facet_grid(mu ~ flake_preference  + size_preference + strict_selection,
+                     labeller = labeller(
+                       flake_preference = flake.labs,
+                       size_preference = size.labs,
+                       strict_selection = strict.labs,
+                       mu = mu.labs
+                     ))
+
+ggsave(filename = "../figures/supplementary-figures/SUPP_skew-by-parameters.tiff", 
+       supp.plot1, 
+       dpi = 300, height = 8, width = 15)
