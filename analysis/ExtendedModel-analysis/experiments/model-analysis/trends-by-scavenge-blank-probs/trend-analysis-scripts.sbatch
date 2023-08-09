@@ -11,9 +11,8 @@
 module purge
 module load r/gcc/4.2.0
 
-#R --no-save -q -f overlap-trends.R
 #R --no-save -q -f mu-trends.R
 #R --no-save -q -f flake-pref-trends.R
-R --no-save -q -f size-pref-trends.R
-#R --no-save -q -f strict-trends.R
+#R --no-save -q -f size-pref-trends.R
+R --no-save -q -f strict-trends.R
 
