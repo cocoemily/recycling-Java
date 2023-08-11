@@ -65,9 +65,5 @@ for(e in 1:length(exp)) {
 
 locations.results = do.call("rbind", locations[1:length(locations)])
 
-readr::write_csv(locations.results, 
-                 filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/retouch-encounter-overlap-locations.csv", 
-                 num_threads=1)
-readr::write_csv(output, 
-                 filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/retouch-encounter-hotspot-overlap.csv", 
-                 num_threads=1)
+write.csv(locations.results, filename = "retouch-encounter-overlap-locations.csv")
+write.csv(output,filename = "retouch-encounter-hotspot-overlap.csv")

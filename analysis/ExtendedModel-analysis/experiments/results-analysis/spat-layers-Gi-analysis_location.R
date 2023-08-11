@@ -139,43 +139,27 @@ loc.ri.rp.results = do.call("rbind", loc.ri.rp[1:length(loc.ri.rp)])
 
 ####write CSVS when not NULL ####
 if(!is.null(loc.ri.ci.results)) {
-  readr::write_csv(loc.ri.ci.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-cr-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.ci.results, filename = "ri-cr-overlap-locations.csv")
 }
 if(!is.null(loc.ri.fc.results)) {
-  readr::write_csv(loc.ri.fc.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-flake-counts-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.fc.results, filename = "ri-flake-counts-overlap-locations.csv")
 }
 if(!is.null(loc.ri.nc.results)) {
-  readr::write_csv(loc.ri.nc.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-nodule-counts-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.nc.results, filename = "ri-nodule-counts-overlap-locations.csv")
 }
 if(!is.null(loc.ri.nd.results)) {
-  readr::write_csv(loc.ri.nd.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-discards-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.nd.results, filename = "ri-discards-overlap-locations.csv")
 }
 if(!is.null(loc.ri.ns.results)) {
-  readr::write_csv(loc.ri.ns.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-scavenges-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.ns.results, filename = "ri-scavenges-overlap-locations.csv")
 }
 if(!is.null(loc.ri.ne.results)) {
-  readr::write_csv(loc.ri.ne.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-encounters-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.ne.results, filename = "ri-encounters-overlap-locations.csv")
 }
 if(!is.null(loc.ri.nr.results)) {
-  readr::write_csv(loc.ri.nr.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-retouches-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.nr.results, filename = "ri-retouches-overlap-locations.csv")
 }
 if(!is.null(loc.ri.rp.results)) {
-  readr::write_csv(loc.ri.rp.results, 
-                   filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/output/ri-retprop-overlap-locations.csv", 
-                   num_threads=1)
+  write.csv(loc.ri.rp.results, filename = "ri-retprop-overlap-locations.csv")
 }
 
