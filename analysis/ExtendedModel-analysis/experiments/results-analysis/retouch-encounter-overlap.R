@@ -65,5 +65,5 @@ for(e in 1:length(exp)) {
 
 locations.results = do.call("rbind", locations[1:length(locations)])
 
-write.csv(locations.results, filename = "retouch-encounter-overlap-locations.csv")
-write.csv(output,filename = "retouch-encounter-hotspot-overlap.csv")
+write.csv(locations.results, file =  "retouch-encounter-overlap-locations.csv")
+write.csv(output, file =  "retouch-encounter-hotspot-overlap.csv")

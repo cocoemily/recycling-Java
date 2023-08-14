@@ -139,27 +139,27 @@ loc.ri.rp.results = do.call("rbind", loc.ri.rp[1:length(loc.ri.rp)])
 
 ####write CSVS when not NULL ####
 if(!is.null(loc.ri.ci.results)) {
-  write.csv(loc.ri.ci.results, filename = "ri-cr-overlap-locations.csv")
+  write.csv(loc.ri.ci.results, file =  "ri-cr-overlap-locations.csv")
 }
 if(!is.null(loc.ri.fc.results)) {
-  write.csv(loc.ri.fc.results, filename = "ri-flake-counts-overlap-locations.csv")
+  write.csv(loc.ri.fc.results, file = "ri-flake-counts-overlap-locations.csv")
 }
 if(!is.null(loc.ri.nc.results)) {
-  write.csv(loc.ri.nc.results, filename = "ri-nodule-counts-overlap-locations.csv")
+  write.csv(loc.ri.nc.results, file = "ri-nodule-counts-overlap-locations.csv")
 }
 if(!is.null(loc.ri.nd.results)) {
-  write.csv(loc.ri.nd.results, filename = "ri-discards-overlap-locations.csv")
+  write.csv(loc.ri.nd.results, file = "ri-discards-overlap-locations.csv")
 }
 if(!is.null(loc.ri.ns.results)) {
   write.csv(loc.ri.ns.results, filename = "ri-scavenges-overlap-locations.csv")
 }
 if(!is.null(loc.ri.ne.results)) {
-  write.csv(loc.ri.ne.results, filename = "ri-encounters-overlap-locations.csv")
+  write.csv(loc.ri.ne.results, file = "ri-encounters-overlap-locations.csv")
 }
 if(!is.null(loc.ri.nr.results)) {
-  write.csv(loc.ri.nr.results, filename = "ri-retouches-overlap-locations.csv")
+  write.csv(loc.ri.nr.results, file = "ri-retouches-overlap-locations.csv")
 }
 if(!is.null(loc.ri.rp.results)) {
-  write.csv(loc.ri.rp.results, filename = "ri-retprop-overlap-locations.csv")
+  write.csv(loc.ri.rp.results, file = "ri-retprop-overlap-locations.csv")
 }
 
