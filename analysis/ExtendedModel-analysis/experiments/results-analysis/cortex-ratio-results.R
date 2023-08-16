@@ -8,7 +8,7 @@ library(pscl)
 
 theme_set(theme_bw())
 
-#### CORTEX RATION CIs ####
+#### CORTEX RATIO CIs ####
 cr = read_csv("~/eclipse-workspace/recycling-Java/results/cortex-ratio-CI.csv")
 
 flake.labs = c("flake preference", "nodule preference")
@@ -48,3 +48,28 @@ p2 = ggplot(cr %>% filter(flake_preference == T)) +
   labs(y = "Cortex Ratio")
 plot(p2)
 
+
+####CR and RI####
+ri.ci = read_csv("~/eclipse-workspace/recycling-Java/results/recycling-intensity-CI.csv")
+parameters = colnames(ri.ci[,c(2:14)])
+
+joined = cr %>% left_join(ri.ci, by = c("run", parameters), suffix = c(".cr", ".ri"))
+
+
+ri.cr.plot = ggplot(joined %>% filter(overlap == 1)) +
+  geom_point(aes(x = mean.cr, y = mean.ri, color = as.factor(mu), group = as.factor(mu)), size = 0.05, alpha = 0.05) +
+  geom_smooth(aes(x = mean.cr, y = mean.ri, color = as.factor(mu), group = as.factor(mu)), method = "lm") +
+  facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
+             labeller = labeller(
+               num_agents = occup.labs, 
+               strict_selection = strict.labs, 
+               size_preference = size.labs, 
+               flake_preference = flake.labs
+             )) +
+  scale_color_colorblind(labels = mu.labs) +
+  labs(y = "average recycling intensity", x = "average cortex ratio") +
+  theme(legend.position = "bottom", legend.title = element_blank())
+
+ggsave(filename = "../figures/supplementary-figures/ri-cr_plot.tiff", 
+       ri.cr.plot, 
+       dpi = 300, width = 14, height = 6)

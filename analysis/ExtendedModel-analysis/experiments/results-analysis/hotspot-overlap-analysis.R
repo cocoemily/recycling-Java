@@ -21,7 +21,7 @@ summary(layers.overlap$RI.numenct.overlap)
 summary(layers.overlap$high_enct)
 
 
-##frequency of overlaps with high recycling intensity
+####frequency of overlaps with high recycling intensity####
 long.overlap = layers.overlap %>%
   gather(key = "vars", value = "count.overlap", 
          RI.flkcnt.overlap, RI.nodcnt.overlap, RI.numdisc.overlap, RI.numscvg.overlap, RI.numenct.overlap, RI.numret.overlap)
@@ -37,7 +37,7 @@ names(occup.labs) = c(100, 200)
 ccplot = ggplot(long.overlap %>% filter(overlap == 1)) +
   geom_bar(aes(x = count.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
   facet_grid(num_agents~vars, labeller = labeller(vars = var.labs, num_agents = occup.labs)) + 
-  labs(x = "number of overlapping grid squares", y = "", 
+  labs(x = "number of overlapping hotspots", y = "", 
        fill = "mu") +
   theme(strip.text = element_text(size = 6), legend.position = "bottom") +
   scale_fill_colorblind()
@@ -215,66 +215,6 @@ facet.labs =c(
 names(facet.labs) = unique(allzero$var)
 
 allzero$var = factor(allzero$var, 
-                      levels = c(
-                        "(Intercept)",
-                        "overlap2",
-                        "num_agents200",
-                        "mu2",
-                        "mu3",
-                        "max_use_intensity30",     
-                        "max_artifact_carry20",
-                        "max_flake_size2",         
-                        "blank_prob0.25",
-                        "blank_prob0.75",          
-                        "scavenge_prob0.25",
-                        "scavenge_prob0.75",
-                        "flake_preferenceTRUE",
-                        "size_preferenceTRUE",
-                        "min_suitable_flake_size2",
-                        "strict_selectionTRUE" 
-                      ))
-
-allzero$name = factor(allzero$name, levels = c("RI and flake count", 
-                                              "RI and nodule count", 
-                                              "RI and discards", 
-                                              "RI and scavenging events", 
-                                              "RI and square encounters", 
-                                              "RI and retouches"))
-
-zeroplot = ggplot(allzero %>% filter(signif == T)) +
-  #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
-  geom_point(aes(x = name, y = est, fill = name, color = name, group = name, shape = positive)) +
-  #geom_errorbar(aes(x = name, y = est, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
-  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
-  coord_flip() +
-  scale_color_brewer(palette = "Dark2") +
-  scale_fill_brewer(palette = "Dark2") +
-  scale_shape_manual(values = c(25, 24)) +
-  facet_wrap(~var, labeller = labeller(var = facet.labs)) +
-  labs(y = "log(odds)") +
-  guides(color = "none", fill = "none") +
-  theme(strip.text = element_text(size = 6), 
-        axis.text = element_text(size = 6), 
-        axis.title = element_text(size = 7),
-        axis.title.y = element_blank(),
-        legend.position = "bottom", 
-        legend.title = element_blank()) 
-plot(zeroplot)
-ggsave(filename = "../figures/log-odds_no-overlap.tiff", zeroplot,
-       dpi = 300, width = 12, height = 8)
-
-allcount = rbind(cflk.df, cnod.df, cdisc.df, cscvg.df, cenct.df, cret.df)
-allcount = allcount %>%
-  mutate(lower = est - se, 
-         upper = est + se) %>%
-  rowwise() %>%
-  mutate(signif = !between(0, lower, upper)) %>%
-  mutate(irr = exp(est)) %>%
-  mutate(greater = ifelse(irr > 1, "greater", 
-                          ifelse(irr < 1, "lower", "equal")))
-
-allcount$var = factor(allcount$var, 
                      levels = c(
                        "(Intercept)",
                        "overlap2",
@@ -294,12 +234,72 @@ allcount$var = factor(allcount$var,
                        "strict_selectionTRUE" 
                      ))
 
-allcount$name = factor(allcount$name, levels = c("RI and flake count", 
+allzero$name = factor(allzero$name, levels = c("RI and flake count", 
                                                "RI and nodule count", 
                                                "RI and discards", 
                                                "RI and scavenging events", 
                                                "RI and square encounters", 
                                                "RI and retouches"))
+
+zeroplot = ggplot(allzero %>% filter(signif == T)) +
+  #geom_point(aes(x = var, y = est, fill = name, color = name, group = name, shape = positive)) +
+  geom_point(aes(x = name, y = est, fill = name, color = name, group = name, shape = positive)) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_shape_manual(values = c(25, 24)) +
+  facet_wrap(~var, labeller = labeller(var = facet.labs)) +
+  # facet_wrap(~name) +
+  # scale_x_discrete(labels = facet.labs) +
+  labs(y = "log(odds)") +
+  guides(color = "none", fill = "none") +
+  theme(strip.text = element_text(size = 7), 
+        axis.text = element_text(size = 7.5), 
+        axis.title = element_text(size = 8),
+        axis.title.y = element_blank(),
+        legend.position = "bottom", 
+        legend.title = element_blank()) 
+plot(zeroplot)
+ggsave(filename = "../figures/log-odds_no-overlap.tiff", zeroplot,
+       dpi = 300, width = 12.5, height = 8)
+
+allcount = rbind(cflk.df, cnod.df, cdisc.df, cscvg.df, cenct.df, cret.df)
+allcount = allcount %>%
+  mutate(lower = est - se, 
+         upper = est + se) %>%
+  rowwise() %>%
+  mutate(signif = !between(0, lower, upper)) %>%
+  mutate(irr = exp(est)) %>%
+  mutate(greater = ifelse(irr > 1, "greater", 
+                          ifelse(irr < 1, "lower", "equal")))
+
+allcount$var = factor(allcount$var, 
+                      levels = c(
+                        "(Intercept)",
+                        "overlap2",
+                        "num_agents200",
+                        "mu2",
+                        "mu3",
+                        "max_use_intensity30",     
+                        "max_artifact_carry20",
+                        "max_flake_size2",         
+                        "blank_prob0.25",
+                        "blank_prob0.75",          
+                        "scavenge_prob0.25",
+                        "scavenge_prob0.75",
+                        "flake_preferenceTRUE",
+                        "size_preferenceTRUE",
+                        "min_suitable_flake_size2",
+                        "strict_selectionTRUE" 
+                      ))
+
+allcount$name = factor(allcount$name, levels = c("RI and flake count", 
+                                                 "RI and nodule count", 
+                                                 "RI and discards", 
+                                                 "RI and scavenging events", 
+                                                 "RI and square encounters", 
+                                                 "RI and retouches"))
 
 countplot = ggplot(allcount %>% filter(signif == T)) +
   geom_point(aes(x = name, y = irr, fill = name, color = name, group = name, shape = greater)) +
@@ -312,13 +312,14 @@ countplot = ggplot(allcount %>% filter(signif == T)) +
   facet_wrap(~var, labeller = labeller(var = facet.labs)) +
   labs(x = "parameter", y = "incidence rate ratio") +
   guides(color = "none", fill = "none") +
-  theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 
-        axis.title = element_text(size = 7), 
+  theme(strip.text = element_text(size = 7), 
+        axis.text = element_text(size = 7.5), 
+        axis.title = element_text(size = 8), 
         legend.position = "bottom", 
         legend.title = element_blank()) 
 plot(countplot)
 ggsave(filename = "../figures/IRR_overlap-counts.tiff", countplot,
-       dpi = 300, width = 12, height = 8)
+       dpi = 300, width = 12.5, height = 8)
 
 
 ####high counts regressions####
@@ -506,57 +507,428 @@ countplot = ggplot(highcount %>% filter(signif == T)) +
 
 
 
-
+#####high counts by parameters####
 hist(layers.overlap$high_RI)
-hRI = glm(high_RI ~ ., data = layers.overlap[c(2:4, 6:13, 15)], family = "poisson")
+hRI = zeroinfl(high_RI ~ ., data = layers.overlap2[c(r.params, "high_RI")])
 summary(hRI) 
+
+est = coef(hRI, "zero")
+se = sqrt(diag(vcov(hRI, "zero")))
+zhRI.df = as.data.frame(cbind(est, se))
+zhRI.df$name = "RI hotspots"
+zhRI.df$var = rownames(zhRI.df)
+
+zhRI.df = zhRI.df  %>%
+  mutate(lower = est - se, 
+         upper = est + se) %>%
+  rowwise() %>%
+  mutate(signif = !between(0, lower, upper), 
+         positive = ifelse(est > 0, "positive", "negative"))
+
+facet.labs =c(
+  "intercept", 
+  "manufacture events: 30 vs. manufacture events: 15", 
+  "carry capacity: 20 vs. carry capacity: 10", 
+  "max. flake size: 2 vs. max. flake size: 1", 
+  "blank probability: 0.25 vs. blank probability: 0.5", 
+  "blank probability: 0.75 vs. blank probability: 0.5", 
+  "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
+  "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
+  "many technologies vs. two technologies", 
+  "mu: 2 vs. mu: 1", 
+  "mu: 3 vs. mu: 1", 
+  "number of agents: 200 vs number of agents: 100", 
+  "size preference vs. no size preference", 
+  "flake preference vs. nodule preference", 
+  "min. selectable flake size: 2 vs. min. selectable flake size: 1",
+  "strict selection vs. non-strict selection"
+)
+names(facet.labs) = unique(zhRI.df$var)
+
+zhRI.df$var = factor(zhRI.df$var, 
+                         levels = c(
+                           "(Intercept)",
+                           "overlap2",
+                           "num_agents200",
+                           "mu2",
+                           "mu3",
+                           "max_use_intensity30",     
+                           "max_artifact_carry20",
+                           "max_flake_size2",         
+                           "blank_prob0.25",
+                           "blank_prob0.75",          
+                           "scavenge_prob0.25",
+                           "scavenge_prob0.75",
+                           "flake_preferenceTRUE",
+                           "size_preferenceTRUE",
+                           "min_suitable_flake_size2",
+                           "strict_selectionTRUE" 
+                         ))
+
+zeroplot = ggplot(zhRI.df %>% filter(signif == T)) +
+  geom_point(aes(x = var, y = est, fill = name, color = name, group = name, shape = positive)) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_shape_manual(values = c(25, 24)) +
+  # facet_wrap(~name) +
+  scale_x_discrete(labels = facet.labs) +
+  labs(y = "log(odds)") +
+  guides(color = "none", fill = "none") +
+  theme(strip.text = element_text(size = 7), 
+        axis.text = element_text(size = 7.5), 
+        axis.title = element_text(size = 8),
+        axis.title.y = element_blank(),
+        legend.position = "bottom", 
+        legend.title = element_blank()) 
+plot(zeroplot)
+
+
+ggsave(filename = "../figures/supplementary-figures/RI-hotspot_regression-output.tiff", 
+       zeroplot, 
+       dpi = 300, width = 6, height = 3)
+
 
 
 ####encounters and retouched artifacts####
-reover = zeroinfl(ret.enct.overlap ~ ., data = odata[c(2:4,6:13,17)])
-summary(reover)
-summary(odata$ret.enct.overlap)
+ret.overlap = read_csv("../results/retouch-encounter-hotspot-overlap.csv")
+ret.overlap = ret.overlap[,-1]
+ret.overlap[,c(1:13)] = lapply(ret.overlap[,c(1:13)], factor)
+ret.overlap$blank_prob = factor(ret.overlap$blank_prob, levels = c(0.5, 0.25, 0.75))
+ret.overlap$scavenge_prob = factor(ret.overlap$scavenge_prob, levels = c(0.5, 0.25, 0.75))
+parameters = colnames(ret.overlap[,c(1:13)])
+r.params = parameters[c(1:3, 5:13)]
+
+summary(ret.overlap$ret.enct.overlap)
+
+ccplot = ggplot(ret.overlap %>% filter(overlap == 1)) +
+  geom_bar(aes(x = ret.enct.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
+  facet_wrap(~num_agents, labeller = labeller(num_agents = occup.labs), 
+             strip.position = "right") + 
+  labs(x = "number of overlapping hotspots", y = "", 
+       fill = "mu") +
+  theme(strip.text = element_text(size = 6), legend.position = "bottom") +
+  scale_fill_colorblind() + 
+  ylim(0, 50000)
+plot(ccplot)
+
+high.df = ret.overlap %>% 
+  pivot_longer(c(high_ret, high_enct), names_to = "hotspots")
+
+h.labs = c("retouched artifact hotspots", "grid square encounters hotspots")
+names(h.labs) = c("high_ret", "high_enct")
+
+highplot = ggplot(high.df) +
+  geom_bar(aes(x = value, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
+  facet_grid(num_agents ~ hotspots, 
+             labeller = labeller(
+               num_agents = occup.labs, 
+               hotspots = h.labs
+             )) + 
+  labs(x = "number of hotspots", y = "", 
+       fill = "mu") +
+  theme(strip.text = element_text(size = 6), legend.position = "bottom") +
+  scale_fill_colorblind()
+plot(highplot)
+
+ggsave(filename = "../figures/retouched-encounter_overlaps.tiff", 
+       ggarrange(
+         ccplot, highplot, 
+         ncol = 1, labels = "AUTO", common.legend = T, legend = "bottom"
+       ), 
+       dpi = 300, height = 6, width = 8
+)
 
 
-####cortex ratio overlap####
-hist(layers.overlap$RI.CR.overlap)
-hist(layers.overlap$high_CR)
+retenct = zeroinfl(ret.enct.overlap ~ ., data = ret.overlap[c(r.params, "ret.enct.overlap")])
+summary(retenct)
 
-crp1 = ggplot(layers.overlap) +
-  geom_bar(aes(x = RI.CR.overlap)) +
-  labs(x = "number of overlapping grid squares", y = "")
-plot(crp1)
+est = coef(retenct, "zero")
+se = sqrt(diag(vcov(retenct, "zero")))
+zretenct.df = as.data.frame(cbind(est, se))
+zretenct.df$name = "retouch artifact proportion and grid square encounters"
+zretenct.df$var = rownames(zretenct.df)
+rownames(zretenct.df) = NULL
 
-cro = glm(RI.CR.overlap ~ ., layers.overlap[c(2:4, 6:13, 16)], family = "poisson")
-summary(cro)
-cro.df = tidy(cro) %>%
-  mutate(lower = estimate - std.error, 
-         upper = estimate + std.error)
-cro.df$signif = ifelse(cro.df$p.value < 0.05, TRUE, FALSE)
-for(i in 1:nrow(cro.df)) {
-  if(!is.na(cro.df$term[i])) {
-    cro.df$var_clean[i] = terms_dict[cro.df$term[i]]
-  }
-}
-cro.df$var_clean = factor(cro.df$var_clean, levels = term_levels)
+est = coef(retenct, "count")
+se = sqrt(diag(vcov(retenct, "count")))
+cretenct.df = as.data.frame(cbind(est, se))
+cretenct.df$name = "retouch artifact proportion and grid square encounters"
+cretenct.df$var = rownames(cretenct.df)
+rownames(cretenct.df) = NULL
 
+zretenct.df = zretenct.df %>%
+  mutate(lower = est - se, 
+         upper = est + se) %>%
+  rowwise() %>%
+  mutate(signif = !between(0, lower, upper), 
+         positive = ifelse(est > 0, "positive", "negative"))
 
-crp2 = ggplot(cro.df %>% filter(signif == T)) +
-  #geom_hline(aes(yintercept = 0), color = "red", linetype = 2, linewidth = 0.25) +
-  #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  #geom_pointrange(aes(x = var_clean, y = estimate, ymax = upper, ymin = lower), size = 0.1, position = position_dodge(width = 0.75)) +
-  #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
-  geom_col(aes(x = var_clean, y = estimate)) +
-  geom_errorbar(aes(x = var_clean, y = estimate, ymax = upper, ymin = lower), width = 0.2, linewidth = 0.25) +
+facet.labs =c(
+  "intercept", 
+  "manufacture events: 30 vs. manufacture events: 15", 
+  "carry capacity: 20 vs. carry capacity: 10", 
+  "max. flake size: 2 vs. max. flake size: 1", 
+  "blank probability: 0.25 vs. blank probability: 0.5", 
+  "blank probability: 0.75 vs. blank probability: 0.5", 
+  "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
+  "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
+  "many technologies vs. two technologies", 
+  "mu: 2 vs. mu: 1", 
+  "mu: 3 vs. mu: 1", 
+  "number of agents: 200 vs number of agents: 100", 
+  "size preference vs. no size preference", 
+  "flake preference vs. nodule preference", 
+  "min. selectable flake size: 2 vs. min. selectable flake size: 1",
+  "strict selection vs. non-strict selection"
+)
+names(facet.labs) = unique(zretenct.df$var)
+
+zretenct.df$var = factor(zretenct.df$var, 
+                         levels = c(
+                           "(Intercept)",
+                           "overlap2",
+                           "num_agents200",
+                           "mu2",
+                           "mu3",
+                           "max_use_intensity30",     
+                           "max_artifact_carry20",
+                           "max_flake_size2",         
+                           "blank_prob0.25",
+                           "blank_prob0.75",          
+                           "scavenge_prob0.25",
+                           "scavenge_prob0.75",
+                           "flake_preferenceTRUE",
+                           "size_preferenceTRUE",
+                           "min_suitable_flake_size2",
+                           "strict_selectionTRUE" 
+                         ))
+
+zeroplot = ggplot(zretenct.df %>% filter(signif == T)) +
+  geom_point(aes(x = var, y = est, fill = name, color = name, group = name, shape = positive)) +
   geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
   coord_flip() +
-  labs(x = "parameter", y = "estimate") +
-  theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 
-        axis.title = element_text(size = 7), 
-        legend.position = "none") 
-plot(crp2)
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_shape_manual(values = c(25, 24)) +
+  # facet_wrap(~name) +
+  scale_x_discrete(labels = facet.labs) +
+  labs(y = "log(odds)") +
+  guides(color = "none", fill = "none") +
+  theme(strip.text = element_text(size = 7), 
+        axis.text = element_text(size = 7.5), 
+        axis.title = element_text(size = 8),
+        axis.title.y = element_blank(),
+        legend.position = "bottom", 
+        legend.title = element_blank()) 
+plot(zeroplot)
 
-ggsave(filename = "../figures/cortex-ratio-overlaps.tiff", 
-       ggarrange(crp1, crp2, labels = "AUTO"), 
-       dpi = 300, width = 7, height = 3.5)
+
+cretenct.df = cretenct.df %>%
+  mutate(lower = est - se, 
+         upper = est + se) %>%
+  rowwise() %>%
+  mutate(signif = !between(0, lower, upper)) %>%
+  mutate(irr = exp(est)) %>%
+  mutate(greater = ifelse(irr > 1, "greater", 
+                          ifelse(irr < 1, "lower", "equal")))
+
+cretenct.df$var = factor(cretenct.df$var, 
+                         levels = c(
+                           "(Intercept)",
+                           "overlap2",
+                           "num_agents200",
+                           "mu2",
+                           "mu3",
+                           "max_use_intensity30",     
+                           "max_artifact_carry20",
+                           "max_flake_size2",         
+                           "blank_prob0.25",
+                           "blank_prob0.75",          
+                           "scavenge_prob0.25",
+                           "scavenge_prob0.75",
+                           "flake_preferenceTRUE",
+                           "size_preferenceTRUE",
+                           "min_suitable_flake_size2",
+                           "strict_selectionTRUE" 
+                         ))
+
+countplot = ggplot(cretenct.df %>% filter(signif == T)) +
+  geom_point(aes(x = var, y = irr, fill = name, color = name, group = name, shape = greater)) +
+  #geom_errorbar(aes(x = name, y = irr, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 1), color = "red", linewidth = 0.25) +
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2") + 
+  scale_fill_brewer(palette = "Dark2") +
+  scale_shape_manual(values = c(24, 25)) +
+  scale_x_discrete(labels = facet.labs) +
+  labs(y = "incidence rate ratio") +
+  guides(color = "none", fill = "none") +
+  theme(strip.text = element_text(size = 7), 
+        axis.text = element_text(size = 7.5), 
+        axis.title = element_text(size = 8), 
+        axis.title.y = element_blank(),
+        legend.position = "bottom", 
+        legend.title = element_blank()) 
+plot(countplot)
+
+
+
+#### recycling intensity and retouched artifact proportions ####
+summary(layers.overlap$RI.retprop.overlap)
+
+tech.labs = c("two technologies", "many technologies")
+names(tech.labs) = c("1", "2")
+occup.labs = c("100 agents", "200 agents")
+names(occup.labs) = c(100, 200)
+
+ccplot = ggplot(layers.overlap %>% filter(overlap == 1)) +
+  geom_bar(aes(x = RI.retprop.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
+  facet_wrap(~num_agents, labeller = labeller(num_agents = occup.labs)) + 
+  labs(x = "number of overlapping grid squares", y = "", 
+       fill = "mu") +
+  theme(strip.text = element_text(size = 6), legend.position = "left") +
+  scale_fill_colorblind() +
+  ylim(0, 40000)
+plot(ccplot)
+
+
+retprop = zeroinfl(RI.retprop.overlap ~ ., data = layers.overlap[c(r.params, "RI.retprop.overlap")])
+summary(retprop)
+est = coef(retprop, "zero")
+se = sqrt(diag(vcov(retprop, "zero")))
+zrp.df = as.data.frame(cbind(est, se))
+zrp.df$name = "RI and retouched artifact proportion"
+zrp.df$var = rownames(zrp.df)
+rownames(zrp.df) = NULL
+est = coef(retprop, "count")
+se = sqrt(diag(vcov(retprop, "count")))
+crp.df = as.data.frame(cbind(est, se))
+crp.df$name = "RI and retouched artifact proportion"
+crp.df$var = rownames(crp.df)
+rownames(crp.df) = NULL
+
+zrp.df = zrp.df %>%
+  mutate(lower = est - se, 
+         upper = est + se) %>%
+  rowwise() %>%
+  mutate(signif = !between(0, lower, upper), 
+         positive = ifelse(est > 0, "positive", "negative"))
+
+facet.labs =c(
+  "intercept", 
+  "manufacture events: 30 vs. manufacture events: 15", 
+  "carry capacity: 20 vs. carry capacity: 10", 
+  "max. flake size: 2 vs. max. flake size: 1", 
+  "blank probability: 0.25 vs. blank probability: 0.5", 
+  "blank probability: 0.75 vs. blank probability: 0.5", 
+  "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
+  "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
+  "many technologies vs. two technologies", 
+  "mu: 2 vs. mu: 1", 
+  "mu: 3 vs. mu: 1", 
+  "number of agents: 200 vs number of agents: 100", 
+  "size preference vs. no size preference", 
+  "flake preference vs. nodule preference", 
+  "min. selectable flake size: 2 vs. min. selectable flake size: 1",
+  "strict selection vs. non-strict selection"
+)
+names(facet.labs) = unique(zrp.df$var)
+
+zrp.df$var = factor(zrp.df$var, 
+                    levels = c(
+                      "(Intercept)",
+                      "overlap2",
+                      "num_agents200",
+                      "mu2",
+                      "mu3",
+                      "max_use_intensity30",     
+                      "max_artifact_carry20",
+                      "max_flake_size2",         
+                      "blank_prob0.25",
+                      "blank_prob0.75",          
+                      "scavenge_prob0.25",
+                      "scavenge_prob0.75",
+                      "flake_preferenceTRUE",
+                      "size_preferenceTRUE",
+                      "min_suitable_flake_size2",
+                      "strict_selectionTRUE" 
+                    ))
+
+zeroplot = ggplot(zrp.df %>% filter(signif == T)) +
+  geom_point(aes(x = var, y = est, fill = name, color = name, group = name, shape = positive)) +
+  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_shape_manual(values = c(25, 24)) +
+  # facet_wrap(~name) +
+  scale_x_discrete(labels = facet.labs) +
+  labs(y = "log(odds)") +
+  guides(color = "none", fill = "none") +
+  theme(strip.text = element_text(size = 7), 
+        axis.text = element_text(size = 7.5), 
+        axis.title = element_text(size = 8),
+        axis.title.y = element_blank(),
+        legend.position = "bottom", 
+        legend.title = element_blank()) 
+plot(zeroplot)
+
+
+crp.df = crp.df %>%
+  mutate(lower = est - se, 
+         upper = est + se) %>%
+  rowwise() %>%
+  mutate(signif = !between(0, lower, upper)) %>%
+  mutate(irr = exp(est)) %>%
+  mutate(greater = ifelse(irr > 1, "greater", 
+                          ifelse(irr < 1, "lower", "equal")))
+
+crp.df$var = factor(crp.df$var, 
+                    levels = c(
+                      "(Intercept)",
+                      "overlap2",
+                      "num_agents200",
+                      "mu2",
+                      "mu3",
+                      "max_use_intensity30",     
+                      "max_artifact_carry20",
+                      "max_flake_size2",         
+                      "blank_prob0.25",
+                      "blank_prob0.75",          
+                      "scavenge_prob0.25",
+                      "scavenge_prob0.75",
+                      "flake_preferenceTRUE",
+                      "size_preferenceTRUE",
+                      "min_suitable_flake_size2",
+                      "strict_selectionTRUE" 
+                    ))
+
+countplot = ggplot(crp.df %>% filter(signif == T)) +
+  geom_point(aes(x = var, y = irr, fill = name, color = name, group = name, shape = greater)) +
+  #geom_errorbar(aes(x = name, y = irr, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
+  geom_hline(aes(yintercept = 1), color = "red", linewidth = 0.25) +
+  coord_flip() +
+  scale_color_brewer(palette = "Dark2") + 
+  scale_fill_brewer(palette = "Dark2") +
+  scale_shape_manual(values = c(24, 25)) +
+  scale_x_discrete(labels = facet.labs) +
+  labs(y = "incidence rate ratio") +
+  guides(color = "none", fill = "none") +
+  theme(strip.text = element_text(size = 7), 
+        axis.text = element_text(size = 7.5), 
+        axis.title = element_text(size = 8), 
+        axis.title.y = element_blank(),
+        legend.position = "bottom", 
+        legend.title = element_blank()) 
+plot(countplot)
+
+ggsave(filename = "../figures/ri_retouched-prop_overlap.tiff",
+       ggarrange(ccplot,
+                 ggarrange(zeroplot, countplot, labels = c("B", "C")), labels = "A", 
+                 ncol = 1, heights = c(0.5, 1)
+       ), 
+       dpi = 300, width = 10, height = 8
+)
+

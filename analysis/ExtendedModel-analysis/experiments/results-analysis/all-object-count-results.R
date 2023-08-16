@@ -3,6 +3,7 @@
 library(tidyverse)
 library(ggthemes)
 library(ggpubr)
+library(ggpmisc)
 library(jtools)
 library(pscl)
 library(MASS)
@@ -21,16 +22,19 @@ strict.labs = c("strict selection", "no strict selection")
 names(strict.labs) = c("TRUE", "FALSE")
 occup.labs = c("100 agents", "200 agents")
 names(occup.labs) = c(100, 200)
+mu.labs = c("mu = 1", "mu = 2", "mu = 3")
+names(mu.labs) = c(1,2,3)
 
 ####all artifacts ####
 ##### artifact count box plots ####
 p1 = ggplot(count.data %>% filter(overlap == 1)) +
   geom_boxplot(aes(x = as.factor(num_agents), y = total_count, fill = obj_type)) +
-  facet_grid(flake_preference + size_preference ~ strict_selection , 
+  facet_grid(flake_preference + size_preference + strict_selection ~ mu , 
              labeller = labeller(
                flake_preference = flake.labs, 
                size_preference = size.labs, 
-               strict_selection = strict.labs
+               strict_selection = strict.labs, 
+               mu = mu.labs
              )) +
   scale_x_discrete(labels = occup.labs) +
   scale_fill_brewer(palette = "Paired") +
@@ -53,10 +57,13 @@ test.p1 = ggplot(count.data %>% filter(overlap == 1),
                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x)),
                fun.min = function(x) mean(x) - 
                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x))) +
-  facet_grid(flake_preference + size_preference ~ strict_selection , 
-             labeller = labeller(flake_preference = flake.labs, 
-                                 size_preference = size.labs, 
-                                 strict_selection = strict.labs)) +
+  facet_grid(flake_preference + size_preference + strict_selection ~ mu , 
+             labeller = labeller(
+               flake_preference = flake.labs, 
+               size_preference = size.labs, 
+               strict_selection = strict.labs, 
+               mu = mu.labs
+             )) +
   scale_fill_brewer(palette = "Paired") +
   scale_x_discrete(labels = occup.labs) +
   theme(legend.title = element_blank(),
@@ -71,7 +78,7 @@ ggsave(filename = "../figures/supplementary-figures/all-object-counts.tiff",
        plot = ggarrange(p1, test.p1, 
                         common.legend = T, labels = "AUTO", 
                         ncol = 2, nrow = 1), 
-       dpi = 300, width = 10, height = 8)
+       dpi = 300, width = 12, height = 10)
 
 
 
@@ -95,11 +102,12 @@ my_colors <- RColorBrewer::brewer.pal(4, "Paired")[3:4]
 ##### artifact count box plots ####
 p1 = ggplot(count.data %>% filter(overlap == 1)) +
   geom_boxplot(aes(x = as.factor(num_agents), y = count_recycled, fill = obj_type)) +
-  facet_grid(flake_preference + size_preference ~ strict_selection , 
+  facet_grid(flake_preference + size_preference + strict_selection ~ mu , 
              labeller = labeller(
                flake_preference = flake.labs, 
                size_preference = size.labs, 
-               strict_selection = strict.labs
+               strict_selection = strict.labs, 
+               mu = mu.labs
              )) +
   scale_x_discrete(labels = occup.labs) +
   scale_fill_manual(values = my_colors) +
@@ -122,10 +130,13 @@ test.p1 = ggplot(count.data %>% filter(overlap == 1),
                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x)),
                fun.min = function(x) mean(x) - 
                  qt(.975, df = length(x)) * sd(x) / sqrt(length(x))) +
-  facet_grid(flake_preference + size_preference ~ strict_selection , 
-             labeller = labeller(flake_preference = flake.labs, 
-                                 size_preference = size.labs, 
-                                 strict_selection = strict.labs)) +
+  facet_grid(flake_preference + size_preference + strict_selection ~ mu , 
+             labeller = labeller(
+               flake_preference = flake.labs, 
+               size_preference = size.labs, 
+               strict_selection = strict.labs, 
+               mu = mu.labs
+             )) +
   scale_fill_manual(values = my_colors) +
   scale_x_discrete(labels = occup.labs) +
   theme(legend.title = element_blank(),
@@ -141,3 +152,42 @@ ggsave(filename = "../figures/supplementary-figures/all-recycled-object-counts.t
                         common.legend = T, labels = "AUTO", 
                         ncol = 2, nrow = 1), 
        dpi = 300, width = 10, height = 8)
+
+
+#### RI and assemblage density #####
+sub.count = count.data %>% filter(overlap == 1) %>%
+  mutate(ri = count_recycled/total_count, 
+         log.count = log(total_count))
+
+p = ggplot(sub.count, aes(x = log.count, y = ri)) +
+  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("R2")), color = "grey40") +
+  facet_grid(num_agents ~ mu, 
+             labeller = labeller(
+               num_agents = occup.labs,
+               mu = mu.labs
+             )) +
+  labs(x = "log(artifact count)", y = "recycling intensity")
+ggsave(filename = "../figures/supplementary-figures/ri_assemblage-density.tiff", 
+       p, 
+       dpi = 300, width = 8, height = 6.5)
+
+#### RI and retouched artifact proporiton #####
+sub.count = count.data %>% filter(overlap == 1) %>%
+  mutate(ri = count_recycled/total_count, 
+         retprop = count_retouched/total_count)
+
+p2 = ggplot(sub.count %>% filter(num_agents == 100), aes(x = retprop, y = ri)) +
+  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("R2")), color = "grey40") +
+  facet_grid( ~ mu, 
+             labeller = labeller(
+               num_agents = occup.labs,
+               mu = mu.labs
+             )) +
+  labs(x = "retouched artifact proportion", y = "recycling intensity")
+ggsave(filename = "../figures/supplementary-figures/ri_retouched-prop.tiff", 
+       p2, 
+       dpi = 300, width = 8, height = 4)

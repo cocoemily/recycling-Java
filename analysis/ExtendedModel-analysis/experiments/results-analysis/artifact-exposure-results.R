@@ -9,29 +9,13 @@ library(Dict)
 theme_set(theme_bw())
 
 exposure.data = read_csv("~/eclipse-workspace/recycling-Java/results/artifact-exposure-Wilcoxon-results.csv")
+parameters = colnames(exposure.data[,c(4:16)])
 
 ##recycled.signif.greater = whether (TRUE) or not (FALSE) the recycled artifacts 
 ## have ~significantly~ greater initial discard dates than the non-recycled artifacts
 
 two.tech = exposure.data %>% filter(overlap == 1)
 many.tech = exposure.data %>% filter(overlap == 2)
-
-
-check.exp = exposure.data %>% 
-  group_by(exp) %>%
-  summarize(count_TRUE = sum(recycled.signif.greater), 
-            percent_TRUE = sum(recycled.signif.greater)/n(), 
-            percent_FALSE = sum(!recycled.signif.greater)/n())
-
-summary(check.exp$percent_TRUE)
-summary(check.exp$count_TRUE)
-
-check.not.older = check.exp %>% filter(percent_FALSE > 0.5) %>%
-  left_join(exposure.data[,c("exp",parameters)], by = "exp")
-
-for(p in parameters) {
-  print(unique(check.not.older[,c(p)]))
-}
 
 
 terms_dict = dict(
@@ -75,122 +59,77 @@ term_levels = c(
   "max. flake size:min. selectable flake size"
 )
 
-two.ed = exposure.data %>% filter(overlap == 1)
+exposure.data[,c(4:16)] = lapply(exposure.data[,c(4:16)], factor)
+exposure.data$blank_prob = factor(exposure.data$blank_prob, levels = c(0.5, 0.25, 0.75))
+exposure.data$scavenge_prob = factor(exposure.data$scavenge_prob, levels = c(0.5, 0.25, 0.75))
+r.params = parameters[c(1:3,5:13)]
 
-fit1 = glm(recycled.signif.greater ~ ., two.ed[,c(3,4:6,8:9,11:16)], family = "binomial")
+fit1 = glm(recycled.signif.greater ~ ., exposure.data[,c(r.params, "recycled.signif.greater")], family = "binomial")
 summary(fit1)
 fit1.df = tidy(fit1)
 
-fit1.df$term_clean = ""
-for(i in 1:nrow(fit1.df)) {
-  fit1.df$term_clean[i] = terms_dict[fit1.df$term[i]]
-}
-fit1.df$term_clean = factor(fit1.df$term_clean, levels = term_levels)
-fit1.df$signif = ifelse(fit1.df$p.value < 0.05, TRUE, FALSE)
-fit1.df$lower = fit1.df$estimate - fit1.df$std.error
-fit1.df$upper = fit1.df$estimate + fit1.df$std.error
-
+#fit1.df$signif = ifelse(fit1.df$p.value < 0.05, TRUE, FALSE)
 fit1.df$odds = exp(fit1.df$estimate)
+fit1.df$lower = fit1.df$odds - exp(fit1.df$std.error)
+fit1.df$upper = fit1.df$odds + exp(fit1.df$std.error)
 
-odds.or = ggplot(fit1.df, aes(y = odds, x = term_clean, color = signif)) +
-  geom_hline(aes(yintercept = 0), color = I("red"), linetype = "dashed") +
-  #geom_linerange(mapping = aes(ymin = lower, ymax = upper), position = position_dodge2(width = 0.5)) +
+
+
+x.labs = c(
+  "intercept", 
+  "manufacture events: 30 vs. manufacture events: 15", 
+  "carry capacity: 20 vs. carry capacity: 10", 
+  "max. flake size: 2 vs. max. flake size: 1", 
+  "blank probability: 0.25 vs. blank probability: 0.5", 
+  "blank probability: 0.75 vs. blank probability: 0.5", 
+  "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
+  "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
+  "many technologies vs. two technologies", 
+  "mu: 2 vs. mu: 1", 
+  "mu: 3 vs. mu: 1", 
+  "number of agents: 200 vs number of agents: 100", 
+  "size preference vs. no size preference", 
+  "flake preference vs. nodule preference", 
+  "min. selectable flake size: 2 vs. min. selectable flake size: 1",
+  "strict selection vs. non-strict selection"
+)
+names(x.labs) = unique(fit1.df$term)
+
+fit1.df$term = factor(fit1.df$term, 
+                      levels = c(
+                        "(Intercept)",
+                        "overlap2",
+                        "num_agents200",
+                        "mu2",
+                        "mu3",
+                        "max_use_intensity30",     
+                        "max_artifact_carry20",
+                        "max_flake_size2",         
+                        "blank_prob0.25",
+                        "blank_prob0.75",          
+                        "scavenge_prob0.25",
+                        "scavenge_prob0.75",
+                        "flake_preferenceTRUE",
+                        "size_preferenceTRUE",
+                        "min_suitable_flake_size2",
+                        "strict_selectionTRUE" 
+                      ))
+
+
+odds.or = ggplot(fit1.df %>% filter(term != "(Intercept)"), aes(y = odds, x = term)) +
+  geom_hline(aes(yintercept = 1), color = I("red"), linetype = "dashed") +
+  geom_errorbar(mapping = aes(ymin = lower, ymax = upper), position = position_dodge2(width = 0.5), width = 0.2) +
   geom_point(position = position_dodge2(width = 0.5)) +
   scale_color_colorblind() +
-  #scale_shape_manual(values = c(4, 19)) + 
+  scale_x_discrete(labels = x.labs) +
   coord_flip() +
   labs(x = "terms", shape = "significant?") +
-  theme(legend.position = "none")
+  theme(legend.position = "none", axis.text.y = element_text(size = 8))
+plot(odds.or)
 
-# ggsave(filename = "../figures/odds-ratios-YOFD.tiff", 
-#        odds.or, 
-#        dpi = 300, width = 5, height = 3)
+ggsave(filename = "../figures/odds-ratios-YOFD.tiff",
+       odds.or,
+       dpi = 300, width = 8, height = 4)
 
 
 
-# fit.test = glm(recycled.signif.greater ~ exp, exposure.data, family = "binomial")
-# test.df = tidy(fit.test)
-
-#### dummy variables####
-reg.data = exposure.data
-
-reg.data$overlap1 = ifelse(reg.data$overlap == 1, 1, 0)
-reg.data$overlap2 = ifelse(reg.data$overlap == 2, 1, 0)
-reg.data$maxuse15 = ifelse(reg.data$max_use_intensity == 15, 1, 0)
-reg.data$maxuse30 = ifelse(reg.data$max_use_intensity == 30, 1, 0)
-reg.data$maxcarry10 = ifelse(reg.data$max_artifact_carry == 10, 1, 0)
-reg.data$maxcarry20 = ifelse(reg.data$max_artifact_carry == 20, 1, 0)
-reg.data$maxflake1 = ifelse(reg.data$max_flake_size == 1, 1, 0)
-reg.data$maxflake2 = ifelse(reg.data$max_flake_size == 2, 1, 0)
-reg.data$blankp25 = ifelse(reg.data$blank_prob == 0.25, 1, 0)
-reg.data$blankp50 = ifelse(reg.data$blank_prob == 0.5, 1, 0)
-reg.data$blankp75 = ifelse(reg.data$blank_prob == 0.75, 1, 0)
-reg.data$scvgp25 = ifelse(reg.data$scavenge_prob == 0.25, 1, 0)
-reg.data$scvgp50 = ifelse(reg.data$scavenge_prob == 0.5, 1, 0)
-reg.data$scvgp75 = ifelse(reg.data$scavenge_prob == 0.75, 1, 0)
-reg.data$mu1 = ifelse(reg.data$mu == 1, 1, 0)
-reg.data$mu2 = ifelse(reg.data$mu == 2, 1, 0)
-reg.data$mu3 = ifelse(reg.data$mu == 3, 1, 0)
-reg.data$agents100 = ifelse(reg.data$num_agents == 100, 1, 0)
-reg.data$agents200 = ifelse(reg.data$num_agents == 200, 1, 0)
-reg.data$sizeTRUE = ifelse(reg.data$size_preference == T, 1, 0)
-reg.data$sizeFALSE = ifelse(reg.data$size_preference == F, 1, 0)
-reg.data$flakeTRUE = ifelse(reg.data$flake_preference == T, 1, 0)
-reg.data$nodTRUE = ifelse(reg.data$flake_preference == F, 1, 0)
-reg.data$strictTRUE = ifelse(reg.data$strict_selection == T, 1, 0)
-reg.data$strictFALSE = ifelse(reg.data$strict_selection == F, 1, 0)
-reg.data$minflake1 = ifelse(reg.data$min_suitable_flake_size == 1, 1, 0)
-reg.data$minflake2 = ifelse(reg.data$min_suitable_flake_size == 2, 1, 0)
-
-reg.data2 = reg.data[,c(3,17:43)]
-
-fit2 = glm(recycled.signif.greater ~ ., reg.data2, family = "binomial")
-summary(fit2)
-fit2.df = tidy(fit2)
-fit2.df$odds = exp(fit2.df$estimate)
-
-# odds.or2 = ggplot(fit2.df, aes(y = odds, x = term)) +
-#   geom_hline(aes(yintercept = 0), color = I("red"), linetype = "dashed") +
-#   #geom_linerange(mapping = aes(ymin = lower, ymax = upper)) +
-#   geom_point() +
-#   #scale_shape_manual(values = c(4, 19)) + 
-#   coord_flip() +
-#   labs(x = "terms", shape = "significant?") +
-#   theme(legend.position = "none")
-# plot(odds.or2)
-
-fit3 = glm(recycled.signif.greater ~ 
-             as.factor(overlap) + as.factor(mu) + num_agents +
-             max_use_intensity + max_artifact_carry +
-             blank_prob + scavenge_prob +
-             max_flake_size + min_suitable_flake_size + max_flake_size:min_suitable_flake_size +
-             flake_preference + size_preference + strict_selection, 
-           data = exposure.data, family = "binomial")  
-summary(fit3)
-fit3.df = tidy(fit3)
-
-fit3.df$signif = ifelse(fit3.df$p.value < 0.05, TRUE, FALSE)
-fit3.df$lower = fit3.df$estimate - fit3.df$std.error
-fit3.df$upper = fit3.df$estimate + fit3.df$std.error
-
-fit3.df$odds = exp(fit3.df$estimate)
-
-fit3.df$term_clean = ""
-for(i in 1:nrow(fit3.df)) {
-  fit3.df$term_clean[i] = terms_dict[fit3.df$term[i]]
-}
-fit3.df$term_clean = factor(fit3.df$term_clean, levels = term_levels)
-
-odds.or3 = ggplot(fit3.df, aes(y = odds, x = term_clean, shape = signif)) +
-  geom_hline(aes(yintercept = 0), color = I("red"), linetype = "dashed") +
-  #geom_linerange(mapping = aes(ymin = lower, ymax = upper)) +
-  geom_point() +
-  #scale_shape_manual(values = c(4, 19)) + 
-  coord_flip() +
-  labs(x = "terms", shape = "significant?") +
-  theme(legend.position = "none")
-plot(odds.or3)
-
-ggsave(filename = "../figures/odds-ratios-YOFD.tiff", 
-       odds.or2, 
-       dpi = 300, width = 7, height = 3)
