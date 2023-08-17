@@ -36,8 +36,8 @@ foreach (d=1:length(dirs)) %dopar% {
   
   allgrids = ldata[,c("run", parameters, "model_year", "row", "col", "recycling.intensity", "cortex.ratio", "flake.count", "nodule.count", "num.discards", "num.scavenge", "num.encounters", "num.retouch")]
   
-  expnum = str_extract(dirsplit[length(dirsplit)], "[0-9]+")
-  exp_values = data[1, parameters]
+  expnum = str_extract(filename[length(filename)], "[0-9]+")
+  exp_values = ldata[1, parameters]
   
   grid = expand.grid(0:9, 0:9)
   colnames(grid) = c("row", "col")
@@ -61,7 +61,7 @@ foreach (d=1:length(dirs)) %dopar% {
                 retouch_prop = count_retouched/total_count)
     
     
-    square_data = data[which(data$row == grid$row[i] & data$col == grid$col[i]),] 
+    square_data = ldata[which(ldata$row == grid$row[i] & ldata$col == grid$col[i]),] 
     sqdata2 = square_data %>% left_join(artifacts, by = c("row", "col", "run"))
     
     rp.ne = NA
