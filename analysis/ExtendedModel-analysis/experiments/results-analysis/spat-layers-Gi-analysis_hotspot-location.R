@@ -96,7 +96,7 @@ for(e in 1:length(exp)) {
     if(nrow(locs) > 0) {
       locs[,c(parameters)] = Gi.run[1, parameters]
       locs$run = run
-      loc.nd[[length(loc.nd)+1]] = locs
+      loc.ns[[length(loc.ns)+1]] = locs
     }
     
     #####encounters#####

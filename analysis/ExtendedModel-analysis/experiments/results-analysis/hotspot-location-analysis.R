@@ -24,7 +24,7 @@ ri.rp = ri.rp[,-1]
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
 
-plot_hotspot_overlap_locations = function(data) {
+plot_hotspot_locations = function(data) {
   loc.counts = data %>% 
     group_by_at(c(parameters, "x", "y")) %>%
     summarize(count = n())
@@ -38,11 +38,38 @@ plot_hotspot_overlap_locations = function(data) {
     facet_grid(overlap ~ num_agents + mu, labeller = label_both)
 }
 
-plot_hotspot_overlap_locations(ri.disc)
-plot_hotspot_overlap_locations(ri.enct)
+plot_hotspot_locations(ri.disc)
+plot_hotspot_locations(ri.enct)
 
-plot_hotspot_overlap_locations(ri.flk)
-plot_hotspot_overlap_locations(ri.nod)
+plot_hotspot_locations(ri.flk)
+plot_hotspot_locations(ri.nod)
 
-plot_hotspot_overlap_locations(ri.rp)
-plot_hotspot_overlap_locations(ret.enct)
+plot_hotspot_locations(ri.rp)
+plot_hotspot_locations(ret.enct)
+
+
+#####hotspot locations#####
+disc = read_csv("~/eclipse-workspace/recycling-Java/results/discards-hotspots-locations.csv")
+disc = disc[,-1]
+enct = read_csv("~/eclipse-workspace/recycling-Java/results/encounters-hotspots-locations.csv")
+enct = enct[,-1]
+flk = read_csv("~/eclipse-workspace/recycling-Java/results/flake-counts-hotspots-locations.csv")
+flk = flk[,-1]
+nod = read_csv("~/eclipse-workspace/recycling-Java/results/nodule-counts-hotspots-locations.csv")
+nod = nod[,-1]
+cr = read_csv("~/eclipse-workspace/recycling-Java/results/cr-hotspots-locations.csv")
+cr = cr[,-1]
+retprop = read_csv("~/eclipse-workspace/recycling-Java/results/retprop-hotspots-locations.csv")
+retprop = retprop[,-1]
+ri = read_csv("~/eclipse-workspace/recycling-Java/results/ri-hotspots-locations.csv")
+ri = ri[,-1]
+
+plot_hotspot_locations(disc)
+plot_hotspot_locations(enct)
+plot_hotspot_locations(flk)
+plot_hotspot_locations(nod)
+plot_hotspot_locations(cr)
+plot_hotspot_locations(retprop)
+plot_hotspot_locations(ri)
+
+
