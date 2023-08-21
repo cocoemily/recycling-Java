@@ -613,6 +613,15 @@ ccplot = ggplot(ret.overlap %>% filter(overlap == 1)) +
   ylim(0, 50000)
 plot(ccplot)
 
+ccplot2 = ggplot(ret.overlap %>% filter(overlap == 1) %>% filter(num_agents == 100)) +
+  geom_bar(aes(x = ret.enct.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
+  facet_grid(blank_prob ~ scavenge_prob, labeller = label_both) + 
+  labs(x = "number of overlapping hotspots", y = "", 
+       fill = "mu") +
+  theme(strip.text = element_text(size = 6), legend.position = "bottom") +
+  scale_fill_colorblind()
+plot(ccplot2)
+
 high.df = ret.overlap %>% 
   pivot_longer(c(high_ret, high_enct), names_to = "hotspots")
 

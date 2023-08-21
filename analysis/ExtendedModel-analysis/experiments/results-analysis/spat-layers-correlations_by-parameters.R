@@ -14,12 +14,62 @@ layer.cor = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-gridd
 parameters = colnames(layer.cor[,3:15])
 cor.names = colnames(layer.cor[,16:22])
 
+summary(layer.cor$ri.obj.cnt.cor)
+summary((layer.cor %>% filter(mu == 1))$ri.obj.cnt.cor)
+summary((layer.cor %>% filter(mu == 3))$ri.obj.cnt.cor)
+summary((layer.cor %>% filter(size_preference == F))$ri.obj.cnt.cor)
+summary((layer.cor %>% filter(size_preference == T))$ri.obj.cnt.cor)
+summary((layer.cor %>% filter(strict_selection == F))$ri.obj.cnt.cor)
+summary((layer.cor %>% filter(strict_selection == T))$ri.obj.cnt.cor)
+
+summary(layer.cor$ri.cr.cor)
+summary((layer.cor %>% filter(mu == 1))$ri.cr.cor)
+summary((layer.cor %>% filter(mu == 3))$ri.cr.cor)
+summary((layer.cor %>% filter(size_preference == F))$ri.cr.cor)
+summary((layer.cor %>% filter(size_preference == T))$ri.cr.cor)
+summary((layer.cor %>% filter(strict_selection == F))$ri.cr.cor)
+summary((layer.cor %>% filter(strict_selection == T))$ri.cr.cor)
+
+summary(layer.cor$ri.num.disc.cor)
+summary((layer.cor %>% filter(mu == 1))$ri.num.disc.cor)
+summary((layer.cor %>% filter(mu == 3))$ri.num.disc.cor)
+summary((layer.cor %>% filter(size_preference == F))$ri.num.disc.cor)
+summary((layer.cor %>% filter(size_preference == T))$ri.num.disc.cor)
+summary((layer.cor %>% filter(strict_selection == F))$ri.num.disc.cor)
+summary((layer.cor %>% filter(strict_selection == T))$ri.num.disc.cor)
+
+summary(layer.cor$ri.num.scvg.cor)
+summary((layer.cor %>% filter(mu == 1))$ri.num.scvg.cor)
+summary((layer.cor %>% filter(mu == 3))$ri.num.scvg.cor)
+summary((layer.cor %>% filter(size_preference == F))$ri.num.scvg.cor)
+summary((layer.cor %>% filter(size_preference == T))$ri.num.scvg.cor)
+summary((layer.cor %>% filter(strict_selection == F))$ri.num.scvg.cor)
+summary((layer.cor %>% filter(strict_selection == T))$ri.num.scvg.cor)
+
+summary(layer.cor$ri.num.enct.cor)
+summary((layer.cor %>% filter(mu == 1))$ri.num.enct.cor)
+summary((layer.cor %>% filter(mu == 3))$ri.num.enct.cor)
+summary((layer.cor %>% filter(size_preference == F))$ri.num.enct.cor)
+summary((layer.cor %>% filter(size_preference == T))$ri.num.enct.cor)
+summary((layer.cor %>% filter(strict_selection == F))$ri.num.enct.cor)
+summary((layer.cor %>% filter(strict_selection == T))$ri.num.enct.cor)
+
+summary(layer.cor$ri.num.ret.cor)
+summary((layer.cor %>% filter(mu == 1))$ri.num.ret.cor)
+summary((layer.cor %>% filter(mu == 3))$ri.num.ret.cor)
+summary((layer.cor %>% filter(size_preference == F))$ri.num.ret.cor)
+summary((layer.cor %>% filter(size_preference == T))$ri.num.ret.cor)
+summary((layer.cor %>% filter(strict_selection == F))$ri.num.ret.cor)
+summary((layer.cor %>% filter(strict_selection == T))$ri.num.ret.cor)
+
+
 cor.long = layer.cor %>% 
   pivot_longer(cols = c(cor.names), names_to = "correlation") %>%
   filter(correlation != "cr.obj.cnt.cor") %>%
   mutate(correlation = factor(correlation, levels = c(
     "ri.obj.cnt.cor", "ri.cr.cor", "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
   )))
+
 
 avg.cor = ggplot(cor.long, aes(x = correlation, y = value, group = correlation, fill = correlation)) +
   geom_boxplot() +
@@ -135,3 +185,51 @@ endgrid = ggarrange(plot_recycling_correlations_MU(layer.cor, cor.names[2]),
 plot(endgrid)
 ggsave(filename = "../figures/RI-correlations_by-movement.tiff", 
        endgrid, dpi = 300, width = 10, height = 12)
+
+plot_recycling_correlations_probs = function(data, correlation) {
+  blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
+  names(blank.labs) = c("0.25", "0.5", "0.75")
+  scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.75")
+  names(scvg.labs) = c("0.25", "0.5", "0.75")
+  occup.labs = c("100 agents", "200 agents")
+  names(occup.labs) = c(100, 200)
+  
+  cor_dict = dict(
+    "ri.obj.cnt.cor" = "correlation between RI and object count",
+    "ri.cr.cor" = "correlation between RI and cortex ratio",
+    "ri.num.disc.cor" = "correlation between RI and discards",
+    "ri.num.scvg.cor" = "correlation between RI and scavenging events",
+    "ri.num.enct.cor" = "correlation between RI and encounters",
+    "ri.num.ret.cor" = "correlation between RI and retouches",
+    .class = "character", 
+    .overwrite = FALSE
+  )
+  
+  data$mu = factor(data$mu, levels = c(1, 2, 3))
+  
+  ggplot(data %>% filter(overlap == 1)) +
+    geom_boxplot(aes_string(x = "as.factor(num_agents)", y = correlation, group = "as.factor(num_agents)", fill = "as.factor(num_agents)")) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    facet_grid(blank_prob ~ scavenge_prob, 
+               labeller = labeller(blank_prob = blank.labs, 
+                                   scavenge_prob = scvg.labs)) +
+    labs(y = cor_dict[correlation], x = "number of agents", fill = "number of agents") +
+    scale_fill_brewer(palette = "Pastel1") +
+    theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
+          legend.title = element_text(size = 10))
+  
+}
+
+endgrid3 = ggarrange(plot_recycling_correlations_probs(layer.cor, cor.names[2]),
+                    plot_recycling_correlations_probs(layer.cor, cor.names[3]),
+                    plot_recycling_correlations_probs(layer.cor, cor.names[4]),
+                    plot_recycling_correlations_probs(layer.cor, cor.names[5]),
+                    plot_recycling_correlations_probs(layer.cor, cor.names[6]),
+                    plot_recycling_correlations_probs(layer.cor, cor.names[7]), 
+                    ncol = 2, nrow = 3, common.legend = T, legend = "bottom", labels = "AUTO")
+plot(endgrid3)
+ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-probs.tiff", 
+       endgrid3, dpi = 300, width = 12, height = 14)
+
+
+

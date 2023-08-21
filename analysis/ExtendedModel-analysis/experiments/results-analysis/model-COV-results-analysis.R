@@ -9,6 +9,7 @@ parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_
 #model_var = read_csv("~/eclipse-workspace/recycling-Java/results/model-coefficients-of-variation.csv")
 model_var = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-coefficients-of-variation.csv")
 
+ri = model_var[,c(parameters, "COV.total.RI", "model_year")]
 rcycl.obj = model_var[,c(parameters, "COV.num.rcycl.obj.made", "model_year")]
 blank.events = model_var[,c(parameters, "COV.num.blank.events", "model_year")]
 retouch.events = model_var[,c(parameters, "COV.num.retouch.events", "model_year")]
@@ -16,6 +17,39 @@ discard.events = model_var[,c(parameters, "COV.num.discard.events", "model_year"
 scavenge.events = model_var[,c(parameters, "COV.num.scav.events", "model_year")]
 
 #rm(model_var)
+
+#### Variation of recycling intensity ####
+r1 = ggplot(ri) +
+  geom_smooth(aes(x = model_year, y = COV.total.RI, color = as.factor(mu), group = as.factor(mu))) +
+  facet_wrap(~ num_agents, labeller = label_both)+
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
+  scale_color_colorblind() +
+  labs(color = "mu", x = "model year", y = "COV of recycling intensity")
+#ggsave(filename = "rcycl-obj-var_mu.png", plot=r1, dpi = 300)
+
+r2 = ggplot(ri) +
+  geom_smooth(aes(x = model_year, y = COV.total.RI, color = as.factor(overlap), group = as.factor(overlap))) +
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
+  scale_color_colorblind() +
+  labs(color = "overlap", x = "model year", y = "COV of recycling intensity")
+#ggsave(filename = "rcycl-obj-var_overlap.png", plot=r2, dpi = 300)
+
+r3 = ggplot(ri) +
+  geom_smooth(aes(x = model_year, y = COV.total.RI, color = as.factor(flake_preference), group = as.factor(flake_preference))) +
+  facet_grid(size_preference ~ strict_selection, labeller = label_both)+
+  scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
+  scale_color_colorblind() +
+  labs(color = "flake preference", x = "model year", y = "COV of recycling intensity")
+#ggsave(filename = "rcycl-obj-var_selection.png", plot=r3, dpi = 300)
+
+rplot = ggarrange(r1, r2, r3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO")
+#plot(rplot)
+ggsave(filename = "../results/model-variation-output/ri-var.tiff",
+       rplot,
+       dpi = 300, width = 14, height = 4)
+# ggsave(filename = "/scratch/ec3307/updated-recycling-Java/recycling-Java/results/model-variation-output/rcycl-obj-var.tiff",
+#        rplot, 
+#        dpi = 300, width = 14, height = 4)
 
 #### Variation of recycled objects made ####
 r1 = ggplot(rcycl.obj) +

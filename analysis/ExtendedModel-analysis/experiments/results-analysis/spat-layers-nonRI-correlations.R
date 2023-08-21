@@ -3,6 +3,8 @@ library(ggthemes)
 library(ggpubr)
 library(Dict)
 
+theme_set(theme_bw())
+
 layer.cor = read_csv("~/eclipse-workspace/recycling-Java/results/all-layer-other-cor-output.csv")
 parameters = colnames(layer.cor[,3:15])
 cor.names = colnames(layer.cor[,16:25])
@@ -71,4 +73,27 @@ endgrid = ggarrange(plot_other_correlations(sub.layer.cor, cor.names[1]),
 
 ggsave(filename = "../figures/supplementary-figures/other-correlations_by-parameters.tiff", 
        endgrid, dpi = 300, width = 12, height = 15)
+
+blank.labs = c("blank probability: 0.25", "blank probability: 0.5", "blank probability: 0.75")
+names(blank.labs) = c(0.25, 0.5, 0.75)
+scavenge.labs = c("scavenging probability: 0.25", "scavenging probability: 0.5", "scavenging probability: 0.75")
+names(scavenge.labs) = c(0.25, 0.5, 0.75)
+
+ret.enct.cor = read_csv("~/eclipse-workspace/recycling-Java/results/retouch-encounter-correlation-results.csv")
+re.plot = ggplot(ret.enct.cor %>% filter(overlap == 1) %>% filter(num_agents == 100)) +
+  geom_boxplot(aes(x = as.factor(mu), y = ret.prop.num.enct.cor, group = as.factor(mu), color = as.factor(mu))) +
+  geom_hline(aes(yintercept = 0), color = "red") +
+  facet_grid(blank_prob ~ scavenge_prob, 
+             labeller = labeller(blank_prob = blank.labs,
+                                 scavenge_prob = scavenge.labs)) +
+  scale_color_colorblind() +
+  labs(color = "mu", x = "mu", y = "correlation between encounters and proportion retouched artifacts") +
+  theme(axis.title = element_text(size = 7), strip.text = element_text(size = 7), 
+        legend.title = element_text(size = 8))
+plot(re.plot)
+
+ggsave(filename = "../figures/supplementary-figures/correlation_retouched-prop_encounters.tiff", 
+       re.plot, 
+       dpi = 300, width = 8, height = 7)
+
 

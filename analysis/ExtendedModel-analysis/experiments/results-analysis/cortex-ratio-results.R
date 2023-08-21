@@ -43,9 +43,11 @@ ggsave(filename = "../figures/supplementary-figures/average-cortex-ratios.tiff",
 
 p2 = ggplot(cr %>% filter(flake_preference == T)) +
   geom_hline(aes(yintercept = 1), color = "grey80", ) +
-  geom_boxplot(aes(x = size_preference, y = end_mean, group = size_preference)) +
-  facet_grid(strict_selection ~ blank_prob, labeller = label_both, scales = "free") + 
-  labs(y = "Cortex Ratio")
+  geom_boxplot(aes(x = mu, y = mean, group = as.factor(mu), color = as.factor(mu))) +
+  facet_grid(blank_prob ~ scavenge_prob, labeller = label_both, scales = "free") + 
+  labs(y = "Cortex Ratio") +
+  scale_color_colorblind(labels = mu.labs) +
+  theme(legend.position = "bottom", legend.title = element_blank())
 plot(p2)
 
 

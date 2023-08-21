@@ -390,7 +390,7 @@ fc.u = fc.u %>%
          metric = "flake count")
 
 fit4.u = update(fit4, . ~ . + as.factor(blank_prob):as.factor(scavenge_prob)) 
-#summary(fit1.u)
+summary(fit4.u)
 cr.u = as.data.frame(summary(fit4.u)$coefficients) 
 cr.u = cr.u %>%
   mutate(term = rownames(cr.u), 
@@ -492,4 +492,30 @@ ggplot(layer.var %>% filter(overlap == 1)) +
   facet_wrap(~mu)
 
 
+##### cortex ratio variation #####
+parameters = colnames(layer.var[,c(1:13)])
+cr.df = layer.var %>% select_at(c(parameters, "cortex.ratio.cv")) %>%
+  mutate(blank_prob = factor(blank_prob, levels = c(0.25, 0.5, 0.75)), 
+         scavenge_prob = factor(scavenge_prob, levels = c(0.25, 0.5, 0.75)))
+
+blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
+names(blank.labs) = c("0.25", "0.5", "0.75")
+scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.75")
+names(scvg.labs) = c("0.25", "0.5", "0.75")
+
+p2 = ggplot(cr.df) +
+  geom_boxplot(aes(x = mu, y = cortex.ratio.cv, group = as.factor(mu), color = as.factor(mu))) +
+  facet_grid(blank_prob ~ scavenge_prob, 
+             labeller = labeller(
+               blank_prob = blank.labs, 
+               scavenge_prob = scvg.labs
+             )) + 
+  labs(y = "Cortex Ratio COV") +
+  scale_color_colorblind(labels = mu.labs) +
+  theme(legend.title = element_blank())
+plot(p2)
+
+ggsave(filename = "../figures/supplementary-figures/cortex-ratio-variation_by-probs.tiff", 
+       p2, 
+       dpi = 300, height = 6, width = 7.5)
 
