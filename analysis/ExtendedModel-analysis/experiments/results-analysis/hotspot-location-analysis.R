@@ -51,6 +51,8 @@ plot_hotspot_locations(ret.enct)
 #####hotspot locations#####
 disc = read_csv("~/eclipse-workspace/recycling-Java/results/discards-hotspots-locations.csv")
 disc = disc[,-1]
+scvg = read_csv("~/eclipse-workspace/recycling-Java/results/scavenges-hotspots-locations.csv")
+scvg = scvg[,-1]
 enct = read_csv("~/eclipse-workspace/recycling-Java/results/encounters-hotspots-locations.csv")
 enct = enct[,-1]
 flk = read_csv("~/eclipse-workspace/recycling-Java/results/flake-counts-hotspots-locations.csv")

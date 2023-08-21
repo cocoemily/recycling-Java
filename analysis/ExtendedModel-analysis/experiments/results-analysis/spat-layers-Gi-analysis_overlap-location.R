@@ -94,7 +94,7 @@ for(e in 1:length(exp)) {
     if(nrow(locs) > 0) {
       locs[,c(parameters)] = Gi.run[1, parameters]
       locs$run = run
-      loc.ri.nd[[length(loc.ri.nd)+1]] = locs
+      loc.ri.ns[[length(loc.ri.ns)+1]] = locs
     }
     
     #####overlap RI and encounters#####
