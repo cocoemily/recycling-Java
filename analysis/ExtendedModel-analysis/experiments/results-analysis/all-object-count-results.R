@@ -11,7 +11,7 @@ library(MASS)
 theme_set(theme_bw())
 
 count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
-#parameters = colnames(count.data[,c(10:22)])
+parameters = colnames(count.data[,c(10:22)])
 
 
 flake.labs = c("flake preference", "nodule preference")
@@ -154,10 +154,36 @@ ggsave(filename = "../figures/supplementary-figures/all-recycled-object-counts.t
        dpi = 300, width = 10, height = 8)
 
 
-#### RI and assemblage density #####
+####assemblage sizes####
+assemblages = count.data %>% 
+  group_by_at(c(parameters, "run", "row", "col")) %>%
+  summarize(obj_count = sum(total_count))
+
+ggplot(assemblages %>% filter(overlap == 1)) +
+  geom_density(aes(obj_count, color = as.factor(num_agents), group = as.factor(num_agents))) + 
+  facet_grid(flake_preference + size_preference + strict_selection ~ mu , 
+             labeller = labeller(
+               flake_preference = flake.labs, 
+               size_preference = size.labs, 
+               strict_selection = strict.labs, 
+               mu = mu.labs
+             )) +
+  scale_color_brewer(palette = "Pastel1")
+  
+  
+  
+  #### RI and assemblage density #####
+parameters = colnames(count.data[,c(10:22)])
 sub.count = count.data %>% filter(overlap == 1) %>%
-  mutate(ri = count_recycled/total_count, 
-         log.count = log(total_count))
+  group_by_at(c(parameters, "run")) %>%
+  reframe(obj_count = sum(total_count),
+          ri = sum(count_recycled)/sum(total_count), 
+          log.count = log(obj_count))
+
+ggplot(sub.count, aes(x = log.count, y = ri)) +
+  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("R2")), color = "grey40")
 
 p = ggplot(sub.count, aes(x = log.count, y = ri)) +
   geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
@@ -171,6 +197,20 @@ p = ggplot(sub.count, aes(x = log.count, y = ri)) +
   labs(x = "log(artifact count)", y = "recycling intensity")
 ggsave(filename = "../figures/supplementary-figures/ri_assemblage-density.tiff", 
        p, 
+       dpi = 300, width = 10, height = 6.5)
+
+p1 = ggplot(sub.count, aes(x = log.count, y = ri, color = as.factor(mu), group = as.factor(mu))) +
+  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
+  #geom_abline(intercept = 0, color = "red", linetype = "dashed") +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("eq","R2")), vstep = 0.075, size = 2.5) +
+  scale_color_colorblind() +
+  facet_grid(blank_prob ~ scavenge_prob, 
+             labeller = label_both) +
+  labs(x = "log(artifact count)", y = "recycling intensity", color = "mu")
+#plot(p1)
+ggsave(filename = "../figures/supplementary-figures/ri_assemblage-density_probs.tiff", 
+       p1, 
        dpi = 300, width = 8, height = 6.5)
 
 #### RI and retouched artifact proporiton #####
@@ -183,10 +223,10 @@ p2 = ggplot(sub.count %>% filter(num_agents == 100), aes(x = retprop, y = ri)) +
   stat_poly_line() +
   stat_poly_eq(use_label(c("R2")), color = "grey40") +
   facet_grid( ~ mu, 
-             labeller = labeller(
-               num_agents = occup.labs,
-               mu = mu.labs
-             )) +
+              labeller = labeller(
+                num_agents = occup.labs,
+                mu = mu.labs
+              )) +
   labs(x = "retouched artifact proportion", y = "recycling intensity")
 ggsave(filename = "../figures/supplementary-figures/ri_retouched-prop.tiff", 
        p2, 

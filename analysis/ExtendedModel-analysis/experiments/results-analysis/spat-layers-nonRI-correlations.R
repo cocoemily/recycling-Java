@@ -44,6 +44,7 @@ plot_other_correlations = function(data, correlation) {
   
   ggplot(data) +
     geom_boxplot(aes_string(x = "mu", y = correlation, group = "mu", color = "mu")) +
+    geom_hline(aes(yintercept = 0), color = "red", linetype = "dashed") +
     facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
                labeller = labeller(flake_preference = flake.labs, 
                                    size_preference = size.labs, 

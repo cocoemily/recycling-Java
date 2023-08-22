@@ -72,6 +72,53 @@ ri.cr.plot = ggplot(joined %>% filter(overlap == 1)) +
   labs(y = "average recycling intensity", x = "average cortex ratio") +
   theme(legend.position = "bottom", legend.title = element_blank())
 
+# ggsave(filename = "../figures/supplementary-figures/ri-cr_plot.tiff", 
+#        ri.cr.plot, 
+#        dpi = 300, width = 14, height = 6)
+
+####CR and assemblage density####
+count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
+parameters = colnames(count.data[,c(10:22)])
+
+assemb.count = count.data %>%
+  group_by_at(c(parameters, "run")) %>%
+  reframe(count = sum(total_count),
+          ri = sum(count_recycled)/sum(total_count), 
+          log.count = log(count))
+
+cr.ad = cr %>% full_join(assemb.count, by = c(parameters, "run")) %>%
+  mutate(log.count = log(count))
+
+crad.plot = ggplot(cr.ad %>% filter(overlap == 1) %>% filter(flake_preference == T)
+                   , aes(x = log.count, y = mean)) +
+  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("eq","R2")), color = "grey40", size = 2.5) +
+  facet_grid(num_agents ~ mu, 
+             labeller = labeller(
+               num_agents = occup.labs,
+               mu = mu.labs
+             )) +
+  labs(x = "log(artifact count)", y = "cortex ratio")
+plot(crad.plot)
+
+crri.plot = ggplot(cr.ad %>% filter(overlap == 1)
+                   , aes(x = mean, y = ri, color = as.factor(mu), group = as.factor(mu))) +
+  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("eq","R2")), vstep = 0.06, size = 2) +
+  facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
+             labeller = labeller(
+               num_agents = occup.labs, 
+               strict_selection = strict.labs, 
+               size_preference = size.labs, 
+               flake_preference = flake.labs
+             )) +
+  scale_color_colorblind(labels = mu.labs) +
+  labs(x = "log(artifact count)", y = "cortex ratio") +
+  theme(legend.title = element_blank(), legend.position = "bottom")
+plot(crri.plot)
+
 ggsave(filename = "../figures/supplementary-figures/ri-cr_plot.tiff", 
-       ri.cr.plot, 
+       crri.plot, 
        dpi = 300, width = 14, height = 6)

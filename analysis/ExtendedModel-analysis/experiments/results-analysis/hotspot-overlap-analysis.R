@@ -589,6 +589,22 @@ ggsave(filename = "../figures/supplementary-figures/RI-hotspot_regression-output
        zeroplot, 
        dpi = 300, width = 6, height = 3)
 
+######high counts of other hotspots######
+hist(layers.overlap$high_enct)
+henct = glm(high_enct ~ ., data = layers.overlap[c(r.params, "high_enct")], family = "poisson")
+summary(henct) 
+
+hist(layers.overlap$high_ret)
+hret = glm(high_ret ~ ., data = layers.overlap[c(r.params, "high_ret")], family = "poisson")
+summary(hret) 
+
+hist(layers.overlap$high_scvg)
+hscvg = glm(high_scvg ~ ., data = layers.overlap[c(r.params, "high_scvg")], family = "poisson")
+summary(hscvg) 
+
+hist(layers.overlap$high_disc)
+hdisc = glm(high_disc ~ ., data = layers.overlap[c(r.params, "high_disc")], family = "poisson")
+summary(hdisc) 
 
 
 ####encounters and retouched artifacts####

@@ -24,6 +24,18 @@ ri.rp = ri.rp[,-1]
 parameters = c("max_use_intensity", "max_artifact_carry", "max_flake_size","max_nodules_size", "blank_prob", "scavenge_prob", "overlap","mu", "num_agents", "size_preference", "flake_preference","min_suitable_flake_size", "strict_selection")
 
 
+loc.counts1 = ri.disc %>% 
+  group_by_at(c(parameters, "run")) %>%
+  summarize(count = n())
+summary(loc.counts1$count)
+
+loc.counts2 = ri.enct %>% 
+  group_by_at(c(parameters, "run")) %>%
+  summarize(count = n())
+summary(loc.counts2$count)
+
+
+
 plot_hotspot_locations = function(data) {
   loc.counts = data %>% 
     group_by_at(c(parameters, "x", "y")) %>%
