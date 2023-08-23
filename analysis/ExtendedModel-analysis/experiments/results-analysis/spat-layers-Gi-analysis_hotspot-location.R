@@ -154,7 +154,7 @@ if(!is.null(loc.nd.results)) {
   write.csv(loc.nd.results, file = "discards-hotspots-locations.csv")
 }
 if(!is.null(loc.ns.results)) {
-  write.csv(loc.ns.results, filename = "scavenges-hotspots-locations.csv")
+  write.csv(loc.ns.results, file = "scavenges-hotspots-locations.csv")
 }
 if(!is.null(loc.ne.results)) {
   write.csv(loc.ne.results, file = "encounters-hotspots-locations.csv")

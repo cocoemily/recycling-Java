@@ -151,7 +151,7 @@ if(!is.null(loc.ri.nd.results)) {
   write.csv(loc.ri.nd.results, file = "ri-discards-overlap-locations.csv")
 }
 if(!is.null(loc.ri.ns.results)) {
-  write.csv(loc.ri.ns.results, filename = "ri-scavenges-overlap-locations.csv")
+  write.csv(loc.ri.ns.results, file = "ri-scavenges-overlap-locations.csv")
 }
 if(!is.null(loc.ri.ne.results)) {
   write.csv(loc.ri.ne.results, file = "ri-encounters-overlap-locations.csv")
