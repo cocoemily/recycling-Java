@@ -6,6 +6,7 @@ library(fitdistrplus)
 library(betareg)
 library(jtools)
 library(rstatix)
+library(Dict)
 
 theme_set(theme_bw())
 
@@ -65,9 +66,11 @@ summary((layer.cor %>% filter(strict_selection == T))$ri.num.ret.cor)
 
 cor.long = layer.cor %>% 
   pivot_longer(cols = c(cor.names), names_to = "correlation") %>%
-  filter(correlation != "cr.obj.cnt.cor") %>%
+  filter(correlation != "cr.obj.cnt.cor" & 
+           correlation != "ri.obj.cnt.cor" & 
+           correlation != "ri.cr.cor") %>%
   mutate(correlation = factor(correlation, levels = c(
-    "ri.obj.cnt.cor", "ri.cr.cor", "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
+    "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
   )))
 
 
@@ -75,14 +78,14 @@ avg.cor = ggplot(cor.long, aes(x = correlation, y = value, group = correlation, 
   geom_boxplot() +
   geom_hline(aes(yintercept = 0), color = "red") +
   labs(y = "correlation coefficient") +
-  scale_fill_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Dark2") +
   theme(axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust = 1), 
         legend.position = "none")
 plot(avg.cor)
 
 ggsave(filename = "../figures/average-correlations.tiff", plot = avg.cor, 
-       dpi = 300, width = 5, height = 4)
+       dpi = 300, width = 6, height = 3)
 
 
 ####supplementary figure by parameters ####
@@ -128,13 +131,15 @@ plot_recycling_correlations = function(data, correlation) {
   
 }
 
-endgrid = ggarrange(plot_recycling_correlations(layer.cor, cor.names[2]),
-                     plot_recycling_correlations(layer.cor, cor.names[3]), 
-                     ncol = 2, nrow = 1, common.legend = T, legend = "bottom", labels = "AUTO")
+endgrid = ggarrange(plot_recycling_correlations(layer.cor, cor.names[4]),
+                    plot_recycling_correlations(layer.cor, cor.names[5]),
+                    plot_recycling_correlations(layer.cor, cor.names[6]),
+                    plot_recycling_correlations(layer.cor, cor.names[7]), 
+                     ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
 plot(endgrid)
 
-ggsave(filename = "../figures/RI-correlations_by-selection.tiff", 
-       endgrid, dpi = 300,  width = 10, height = 5)
+ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-selection.tiff",
+       endgrid, dpi = 300, width = 10, height = 8)
 
 
 plot_recycling_correlations_MU = function(data, correlation) {
@@ -175,16 +180,14 @@ plot_recycling_correlations_MU = function(data, correlation) {
   
 }
 
-endgrid = ggarrange(plot_recycling_correlations_MU(layer.cor, cor.names[2]),
-                    plot_recycling_correlations_MU(layer.cor, cor.names[3]),
-                    plot_recycling_correlations_MU(layer.cor, cor.names[4]),
+endgrid = ggarrange(plot_recycling_correlations_MU(layer.cor, cor.names[4]),
                     plot_recycling_correlations_MU(layer.cor, cor.names[5]),
                     plot_recycling_correlations_MU(layer.cor, cor.names[6]),
                     plot_recycling_correlations_MU(layer.cor, cor.names[7]), 
-                    ncol = 2, nrow = 3, common.legend = T, legend = "bottom", labels = "AUTO")
+                    ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
 plot(endgrid)
 ggsave(filename = "../figures/RI-correlations_by-movement.tiff", 
-       endgrid, dpi = 300, width = 10, height = 12)
+       endgrid, dpi = 300, width = 10, height = 8)
 
 plot_recycling_correlations_probs = function(data, correlation) {
   blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
@@ -220,16 +223,14 @@ plot_recycling_correlations_probs = function(data, correlation) {
   
 }
 
-endgrid3 = ggarrange(plot_recycling_correlations_probs(layer.cor, cor.names[2]),
-                    plot_recycling_correlations_probs(layer.cor, cor.names[3]),
-                    plot_recycling_correlations_probs(layer.cor, cor.names[4]),
+endgrid3 = ggarrange(plot_recycling_correlations_probs(layer.cor, cor.names[4]),
                     plot_recycling_correlations_probs(layer.cor, cor.names[5]),
                     plot_recycling_correlations_probs(layer.cor, cor.names[6]),
                     plot_recycling_correlations_probs(layer.cor, cor.names[7]), 
-                    ncol = 2, nrow = 3, common.legend = T, legend = "bottom", labels = "AUTO")
+                    ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
 plot(endgrid3)
 ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-probs.tiff", 
-       endgrid3, dpi = 300, width = 12, height = 14)
+       endgrid3, dpi = 300, width = 12, height = 10)
 
 
 

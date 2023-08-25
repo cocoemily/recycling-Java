@@ -58,10 +58,12 @@ parameters = colnames(ri.ci[,c(2:14)])
 joined = cr %>% left_join(ri.ci, by = c("run", parameters), suffix = c(".cr", ".ri"))
 
 
-ri.cr.plot = ggplot(joined %>% filter(overlap == 1)) +
-  geom_point(aes(x = mean.cr, y = mean.ri, color = as.factor(mu), group = as.factor(mu)), size = 0.05, alpha = 0.05) +
-  geom_smooth(aes(x = mean.cr, y = mean.ri, color = as.factor(mu), group = as.factor(mu)), method = "lm") +
-  facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
+ri.cr.plot = ggplot(joined %>% filter(overlap == 1) %>% filter(flake_preference == T), 
+                    aes(x = mean.cr, y = mean.ri, color = as.factor(mu), group = as.factor(mu))) +
+  geom_point(size = 0.1, alpha = 0.1) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("eq","R2")), vstep = 0.075, size = 3) +
+  facet_grid(num_agents ~ size_preference + strict_selection, 
              labeller = labeller(
                num_agents = occup.labs, 
                strict_selection = strict.labs, 
@@ -69,12 +71,13 @@ ri.cr.plot = ggplot(joined %>% filter(overlap == 1)) +
                flake_preference = flake.labs
              )) +
   scale_color_colorblind(labels = mu.labs) +
-  labs(y = "average recycling intensity", x = "average cortex ratio") +
+  labs(y = "recycling intensity", x = "cortex ratio") +
   theme(legend.position = "bottom", legend.title = element_blank())
+#plot(ri.cr.plot)
 
-# ggsave(filename = "../figures/supplementary-figures/ri-cr_plot.tiff", 
-#        ri.cr.plot, 
-#        dpi = 300, width = 14, height = 6)
+ggsave(filename = "../figures/ri-cr_plot.tiff",
+       ri.cr.plot,
+       dpi = 300, width = 10, height = 5.5)
 
 ####CR and assemblage density####
 count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
@@ -93,7 +96,7 @@ crad.plot = ggplot(cr.ad %>% filter(overlap == 1) %>% filter(flake_preference ==
                    , aes(x = log.count, y = mean)) +
   geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
   stat_poly_line() +
-  stat_poly_eq(use_label(c("eq","R2")), color = "grey40", size = 2.5) +
+  stat_poly_eq(use_label(c("eq","R2")), color = "grey40", size = 2.5, label.y = "bottom") +
   facet_grid(num_agents ~ mu, 
              labeller = labeller(
                num_agents = occup.labs,
@@ -102,23 +105,9 @@ crad.plot = ggplot(cr.ad %>% filter(overlap == 1) %>% filter(flake_preference ==
   labs(x = "log(artifact count)", y = "cortex ratio")
 plot(crad.plot)
 
-crri.plot = ggplot(cr.ad %>% filter(overlap == 1)
-                   , aes(x = mean, y = ri, color = as.factor(mu), group = as.factor(mu))) +
-  geom_point(color = "grey90", size = 0.1, alpha = 0.25) +
-  stat_poly_line() +
-  stat_poly_eq(use_label(c("eq","R2")), vstep = 0.06, size = 2) +
-  facet_grid(num_agents ~ flake_preference + size_preference + strict_selection, 
-             labeller = labeller(
-               num_agents = occup.labs, 
-               strict_selection = strict.labs, 
-               size_preference = size.labs, 
-               flake_preference = flake.labs
-             )) +
-  scale_color_colorblind(labels = mu.labs) +
-  labs(x = "log(artifact count)", y = "cortex ratio") +
-  theme(legend.title = element_blank(), legend.position = "bottom")
-plot(crri.plot)
+ggsave(filename = "../figures/supplementary-figures/cr_assemblage-density.tiff", 
+       crad.plot, 
+       dpi = 300, width = 8, height = 6)
 
-ggsave(filename = "../figures/supplementary-figures/ri-cr_plot.tiff", 
-       crri.plot, 
-       dpi = 300, width = 14, height = 6)
+summary(lm(ri ~ log.count + mean, data = cr.ad))
+summary(lm(mean ~ log.count + ri, data = cr.ad))

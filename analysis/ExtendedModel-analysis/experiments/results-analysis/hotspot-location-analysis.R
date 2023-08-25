@@ -14,6 +14,8 @@ ri.disc = read_csv("~/eclipse-workspace/recycling-Java/results/ri-discards-overl
 ri.disc = ri.disc[,-1]
 ri.enct = read_csv("~/eclipse-workspace/recycling-Java/results/ri-encounters-overlap-locations.csv")
 ri.enct = ri.enct[,-1]
+ri.scvg = read_csv("~/eclipse-workspace/recycling-Java/results/ri-scavenges-overlap-locations.csv")
+ri.scvg = ri.scvg[,-1]
 ri.flk = read_csv("~/eclipse-workspace/recycling-Java/results/ri-flake-counts-overlap-locations.csv")
 ri.flk = ri.flk[,-1]
 ri.nod = read_csv("~/eclipse-workspace/recycling-Java/results/ri-nodule-counts-overlap-locations.csv")
@@ -52,6 +54,7 @@ plot_hotspot_locations = function(data) {
 
 plot_hotspot_locations(ri.disc)
 plot_hotspot_locations(ri.enct)
+plot_hotspot_locations(ri.scvg)
 
 plot_hotspot_locations(ri.flk)
 plot_hotspot_locations(ri.nod)
@@ -80,6 +83,7 @@ ri = ri[,-1]
 
 plot_hotspot_locations(disc)
 plot_hotspot_locations(enct)
+plot_hotspot_locations(scvg)
 plot_hotspot_locations(flk)
 plot_hotspot_locations(nod)
 plot_hotspot_locations(cr)
