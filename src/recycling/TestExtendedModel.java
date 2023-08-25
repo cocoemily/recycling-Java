@@ -10,15 +10,15 @@ import java.io.FileWriter;
  * @author emilycoco
  *
  */
-public class TestModel_Accumulation {
+public class TestExtendedModel {
 
 	public static void main(String[] args) {
 
 		//System.out.println(System.getProperty("user.dir"));
 
 		ExtendedModel model = new ExtendedModel(
-				"model-testing",	//outputFile
-				"run_2", 	//name
+				"model-testing", //outputFile
+				"run_0", 	//name
 				10, 			//size 
 				500000, 	//startYear
 				100, 		//timestep
@@ -33,23 +33,19 @@ public class TestModel_Accumulation {
 				false, 		//sizePref
 				false, 		//flakePref
 				1, 			//minFS
-//				10, 		//minNS
+				//				10, 		//minNS
 				false, 		//strict
 				0.5, 		//ED
 				0, 			//GF
-				3000,		//totalSteps, 
-				200
+				3000,		//totalSteps
+				200			//totalAgents
 				);
 
 
 		model.print();
 		System.out.println("model created.");
 
-		//int totalAgents = (int) Math.ceil((0.315 * model.totalSteps) + 3); //equation based on linear regression fit to timesteps and last agent number from testing runs
-		//int totalAgents = (int) Math.min((50 + (Math.random() * 151)), 500); //make sure too many agents are not made
-
-		model.setNumberAgents((int) Math.min((50 + (Math.random() * 151)), 500));
-
+		
 		//create agents per overlap parameter
 		if(model.overlap == 1) { //complete overlap -> agents randomly added to agent list
 			ArrayList<Integer> techs = new ArrayList<Integer>();
@@ -189,6 +185,12 @@ public class TestModel_Accumulation {
 				}
 			}
 
+//			if(whichAgent % (100) == 0) {
+//				model.getArtifactData();
+//				model.getLayerData();
+//			}
+
+
 			model.getModelData();
 			model.resetScavengeEventCounter();
 			model.resetDiscardEventCounter();
@@ -196,10 +198,10 @@ public class TestModel_Accumulation {
 			model.resetRetouchEventCounter();
 			model.resetBlankCounter();
 		}
-		
+
 		model.getArtifactData();
 		model.getLayerData();
-		
+
 		System.out.println("model used " + (whichAgent + 1) + " agents");
 		outputModelData(model);
 	}
