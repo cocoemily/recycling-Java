@@ -105,7 +105,7 @@ mplot = ggplot() +
              labeller = labeller(num_agents = occup.labs)) +
   scale_color_colorblind() +
   ylim(0, 0.2) +
-  labs(color = "mu parameter", x = "model year", y = "average recycling intensity")
+  labs(color = "\u00b5", x = "model year", y = "average recycling intensity")
 
 # ggsave(filename = "recycling-intensity-trend-by-mu.png", mplot, dpi = 300)
 

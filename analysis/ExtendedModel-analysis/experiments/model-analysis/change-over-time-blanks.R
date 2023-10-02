@@ -103,7 +103,7 @@ mplot = ggplot() +
   facet_wrap(~ num_agents, 
              labeller = labeller(num_agents = occup.labs)) +
   scale_color_colorblind() +
-  labs(color = "mu parameter", x = "model year", y = "average number of blanks produced")
+  labs(color = "\u00b5", x = "model year", y = "average number of blanks produced")
 
 # ggsave(filename = "blanks-trend-by-mu.png", mplot, dpi = 300)
 

@@ -105,7 +105,7 @@ mplot = ggplot() +
              labeller = labeller(num_agents = occup.labs)) +
   scale_color_colorblind() +
   ylim(0, 5) +
-  labs(color = "mu parameter", x = "model year", y = "average number of recycled objects created")
+  labs(color = "\u00b5", x = "model year", y = "average number of recycled objects created")
 
 # ggsave(filename = "recycled-objects-trend-by-mu.png", mplot, dpi = 300)
 

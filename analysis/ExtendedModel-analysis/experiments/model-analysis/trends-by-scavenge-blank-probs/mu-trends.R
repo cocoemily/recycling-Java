@@ -64,7 +64,7 @@ mplot1 = ggplot() +
   )) +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
-  labs(color = "mu parameter", x = "model year", y = "average recycling intensity")
+  labs(color = "\u00b5", x = "model year", y = "average recycling intensity")
 
 save(mplot1, file = "ri-mu.rdata")
 
@@ -109,6 +109,6 @@ mplot2 = ggplot() +
   )) +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
-  labs(color = "mu parameter", x = "model year", y = "average number of recycled objects created")
+  labs(color = "\u00b5", x = "model year", y = "average number of recycled objects created")
 
 save(mplot2, file = "re-mu.rdata")
