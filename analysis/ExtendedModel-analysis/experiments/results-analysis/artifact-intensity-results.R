@@ -44,9 +44,9 @@ plot_intensity_counts(many.tech)
 grid = ggarrange(plot_intensity_counts(two.tech), plot_intensity_counts(many.tech), 
                  common.legend = T, legend = "bottom", labels = "AUTO")
 
-ggsave(filename = "../figures/artifact-retouch-intensity-results.tiff", 
-       plot = grid, 
-       dpi = 300, width = 8)
+# ggsave(filename = "../figures/artifact-retouch-intensity-results.tiff", 
+#        plot = grid, 
+#        dpi = 300, width = 8)
 
 
 

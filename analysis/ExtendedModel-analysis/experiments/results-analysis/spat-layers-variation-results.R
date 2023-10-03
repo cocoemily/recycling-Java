@@ -18,7 +18,7 @@ theme_set(theme_bw())
 terms_labs = c(
   "overlap1TRUE" = "two technologies", 
   "overlap2TRUE" = "many technologies",
-  "mu" = "mu",
+  "mu" = "\u00b5",
   "num_agents" = "number of agents",
   "strict_selectionTRUE" = "strict selection: TRUE",
   "size_preferenceTRUE" = "size preference: TRUE",
@@ -177,7 +177,7 @@ ri = as.data.frame(summary(fit1)$coefficients)
 ri = ri %>%
   mutate(term = rownames(ri), 
          signif = ifelse(ri$`Pr(>|t|)` < 0.05, T, F), 
-         metric = "recycling intensity")
+         metric = "recycling incidence")
 
 
 fit2 = lm(nodule.count.cv ~ as.factor(overlap) + as.factor(max_use_intensity) + as.factor(max_artifact_carry) +
@@ -254,7 +254,7 @@ ns = ns %>%
 allsc = rbind(ri, cr, fc, nc, ne, nr, nd, ns)
 allsc$metric = factor(allsc$metric, 
                       levels = c(
-                        "recycling intensity", 
+                        "recycling incidence", 
                         "cortex ratio", 
                         "flake count", "nodule count", 
                         "discard events", "scavenging events", 
@@ -277,8 +277,8 @@ x.labs = c(
   "blank probability: 0.75 vs. blank probability: 0.5", 
   "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
   "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
-  "mu: 2 vs. mu: 1", 
-  "mu: 3 vs. mu: 1", 
+  "\u00b5: 2 vs. \u00b5: 1", 
+  "\u00b5: 3 vs. \u00b5: 1", 
   "number of agents: 200 vs number of agents: 100", 
   "size preference vs. no size preference", 
   "flake preference vs. nodule preference", 
@@ -371,7 +371,7 @@ ri.u = as.data.frame(summary(fit1.u)$coefficients)
 ri.u = ri.u %>%
   mutate(term = rownames(ri.u), 
          signif = ifelse(ri.u$`Pr(>|t|)` < 0.05, T, F), 
-         metric = "recycling intensity")
+         metric = "recycling incidence")
 
 fit2.u = update(fit2, . ~ . + as.factor(blank_prob):as.factor(scavenge_prob)) 
 #summary(fit1.u)
@@ -432,7 +432,7 @@ ns.u = ns.u %>%
 allsc.u = rbind(ri.u, cr.u, fc.u, nc.u, ne.u, nr.u, nd.u, ns.u)
 allsc.u$metric = factor(allsc.u$metric, 
                       levels = c(
-                        "recycling intensity", 
+                        "recycling incidence", 
                         "cortex ratio", 
                         "flake count", "nodule count", 
                         "discard events", "scavenging events", 
@@ -445,11 +445,12 @@ allsc.u$positive = ifelse(allsc.u$Estimate > 0, "positive", "negative")
 interactions = allsc.u %>% filter(str_detect(term, "prob"))
 #write_csv(interactions, file = "../results/interaction-terms_variation.csv")
 inter.calc = read_csv(file = "../results/interaction-terms_variation.csv") %>%
-  filter(!is.na(full_effect))
+  filter(!is.na(full_effect)) %>%
+  mutate(metric = ifelse(metric == "recycling intensity", "recycling incidence", metric))
 
 inter.calc$metric = factor(inter.calc$metric, 
                       levels = c(
-                        "recycling intensity", 
+                        "recycling incidence", 
                         "cortex ratio", 
                         "flake count", "nodule count", 
                         "discard events", "scavenging events", 
@@ -502,6 +503,8 @@ blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank prob
 names(blank.labs) = c("0.25", "0.5", "0.75")
 scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.75")
 names(scvg.labs) = c("0.25", "0.5", "0.75")
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
+names(mu.labs) = c(1,2,3)
 
 p2 = ggplot(cr.df) +
   geom_boxplot(aes(x = mu, y = cortex.ratio.cv, group = as.factor(mu), color = as.factor(mu))) +

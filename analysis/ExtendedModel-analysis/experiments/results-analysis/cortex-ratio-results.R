@@ -6,6 +6,8 @@ library(rcompanion)
 library(fitdistrplus)
 library(pscl)
 
+source("ExtendedModel-analysis/experiments/model-analysis/mu-visualization.R")
+
 theme_set(theme_bw())
 
 #### CORTEX RATIO CIs ####
@@ -17,7 +19,7 @@ size.labs = c("size preference", "no size preference")
 names(size.labs) = c("TRUE", "FALSE")
 strict.labs = c("strict selection", "no strict selection")
 names(strict.labs) = c("TRUE", "FALSE")
-mu.labs = c("mu = 1", "mu = 2", "mu = 3")
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
 names(mu.labs) = c("1", "2", "3")
 occup.labs = c("100 agents", "200 agents")
 names(occup.labs) = c(100, 200)
@@ -32,12 +34,15 @@ p1 = ggplot(cr %>% filter(overlap == 1)) +
                strict_selection = strict.labs, 
                num_agents = occup.labs
              ), scales = "free") + 
-  labs(y = "cortex ratio") +
+  labs(y = "cortex ratio", x = "\u00b5") +
   scale_color_colorblind(labels = mu.labs) +
   theme(legend.position = "bottom", legend.title = element_blank())
 plot(p1)
 
-ggsave(filename = "../figures/supplementary-figures/average-cortex-ratios.tiff", p1, 
+p1.mu = ggarrange(p1, mu_horz, ncol = 1, heights = c(1, 0.4))
+
+ggsave(filename = "../figures/supplementary-figures/average-cortex-ratios.tiff", 
+       p1, 
        dpi = 300, width = 10, height = 6)
 
 
@@ -71,9 +76,12 @@ ri.cr.plot = ggplot(joined %>% filter(overlap == 1) %>% filter(flake_preference 
                flake_preference = flake.labs
              )) +
   scale_color_colorblind(labels = mu.labs) +
-  labs(y = "recycling intensity", x = "cortex ratio") +
+  labs(y = "recycling incidence", x = "cortex ratio") +
   theme(legend.position = "bottom", legend.title = element_blank())
-#plot(ri.cr.plot)
+plot(ri.cr.plot)
+
+ri.cr.plot.mu = ggarrange(ri.cr.plot, mu_horz, ncol = 1, heights = c(1, 0.4))
+plot(ri.cr.plot.mu)
 
 ggsave(filename = "../figures/ri-cr_plot.tiff",
        ri.cr.plot,
@@ -105,9 +113,12 @@ crad.plot = ggplot(cr.ad %>% filter(overlap == 1) %>% filter(flake_preference ==
   labs(x = "log(artifact count)", y = "cortex ratio")
 plot(crad.plot)
 
+crad.plot.mu = ggarrange(crad.plot, mu_horz, ncol = 1, heights = c(1, 0.4))
+plot(crad.plot.mu)
+
 ggsave(filename = "../figures/supplementary-figures/cr_assemblage-density.tiff", 
        crad.plot, 
-       dpi = 300, width = 8, height = 6)
+       dpi = 300, width = 10, height = 6)
 
 summary(lm(ri ~ log.count + mean, data = cr.ad))
 summary(lm(mean ~ log.count + ri, data = cr.ad))

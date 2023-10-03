@@ -81,3 +81,75 @@ information for the whole model at each timestep of a model run
     -   This requires creating a figures and figures/supplementary-figures folder
 
 *In most cases, filepaths in the analysis scripts were hardcoded to avoid any issues with producing results and figures. These would need to be refactored to run properly.*
+
+#### Figure list and corresponding scripts
+
+Figure 1 - made separately
+
+Figure 2 - mu-viz.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/model-analysis/mu-visualization.R)`
+
+Figure 2 - odds-ratios-YOFD.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/artifact-exposure-results.R)`
+
+Figure 3 - SKEW_age-of-discard.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/exposure-skew-analysis.R)`
+
+Figure 4 - average-recycling-intensity_by-probs.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/recycling-intensity-landscape-averages.R)`
+
+Figure 5 - recycling-trends.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/recycling-trends-graphs.R)`
+
+Figure 6 - recycling-trends_by-probs-mu.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/model-analysis/trends-by-blank-scavenging.R)`
+
+Figure 7 - behavior-trends-by-mu.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/behavioral-trends-graphs.R)`
+
+Figure 8 - behavior-trends-by-selection.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/behavioral-trends-graphs.R)`
+
+Figure 9 - recycling-intensity-variation_by-probs.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/recycling-intensity-variation.R)`
+
+Figure 10 - average-correlations.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/spat-layers-correlations_by-parameters.R)`
+
+Figure 11 - RI-correlations_by-movement.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/spat-layers-correlations_by-parameters.R)`
+
+Figure 12 - ri_assemblage-density_probs.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/all-object-count-results.R)`
+
+Figure 13 - ri-cr_plot.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/cortex-ratio-results.R)`
+
+Figure 14 - overlapping-grid-squares-dist_V2.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/hotspot-overlap-analysis.R)`
+
+Figure 15 - log-odds_no-overlap.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/hotspot-overlap-analysis.R)`
+
+Figure 16 - IRR_overlap-counts.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/hotspot-overlap-analysis.R)`
+
+Figure 17 - retouched-encounter_overlaps.tiff
+
+`source(../analysis/ExtendedModel-analysis/experiments/results-analysis/hotspot-overlap-analysis.R)`

@@ -21,7 +21,7 @@ occup.labs = c("100 agents", "200 agents")
 names(occup.labs) = c(100, 200)
 blank.labs = c("blank probability: 0.25", "blank probability: 0.5", "blank probability: 0.75")
 names(blank.labs) = c(0.25, 0.5, 0.75)
-mu.labs = c("mu = 1", "mu = 2", "mu = 3")
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
 names(mu.labs) = c(1, 2, 3)
 carry.labs = c("carry capacity: 10", "carry capacity: 20")
 names(carry.labs) = c(10, 20)
@@ -52,7 +52,7 @@ plot1 = ggplot(ri.var) +
     blank_prob = blank.labs
   )) +
   scale_fill_brewer(palette = "Set2") +
-  labs(x = "scavenging probability", y = "recycling intensity COV", 
+  labs(x = "scavenging probability", y = "recycling incidence COV", 
        fill = "scavenging probability") +
   theme(legend.position = "bottom")
 plot(plot1)
@@ -83,7 +83,7 @@ plot3 = ggplot(ri.var) +
   )) +
   theme(legend.position = "bottom", legend.title = element_blank()) +
   scale_color_colorblind(labels = mu.labs) +
-  labs(x = "mu", y = "recycling intensity COV")
+  labs(x = "mu", y = "recycling incidence COV")
 plot(plot3)
 
 ggsave(
@@ -117,7 +117,7 @@ plot4 = ggplot(ri.var %>% filter(flake_preference == T)) +
   theme(legend.position = "bottom") +
   scale_color_colorblind(labels = strict.labs) +
   scale_x_discrete(labels = strict.labs) +
-  labs(y = "recycling intensity COV") +
+  labs(y = "recycling incidence COV") +
   theme(axis.title.x = element_blank(), legend.title = element_blank())
 plot(plot4)
 

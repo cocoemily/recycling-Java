@@ -33,14 +33,15 @@ tech.labs = c("two technologies", "many technologies")
 names(tech.labs) = c("1", "2")
 occup.labs = c("100 agents", "200 agents")
 names(occup.labs) = c(100, 200)
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
+names(mu.labs) = c(1,2,3)
 
 ccplot = ggplot(long.overlap %>% filter(overlap == 1)) +
   geom_bar(aes(x = count.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
   facet_grid(num_agents~vars, labeller = labeller(vars = var.labs, num_agents = occup.labs)) + 
-  labs(x = "number of overlapping hotspots", y = "", 
-       fill = "mu") +
+  labs(x = "number of overlapping hotspots", y = "", fill = "") +
   theme(strip.text = element_text(size = 6), legend.position = "bottom") +
-  scale_fill_colorblind()
+  scale_fill_colorblind(labels = mu.labs)
 plot(ccplot)
 
 ggsave(filename = "../figures/overlapping-grid-squares-dist_V2.tiff", ccplot, 
@@ -54,7 +55,7 @@ long.high = layers.overlap %>%
          high_RI, high_flkcnt, high_nodcnt, high_disc, high_scvg, high_enct, high_ret)
 long.high$vars = factor(long.high$vars, levels = c("high_RI", "high_flkcnt", "high_nodcnt", "high_disc", "high_scvg", "high_enct", "high_ret"))
 
-var.labs = c("recycling intensity", "flake count", "nodule count", 
+var.labs = c("recycling incidence", "flake count", "nodule count", 
              "discards", "scavenging events", "square encounters","retouches")
 names(var.labs) = unique(long.high$vars)
 tech.labs = c("two technologies", "many technologies")
@@ -64,9 +65,9 @@ ccplot2 = ggplot(long.high %>% filter(overlap == 1)) +
   geom_density(aes(x = count.high, fill = as.factor(mu), group = as.factor(mu)), alpha = 0.4) +
   geom_density(aes(x = count.high, color = as.factor(mu), group = as.factor(mu))) +
   facet_grid(num_agents~vars, labeller = labeller(vars = var.labs, num_agents = occup.labs)) + 
-  labs(x = "number of hotspots", y = "", color = "mu", fill = "mu") +
-  scale_fill_colorblind() +
-  scale_color_colorblind() +
+  labs(x = "number of hotspots", y = "", color = "", fill = "") +
+  scale_fill_colorblind(labels = mu.labs) +
+  scale_color_colorblind(labels = mu.labs) +
   theme(strip.text = element_text(size = 6), legend.position = "bottom")
 plot(ccplot2)
 
@@ -204,8 +205,8 @@ facet.labs =c(
   "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
   "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
   "many technologies vs. two technologies", 
-  "mu: 2 vs. mu: 1", 
-  "mu: 3 vs. mu: 1", 
+  "\u00b5: 2 vs. \u00b5: 1", 
+  "\u00b5: 3 vs. \u00b5: 1", 
   "number of agents: 200 vs number of agents: 100", 
   "size preference vs. no size preference", 
   "flake preference vs. nodule preference", 
@@ -442,7 +443,7 @@ highzero = allzero %>% filter(str_detect(var, "high"))
 unique(highzero$var)
 
 high.labs = c(
-  "count of recycling intensity hotspots", 
+  "count of recycling incidence hotspots", 
   "count of flake count hotspots", 
   "count of nodule count hotspots",
   "count of discard event hotspots", 
@@ -491,19 +492,19 @@ allcount = allcount  %>%
   rowwise() %>%
   mutate(signif = !between(1, lower, upper))
 
-countplot = ggplot(highcount %>% filter(signif == T)) +
-  #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
-  #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
-  geom_col(aes(x = var_clean, y = est, fill = name, group = name)) +
-  geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
-  geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
-  coord_flip() +
-  scale_color_brewer(palette = "Dark2") +
-  facet_wrap(~name, nrow = 1) +
-  labs(x = "parameter", y = "estimate") +
-  theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 
-        axis.title = element_text(size = 7), 
-        legend.position = "none") 
+# countplot = ggplot(highcount %>% filter(signif == T)) +
+#   #geom_point(aes(x = var, y = est, color = name, group = name), position = position_dodge(width = 0.75)) +
+#   #geom_pointrange(aes(x = var_clean, y = est, ymax = upper, ymin = lower, color = name, group = name), size = 0.1, position = position_dodge(width = 0.75)) +
+#   geom_col(aes(x = var_clean, y = est, fill = name, group = name)) +
+#   geom_errorbar(aes(x = var_clean, y = est, ymax = upper, ymin = lower, group = name), width = 0.2, linewidth = 0.25) +
+#   geom_hline(aes(yintercept = 0), color = "red", linewidth = 0.25) +
+#   coord_flip() +
+#   scale_color_brewer(palette = "Dark2") +
+#   facet_wrap(~name, nrow = 1) +
+#   labs(x = "parameter", y = "estimate") +
+#   theme(strip.text = element_text(size = 6), axis.text = element_text(size = 6), 
+#         axis.title = element_text(size = 7), 
+#         legend.position = "none") 
 
 
 
@@ -535,8 +536,8 @@ facet.labs =c(
   "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
   "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
   "many technologies vs. two technologies", 
-  "mu: 2 vs. mu: 1", 
-  "mu: 3 vs. mu: 1", 
+  "\u00b5: 2 vs. \u00b5: 1", 
+  "\u00b5: 3 vs. \u00b5: 1", 
   "number of agents: 200 vs number of agents: 100", 
   "size preference vs. no size preference", 
   "flake preference vs. nodule preference", 
@@ -623,9 +624,9 @@ ccplot = ggplot(ret.overlap %>% filter(overlap == 1)) +
   facet_wrap(~num_agents, labeller = labeller(num_agents = occup.labs), 
              strip.position = "right") + 
   labs(x = "number of overlapping hotspots", y = "", 
-       fill = "mu") +
+       fill = "") +
   theme(strip.text = element_text(size = 6), legend.position = "bottom") +
-  scale_fill_colorblind() + 
+  scale_fill_colorblind(labels = mu.labs) + 
   ylim(0, 50000)
 plot(ccplot)
 
@@ -633,9 +634,9 @@ ccplot2 = ggplot(ret.overlap %>% filter(overlap == 1) %>% filter(num_agents == 1
   geom_bar(aes(x = ret.enct.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
   facet_grid(blank_prob ~ scavenge_prob, labeller = label_both) + 
   labs(x = "number of overlapping hotspots", y = "", 
-       fill = "mu") +
+       fill = "") +
   theme(strip.text = element_text(size = 6), legend.position = "bottom") +
-  scale_fill_colorblind()
+  scale_fill_colorblind(labels = mu.labs)
 plot(ccplot2)
 
 high.df = ret.overlap %>% 
@@ -652,9 +653,9 @@ highplot = ggplot(high.df) +
                hotspots = h.labs
              )) + 
   labs(x = "number of hotspots", y = "", 
-       fill = "mu") +
+       fill = "") +
   theme(strip.text = element_text(size = 6), legend.position = "bottom") +
-  scale_fill_colorblind()
+  scale_fill_colorblind(labels = mu.labs)
 plot(highplot)
 
 ggsave(filename = "../figures/retouched-encounter_overlaps.tiff", 
@@ -700,8 +701,8 @@ facet.labs =c(
   "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
   "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
   "many technologies vs. two technologies", 
-  "mu: 2 vs. mu: 1", 
-  "mu: 3 vs. mu: 1", 
+  "\u00b5: 2 vs. \u00b5: 1", 
+  "\u00b5: 3 vs. \u00b5: 1", 
   "number of agents: 200 vs number of agents: 100", 
   "size preference vs. no size preference", 
   "flake preference vs. nodule preference", 
@@ -812,9 +813,9 @@ ccplot = ggplot(layers.overlap %>% filter(overlap == 1)) +
   geom_bar(aes(x = RI.retprop.overlap, fill = as.factor(mu), group = as.factor(mu)), position = "dodge2") +
   facet_wrap(~num_agents, labeller = labeller(num_agents = occup.labs)) + 
   labs(x = "number of overlapping grid squares", y = "", 
-       fill = "mu") +
+       fill = "") +
   theme(strip.text = element_text(size = 6), legend.position = "left") +
-  scale_fill_colorblind() +
+  scale_fill_colorblind(labels = mu.labs) +
   ylim(0, 40000)
 plot(ccplot)
 
@@ -851,8 +852,8 @@ facet.labs =c(
   "scavenging probability: 0.25 vs. scavenging probability: 0.5", 
   "scavenging probability: 0.75 vs. scavenging probability: 0.5", 
   "many technologies vs. two technologies", 
-  "mu: 2 vs. mu: 1", 
-  "mu: 3 vs. mu: 1", 
+  "\u00b5: 2 vs. \u00b5: 1", 
+  "\u00b5: 3 vs. \u00b5: 1", 
   "number of agents: 200 vs number of agents: 100", 
   "size preference vs. no size preference", 
   "flake preference vs. nodule preference", 

@@ -70,7 +70,7 @@ p2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
 save(p2, file = "SUPP-skew.rdata")
 
 #### to run locally ####
-#load("~/eclipse-workspace/recycling-Java/results/graph-objects/SUPP-skew.rdata")
+# load("~/eclipse-workspace/recycling-Java/results/graph-objects/SUPP-skew.rdata")
 # supp.plot1 = p2 + facet_grid(mu ~ flake_preference  + size_preference + strict_selection,
 #                      labeller = labeller(
 #                        flake_preference = flake.labs,
@@ -79,6 +79,6 @@ save(p2, file = "SUPP-skew.rdata")
 #                        mu = mu.labs
 #                      ))
 # 
-# ggsave(filename = "../figures/supplementary-figures/SUPP_skew-by-parameters.tiff", 
-#        supp.plot1, 
+# ggsave(filename = "../figures/supplementary-figures/SUPP_skew-by-parameters.tiff",
+#        supp.plot1,
 #        dpi = 300, height = 8, width = 15)

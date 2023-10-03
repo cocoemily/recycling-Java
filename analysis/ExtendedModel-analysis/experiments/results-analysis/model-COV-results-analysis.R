@@ -18,20 +18,20 @@ scavenge.events = model_var[,c(parameters, "COV.num.scav.events", "model_year")]
 
 #rm(model_var)
 
-#### Variation of recycling intensity ####
+#### Variation of recycling incidence ####
 r1 = ggplot(ri) +
   geom_smooth(aes(x = model_year, y = COV.total.RI, color = as.factor(mu), group = as.factor(mu))) +
   facet_wrap(~ num_agents, labeller = label_both)+
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
-  labs(color = "mu", x = "model year", y = "COV of recycling intensity")
+  labs(color = "\u00b5", x = "model year", y = "COV of recycling incidence")
 #ggsave(filename = "rcycl-obj-var_mu.png", plot=r1, dpi = 300)
 
 r2 = ggplot(ri) +
   geom_smooth(aes(x = model_year, y = COV.total.RI, color = as.factor(overlap), group = as.factor(overlap))) +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
-  labs(color = "overlap", x = "model year", y = "COV of recycling intensity")
+  labs(color = "overlap", x = "model year", y = "COV of recycling incidence")
 #ggsave(filename = "rcycl-obj-var_overlap.png", plot=r2, dpi = 300)
 
 r3 = ggplot(ri) +
@@ -39,7 +39,7 @@ r3 = ggplot(ri) +
   facet_grid(size_preference ~ strict_selection, labeller = label_both)+
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
-  labs(color = "flake preference", x = "model year", y = "COV of recycling intensity")
+  labs(color = "flake preference", x = "model year", y = "COV of recycling incidence")
 #ggsave(filename = "rcycl-obj-var_selection.png", plot=r3, dpi = 300)
 
 rplot = ggarrange(r1, r2, r3, ncol = 3, nrow = 1, legend = "bottom", labels = "AUTO")
@@ -57,7 +57,7 @@ r1 = ggplot(rcycl.obj) +
   facet_wrap(~ num_agents, labeller = label_both)+
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
-  labs(color = "mu", x = "model year", y = "COV of number of recycled objects made")
+  labs(color = "\u00b5", x = "model year", y = "COV of number of recycled objects made")
 #ggsave(filename = "rcycl-obj-var_mu.png", plot=r1, dpi = 300)
 
 r2 = ggplot(rcycl.obj) +
@@ -87,7 +87,7 @@ b1 = ggplot(blank.events) +
   facet_wrap(~ num_agents, labeller = label_both)+
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind() +
-  labs(color = "mu", x = "model year", y = "COV of number of blank events")
+  labs(color = "\u00b5", x = "model year", y = "COV of number of blank events")
 #ggsave(filename = "blank-events-var_mu.png", plot=b1, dpi = 300)
 
 b2 = ggplot(blank.events) +
@@ -115,7 +115,7 @@ rt1 = ggplot(retouch.events) +
   facet_wrap(~ num_agents, labeller = label_both)+
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind()  +
-  labs(color = "mu", x = "model year", y = "COV of number of retouch events")
+  labs(color = "\u00b5", x = "model year", y = "COV of number of retouch events")
 #ggsave(filename = "retouch-events-var_mu.png", plot=rt1, dpi = 300)
 
 rt2 = ggplot(retouch.events) +
@@ -143,7 +143,7 @@ d1 = ggplot(discard.events) +
   facet_wrap(~ num_agents, labeller = label_both)+
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind()  +
-  labs(color = "mu", x = "model year", y = "COV of number of discard events")
+  labs(color = "\u00b5", x = "model year", y = "COV of number of discard events")
 #ggsave(filename = "discard-events-var_mu.png", plot=d1, dpi = 300)
 
 d2 = ggplot(discard.events) +
@@ -171,7 +171,7 @@ s1 = ggplot(scavenge.events) +
   facet_wrap(~ num_agents, labeller = label_both)+
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   scale_color_colorblind()  +
-  labs(color = "mu", x = "model year", y = "COV of number of scavenging events")
+  labs(color = "\u00b5", x = "model year", y = "COV of number of scavenging events")
 #ggsave(filename = "scavenge-events-var_mu.png", plot=s1, dpi = 300)
 
 s2 = ggplot(scavenge.events) +

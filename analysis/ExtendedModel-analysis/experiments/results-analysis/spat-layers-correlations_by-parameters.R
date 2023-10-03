@@ -73,11 +73,16 @@ cor.long = layer.cor %>%
     "ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor"
   )))
 
+cor.labs = c("RI & number of discard events", "RI & number of scavenging events", 
+             "RI & number of square encounters", "RI & number of retouch events")
+names(cor.labs) = c("ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri.num.ret.cor")
+
 
 avg.cor = ggplot(cor.long, aes(x = correlation, y = value, group = correlation, fill = correlation)) +
   geom_boxplot() +
   geom_hline(aes(yintercept = 0), color = "red") +
   labs(y = "correlation coefficient") +
+  scale_x_discrete(labels = cor.labs) +
   scale_fill_brewer(palette = "Dark2") +
   theme(axis.title.x = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust = 1), 
@@ -85,7 +90,7 @@ avg.cor = ggplot(cor.long, aes(x = correlation, y = value, group = correlation, 
 plot(avg.cor)
 
 ggsave(filename = "../figures/average-correlations.tiff", plot = avg.cor, 
-       dpi = 300, width = 6, height = 3)
+       dpi = 300, width = 6, height = 5)
 
 
 ####supplementary figure by parameters ####
@@ -154,6 +159,9 @@ plot_recycling_correlations_MU = function(data, correlation) {
   occup.labs = c("100 agents", "200 agents")
   names(occup.labs) = c(100, 200)
   
+  mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
+  names(mu.labs) = c(1,2,3)
+  
   cor_dict = dict(
     "ri.obj.cnt.cor" = "correlation between RI and object count",
     "ri.cr.cor" = "correlation between RI and cortex ratio",
@@ -173,8 +181,8 @@ plot_recycling_correlations_MU = function(data, correlation) {
     facet_grid(overlap ~ num_agents, 
                labeller = labeller(overlap = tech.labs, 
                                    num_agents = occup.labs)) +
-    labs(y = cor_dict[correlation]) +
-    scale_color_colorblind() +
+    labs(y = cor_dict[correlation], x = "\u00b5", color = "") +
+    scale_color_colorblind(labels = mu.labs) +
     theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
           legend.title = element_text(size = 10))
   

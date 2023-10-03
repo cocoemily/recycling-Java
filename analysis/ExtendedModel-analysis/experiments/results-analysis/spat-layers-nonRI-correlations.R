@@ -50,7 +50,7 @@ plot_other_correlations = function(data, correlation) {
                                    size_preference = size.labs, 
                                    strict_selection = strict.labs, 
                                    num_agents = occup.labs)) +
-    labs(y = cor_dict[correlation]) +
+    labs(y = cor_dict[correlation], x = "\u00b5", color = "\u00b5") +
     scale_color_colorblind() +
     theme(axis.title = element_text(size = 6), strip.text = element_text(size = 6), 
           legend.title = element_text(size = 8))
@@ -88,7 +88,7 @@ re.plot = ggplot(ret.enct.cor %>% filter(overlap == 1) %>% filter(num_agents == 
              labeller = labeller(blank_prob = blank.labs,
                                  scavenge_prob = scavenge.labs)) +
   scale_color_colorblind() +
-  labs(color = "mu", x = "mu", y = "correlation between encounters and proportion retouched artifacts") +
+  labs(color = "\u00b5", x = "\u00b5", y = "correlation between encounters and proportion retouched artifacts") +
   theme(axis.title = element_text(size = 7), strip.text = element_text(size = 7), 
         legend.title = element_text(size = 8))
 plot(re.plot)

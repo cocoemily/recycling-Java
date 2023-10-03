@@ -23,7 +23,7 @@ occup.labs = c("100 agents", "200 agents")
 names(occup.labs) = c(100, 200)
 blank.labs = c("blank probability: 0.25", "blank probability: 0.5", "blank probability: 0.75")
 names(blank.labs) = c(0.25, 0.5, 0.75)
-mu.labs = c("mu = 1", "mu = 2", "mu = 3")
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
 names(mu.labs) = c(1, 2, 3)
 
 ri.ci = read_csv("~/eclipse-workspace/recycling-Java/results/recycling-intensity-CI.csv")
@@ -56,6 +56,7 @@ plot1 = ggplot(ri.ci) +
   scale_fill_brewer(palette = "Set2") +
   scale_x_continuous(limits = c(0, 0.5)) +
   scale_y_continuous(limits = c(0, 60))
+plot(plot1)
 
 ggsave(
   filename = "../figures/average-recycling-intensity_by-probs.tiff", 
@@ -137,7 +138,3 @@ ggsave(
   supp.plot,
   dpi = 300, width = 8, height = 6
 )
-
-
-fit1 = glm.nb(mean ~ ., data = ri.ci[,c(2:4, 6:15)])
-summary(fit1)

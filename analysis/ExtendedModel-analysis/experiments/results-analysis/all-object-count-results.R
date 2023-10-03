@@ -23,7 +23,7 @@ strict.labs = c("strict selection", "no strict selection")
 names(strict.labs) = c("TRUE", "FALSE")
 occup.labs = c("100 agents", "200 agents")
 names(occup.labs) = c(100, 200)
-mu.labs = c("mu = 1", "mu = 2", "mu = 3")
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
 names(mu.labs) = c(1,2,3)
 blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
 names(blank.labs) = c("0.25", "0.5", "0.75")
@@ -160,6 +160,7 @@ ggsave(filename = "../figures/supplementary-figures/all-recycled-object-counts.t
 
 
 ####assemblage sizes####
+#detach(package:plyr)
 assemblages = count.data %>% 
   group_by_at(c(parameters, "run", "row", "col")) %>%
   summarize(obj_count = sum(total_count), 
@@ -235,7 +236,7 @@ p = ggplot(sub.count, aes(x = log.count, y = ri)) +
                num_agents = occup.labs,
                mu = mu.labs
              )) +
-  labs(x = "log(artifact count)", y = "recycling intensity")
+  labs(x = "log(artifact count)", y = "recycling incidence")
 ggsave(filename = "../figures/supplementary-figures/ri_assemblage-density_movement-occup.tiff", 
        p, 
        dpi = 300, width = 10, height = 6.5)
@@ -250,7 +251,7 @@ p.s = ggplot(sub.count, aes(x = log.count, y = ri)) +
                size_preference = size.labs, 
                strict_selection = strict.labs
              ), nrow = 1) +
-  labs(x = "log(artifact count)", y = "recycling intensity")
+  labs(x = "log(artifact count)", y = "recycling incidence")
 #plot(p.s)
 ggsave(filename = "../figures/supplementary-figures/ri_assemblage-density_selection.tiff", 
        p.s, 
@@ -267,7 +268,7 @@ ggplot(sub.count, aes(x = log.count, y = ri)) +
                blank_prob = blank.labs, 
                scavenge_prob = scvg.labs
              )) +
-  labs(x = "log(artifact count)", y = "recycling intensity")
+  labs(x = "log(artifact count)", y = "recycling incidence")
 
 
 p1 = ggplot(sub.count %>% filter(num_agents == 100), 
@@ -276,14 +277,14 @@ p1 = ggplot(sub.count %>% filter(num_agents == 100),
   #geom_abline(intercept = 0, color = "red", linetype = "dashed") +
   stat_poly_line() +
   stat_poly_eq(use_label(c("R2")), vstep = 0.1, size = 3) +
-  scale_color_colorblind() +
+  scale_color_colorblind(labels = mu.labs) +
   facet_grid( blank_prob ~ scavenge_prob, 
              labeller = labeller(
                blank_prob = blank.labs, 
                scavenge_prob = scvg.labs, 
                num_agents = occup.labs
              )) +
-  labs(x = "log(artifact count)", y = "recycling intensity", color = "mu") +
+  labs(x = "log(artifact count)", y = "recycling incidence", color = "") +
   theme(strip.text = element_text(size = 7))
 #plot(p1)
 ggsave(filename = "../figures/ri_assemblage-density_probs.tiff", 
@@ -296,14 +297,14 @@ p1.o = ggplot(sub.count %>% filter(num_agents == 200),
   #geom_abline(intercept = 0, color = "red", linetype = "dashed") +
   stat_poly_line() +
   stat_poly_eq(use_label(c("R2")), vstep = 0.1, size = 3) +
-  scale_color_colorblind() +
+  scale_color_colorblind(labels = mu.labs) +
   facet_grid( blank_prob ~ scavenge_prob, 
               labeller = labeller(
                 blank_prob = blank.labs, 
                 scavenge_prob = scvg.labs, 
                 num_agents = occup.labs
               )) +
-  labs(x = "log(artifact count)", y = "recycling intensity", color = "mu") +
+  labs(x = "log(artifact count)", y = "recycling incidence", color = "") +
   theme(strip.text = element_text(size = 7))
 #plot(p1)
 ggsave(filename = "../figures/supplementary-figures/ri_assemblage-density_probs.tiff", 
@@ -324,7 +325,8 @@ p2 = ggplot(sub.count %>% filter(num_agents == 100), aes(x = retprop, y = ri)) +
                 num_agents = occup.labs,
                 mu = mu.labs
               )) +
-  labs(x = "retouched artifact proportion", y = "recycling intensity")
+  labs(x = "retouched artifact proportion", y = "recycling incidence")
 ggsave(filename = "../figures/supplementary-figures/ri_retouched-prop.tiff", 
        p2, 
        dpi = 300, width = 8, height = 4)
+
