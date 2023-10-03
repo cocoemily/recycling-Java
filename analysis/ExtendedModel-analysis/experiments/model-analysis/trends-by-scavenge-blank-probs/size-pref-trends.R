@@ -6,6 +6,14 @@ library(ggpubr)
 library(scales)
 
 theme_set(theme_bw())
+flake.labs = c("flake preference", "nodule preference")
+names(flake.labs) = c("TRUE", "FALSE")
+size.labs = c("size preference", "no size preference")
+names(size.labs) = c("TRUE", "FALSE")
+strict.labs = c("strict selection", "no strict selection")
+names(strict.labs) = c("TRUE", "FALSE")
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
+names(mu.labs) = c(1,2,3)
 
 alldata = readr::read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/joined_model_data.csv")
 alldata = alldata[alldata$size != "size",]
@@ -55,8 +63,8 @@ ssplot1 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
-  scale_color_colorblind() +
-  labs(color = "size preference", x = "model year", y = "average recycling intensity")
+  scale_color_colorblind(labels = size.labs) +
+  labs(x = "model year", y = "average recycling incidence")
 
 save(ssplot1, file = "ri-size.rdata")
 
@@ -91,7 +99,7 @@ ssplot2 = ggplot() +
     blank_prob = blank.labs, scavenge_prob = scvg.labs
   )) +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
-  scale_color_colorblind() +
-  labs(color = "size preference", x = "model year", y = "average number of recycled objects created")
+  scale_color_colorblind(labels = size.labs) +
+  labs(x = "model year", y = "average number of recycled objects created")
 
 save(ssplot2, file = "re-size.rdata")

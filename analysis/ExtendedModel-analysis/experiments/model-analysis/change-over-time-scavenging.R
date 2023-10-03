@@ -6,6 +6,14 @@ library(ggpubr)
 library(scales)
 
 theme_set(theme_bw())
+flake.labs = c("flake preference", "nodule preference")
+names(flake.labs) = c("TRUE", "FALSE")
+size.labs = c("size preference", "no size preference")
+names(size.labs) = c("TRUE", "FALSE")
+strict.labs = c("strict selection", "no strict selection")
+names(strict.labs) = c("TRUE", "FALSE")
+mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
+names(mu.labs) = c(1,2,3)
 
 alldata = readr::read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/joined_model_data.csv")
 alldata = alldata[alldata$size != "size",]
@@ -58,8 +66,8 @@ oplot = ggplot() +
   geom_line(data = avg.multi.tech, aes(x = model_year, y = mean.scvg, color = as.factor(overlap))) +
   geom_ribbon(data = avg.multi.tech, aes(x = model_year, ymin = lower.ci.scvg, ymax = upper.ci.scvg), alpha = 0.2) +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
-  scale_color_colorblind() +
-  labs(color = "overlap parameter", x = "model year", y = "average number of scavenging events")
+  scale_color_colorblind(labels = tech.labs) +
+  labs(x = "model year", y = "average number of scavenging events")
 
 #ggsave(filename = "scavenging-trend-by-overlap.png", oplot, dpi = 300)
 
@@ -102,8 +110,8 @@ mplot = ggplot() +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
   facet_wrap(~ num_agents, 
              labeller = labeller(num_agents = occup.labs)) +
-  scale_color_colorblind() +
-  labs(color = "\u00b5", x = "model year", y = "average number of scavenging events")
+  scale_color_colorblind(labels = mu.labs) +
+  labs(x = "model year", y = "average number of scavenging events")
 
 #ggsave(filename = "scavenging-trend-by-mu.png", mplot, dpi = 300)
 
@@ -138,8 +146,8 @@ splot = ggplot() +
   facet_grid(size_preference ~ strict_selection, 
              labeller = labeller(strict_selection = strict.labs, size_preference = size.labs)) +
   scale_x_reverse(labels = label_number(scale_cut = cut_short_scale())) +
-  scale_color_colorblind() +
-  labs(color = "flake preference", x = "model year", y = "average number of scavenging events")
+  scale_color_colorblind(labels = flake.labs) +
+  labs(x = "model year", y = "average number of scavenging events")
 
 #ggsave(filename = "scavenging-trend-by-selection.png", splot, dpi = 300)
 
