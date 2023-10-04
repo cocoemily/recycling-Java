@@ -128,5 +128,19 @@ ggsave(
 )
 
 
+ggplot(ri.var) +
+  geom_boxplot(aes(x = as.factor(mu), y = recycling.intensity.cv, 
+                   fill = as.factor(mu), group = as.factor(mu))) +
+  facet_grid(scavenge_prob~blank_prob, labeller = label_both) +
+  scale_fill_colorblind() +
+  theme(legend.position = "bottom")
+
+ggplot(ri.var) +
+  geom_boxplot(aes(x = interaction(as.factor(flake_preference), as.factor(size_preference)), y = recycling.intensity.cv, 
+                   fill = interaction(as.factor(flake_preference), as.factor(size_preference)), group = interaction(as.factor(flake_preference), as.factor(size_preference)))) +
+  facet_grid(scavenge_prob~blank_prob, labeller = label_both) +
+  scale_fill_colorblind() +
+  theme(legend.position = "bottom")
+
 
 

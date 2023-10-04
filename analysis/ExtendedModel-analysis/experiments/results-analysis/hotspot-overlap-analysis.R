@@ -75,6 +75,23 @@ ggsave(filename = "../figures/supplementary-figures/hotspot-grid-squares-dist.ti
        ccplot2, 
        dpi = 300, width = 10, height = 4.5)
 
+ggplot(long.high %>% filter(overlap == 1) %>% filter(vars == "high_RI")) +
+  geom_density(aes(x = count.high, fill = as.factor(mu), group = as.factor(mu)), alpha = 0.4) +
+  geom_density(aes(x = count.high, color = as.factor(mu), group = as.factor(mu))) +
+  facet_grid(blank_prob~scavenge_prob, labeller = label_both) + 
+  labs(x = "number of hotspots", y = "", color = "", fill = "") +
+  scale_fill_colorblind(labels = mu.labs) +
+  scale_color_colorblind(labels = mu.labs) +
+  theme(strip.text = element_text(size = 6), legend.position = "bottom")
+
+ggplot(long.high %>% filter(overlap == 1) %>% filter(vars == "high_RI")) +
+  geom_density(aes(x = count.high, fill = interaction(flake_preference, size_preference), group = interaction(flake_preference, size_preference)), alpha = 0.4) +
+  geom_density(aes(x = count.high, color = interaction(flake_preference, size_preference), group = interaction(flake_preference, size_preference))) +
+  facet_grid(blank_prob~scavenge_prob, labeller = label_both) + 
+  labs(x = "number of hotspots", y = "", color = "", fill = "") +
+  scale_fill_colorblind(labels = mu.labs) +
+  scale_color_colorblind(labels = mu.labs) +
+  theme(strip.text = element_text(size = 6), legend.position = "bottom")
 
 summ.high = long.high %>% group_by(vars, mu) %>%
   summarize(mean = mean(count.high))

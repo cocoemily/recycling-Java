@@ -138,3 +138,30 @@ ggsave(
   supp.plot,
   dpi = 300, width = 8, height = 6
 )
+
+
+mu.new = ddply(ri.ci %>% filter(overlap == 1), c("scavenge_prob", "blank_prob", "mu"), summarize, grp.mean = mean(mean))
+ggplot(ri.ci) +
+  geom_density(aes(x = mean, fill = as.factor(mu), color = as.factor(mu)), alpha = 0.25) +
+  geom_density(aes(x = mean, color = as.factor(mu))) +
+  geom_vline(data = mu.new, aes(xintercept = grp.mean, color = as.factor(mu)), linetype = "dashed") +
+  facet_grid(scavenge_prob~blank_prob, scales = "free", labeller = label_both)  +
+  guides(fill = F) +
+  theme(legend.position = "bottom", axis.title.x = element_blank()) +
+  scale_color_colorblind() +
+  scale_fill_colorblind() +
+  scale_x_continuous(limits = c(0, 0.5)) +
+  scale_y_continuous(limits = c(0, 60))
+
+mu.new = ddply(ri.ci %>% filter(overlap == 1), c("scavenge_prob", "blank_prob", "flake_preference", "size_preference"), summarize, grp.mean = mean(mean))
+ggplot(ri.ci) +
+  geom_density(aes(x = mean, fill = interaction(as.factor(flake_preference), as.factor(size_preference)), color = interaction(as.factor(flake_preference), as.factor(size_preference))), alpha = 0.25) +
+  geom_density(aes(x = mean, color = interaction(as.factor(flake_preference), as.factor(size_preference)))) +
+  geom_vline(data = mu.new, aes(xintercept = grp.mean, color = interaction(as.factor(flake_preference), as.factor(size_preference))), linetype = "dashed") +
+  facet_grid(scavenge_prob~blank_prob, scales = "free", labeller = label_both)  +
+  guides(fill = F) +
+  theme(legend.position = "bottom", axis.title.x = element_blank()) +
+  scale_color_colorblind() +
+  scale_fill_colorblind() +
+  scale_x_continuous(limits = c(0, 0.5)) +
+  scale_y_continuous(limits = c(0, 60))

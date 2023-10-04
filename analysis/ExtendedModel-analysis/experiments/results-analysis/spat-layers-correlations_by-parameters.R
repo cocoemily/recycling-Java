@@ -241,4 +241,84 @@ ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-probs.tif
        endgrid3, dpi = 300, width = 12, height = 10)
 
 
+plot_recycling_correlations_probs_MU = function(data, correlation) {
+  blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
+  names(blank.labs) = c("0.25", "0.5", "0.75")
+  scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.75")
+  names(scvg.labs) = c("0.25", "0.5", "0.75")
+  occup.labs = c("100 agents", "200 agents")
+  names(occup.labs) = c(100, 200)
+  
+  cor_dict = dict(
+    "ri.obj.cnt.cor" = "correlation between RI and object count",
+    "ri.cr.cor" = "correlation between RI and cortex ratio",
+    "ri.num.disc.cor" = "correlation between RI and discards",
+    "ri.num.scvg.cor" = "correlation between RI and scavenging events",
+    "ri.num.enct.cor" = "correlation between RI and encounters",
+    "ri.num.ret.cor" = "correlation between RI and retouches",
+    .class = "character", 
+    .overwrite = FALSE
+  )
+  
+  data$mu = factor(data$mu, levels = c(1, 2, 3))
+  
+  ggplot(data %>% filter(overlap == 1)) +
+    geom_boxplot(aes_string(x = "as.factor(mu)", y = correlation, group = "as.factor(mu)", fill = "as.factor(mu)")) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    facet_grid(blank_prob ~ scavenge_prob, 
+               labeller = labeller(blank_prob = blank.labs, 
+                                   scavenge_prob = scvg.labs)) +
+    labs(y = cor_dict[correlation]) +
+    scale_fill_colorblind() +
+    theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
+          legend.title = element_text(size = 10))
+  
+}
 
+endgrid4 = ggarrange(plot_recycling_correlations_probs_MU(layer.cor, cor.names[4]),
+                     plot_recycling_correlations_probs_MU(layer.cor, cor.names[5]),
+                     plot_recycling_correlations_probs_MU(layer.cor, cor.names[6]),
+                     plot_recycling_correlations_probs_MU(layer.cor, cor.names[7]), 
+                     ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
+plot(endgrid4)
+
+plot_recycling_correlations_probs_SEL = function(data, correlation) {
+  blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
+  names(blank.labs) = c("0.25", "0.5", "0.75")
+  scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.75")
+  names(scvg.labs) = c("0.25", "0.5", "0.75")
+  occup.labs = c("100 agents", "200 agents")
+  names(occup.labs) = c(100, 200)
+  
+  cor_dict = dict(
+    "ri.obj.cnt.cor" = "correlation between RI and object count",
+    "ri.cr.cor" = "correlation between RI and cortex ratio",
+    "ri.num.disc.cor" = "correlation between RI and discards",
+    "ri.num.scvg.cor" = "correlation between RI and scavenging events",
+    "ri.num.enct.cor" = "correlation between RI and encounters",
+    "ri.num.ret.cor" = "correlation between RI and retouches",
+    .class = "character", 
+    .overwrite = FALSE
+  )
+  
+  data$mu = factor(data$mu, levels = c(1, 2, 3))
+  
+  ggplot(data %>% filter(overlap == 1)) +
+    geom_boxplot(aes_string(x = "interaction(flake_preference, size_preference)", y = correlation, group = "interaction(flake_preference, size_preference)", fill = "interaction(flake_preference, size_preference)")) +
+    geom_hline(aes(yintercept = 0), color = "red") +
+    facet_grid(blank_prob ~ scavenge_prob, 
+               labeller = labeller(blank_prob = blank.labs, 
+                                   scavenge_prob = scvg.labs)) +
+    labs(y = cor_dict[correlation]) +
+    scale_fill_colorblind() +
+    theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
+          legend.title = element_text(size = 10))
+  
+}
+
+endgrid5 = ggarrange(plot_recycling_correlations_probs_SEL(layer.cor, cor.names[4]),
+                     plot_recycling_correlations_probs_SEL(layer.cor, cor.names[5]),
+                     plot_recycling_correlations_probs_SEL(layer.cor, cor.names[6]),
+                     plot_recycling_correlations_probs_SEL(layer.cor, cor.names[7]), 
+                     ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
+plot(endgrid5)

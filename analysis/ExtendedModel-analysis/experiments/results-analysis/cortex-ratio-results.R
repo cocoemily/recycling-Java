@@ -5,8 +5,9 @@ library(ggthemes)
 library(rcompanion)
 library(fitdistrplus)
 library(pscl)
+library(ggpmisc)
 
-source("ExtendedModel-analysis/experiments/model-analysis/mu-visualization.R")
+#source("ExtendedModel-analysis/experiments/model-analysis/mu-visualization.R")
 
 theme_set(theme_bw())
 
@@ -80,12 +81,33 @@ ri.cr.plot = ggplot(joined %>% filter(overlap == 1) %>% filter(flake_preference 
   theme(legend.position = "bottom", legend.title = element_blank())
 plot(ri.cr.plot)
 
-ri.cr.plot.mu = ggarrange(ri.cr.plot, mu_horz, ncol = 1, heights = c(1, 0.4))
-plot(ri.cr.plot.mu)
-
 ggsave(filename = "../figures/ri-cr_plot.tiff",
        ri.cr.plot,
        dpi = 300, width = 10, height = 5.5)
+
+
+ggplot(joined %>% filter(overlap == 1) %>% filter(flake_preference == T), 
+       aes(x = mean.cr, y = mean.ri, color = as.factor(mu), group = as.factor(mu))) +
+  geom_point(size = 0.1, alpha = 0.1) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("eq","R2")), vstep = 0.075, size = 3) +
+  facet_grid(scavenge_prob ~ blank_prob, 
+             labeller = label_both) +
+  scale_color_colorblind(labels = mu.labs) +
+  labs(y = "recycling incidence", x = "cortex ratio") +
+  theme(legend.position = "bottom", legend.title = element_blank())
+
+ggplot(joined %>% filter(overlap == 1), 
+       aes(x = mean.cr, y = mean.ri, color = interaction(flake_preference, size_preference), group = interaction(flake_preference, size_preference))) +
+  geom_point(size = 0.1, alpha = 0.1) +
+  stat_poly_line() +
+  stat_poly_eq(use_label(c("eq","R2")), vstep = 0.075, size = 3) +
+  facet_grid(scavenge_prob ~ blank_prob, 
+             labeller = label_both) +
+  scale_color_colorblind(labels = mu.labs) +
+  labs(y = "recycling incidence", x = "cortex ratio") +
+  theme(legend.position = "bottom", legend.title = element_blank())
+
 
 ####CR and assemblage density####
 count.data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
