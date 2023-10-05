@@ -18,7 +18,7 @@ names(scvg.labs) = c("0.25", "0.5", "0.75")
 mu.labs = c("mu = 1", "mu = 2", "mu = 3")
 names(mu.labs) = c("1", "2", "3")
 
-#data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv", n_max = 1000)
+#data = read_csv("~/eclipse-workspace/recycling-Java/results/all-object-counts.csv")
 data = read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/results/all-object-counts.csv")
 parameters = colnames(data[,c(10:22)])
 
@@ -33,7 +33,7 @@ sub.skew = skew %>%
   filter(num_agents == 200)
 
 
-da.lr2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
+da.lr2 = ggplot(sub.skew, aes(x = skew, y = log(ri))) +
   geom_point(color = "grey80", size = 0.1, alpha = 0.25) +
   stat_poly_line() +
   stat_poly_eq(use_label(c("R2")), color = "grey40") +
@@ -46,7 +46,7 @@ da.lr2 = ggplot(sub.skew, aes(x = skew, y = ri)) +
   theme(legend.position = "none")
 #plot(da.lr2)
 
-ggsave(filename = "SKEW_age-of-discard.tiff",
+ggsave(filename = "SKEW_age-of-discard_2.tiff",
        plot = da.lr2,
        dpi = 300, width = 7, height = 6)
 
