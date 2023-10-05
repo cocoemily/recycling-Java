@@ -6,14 +6,22 @@ library(scales)
 library(ggpubr)
 
 theme_set(theme_bw())
+tech.labs = c("two technology types", "many technology types")
+names(tech.labs) = c("1", "2")
 flake.labs = c("flake preference", "nodule preference")
 names(flake.labs) = c("TRUE", "FALSE")
 size.labs = c("size preference", "no size preference")
 names(size.labs) = c("TRUE", "FALSE")
 strict.labs = c("strict selection", "no strict selection")
 names(strict.labs) = c("TRUE", "FALSE")
+occup.labs = c("100 agents", "200 agents")
+names(occup.labs) = c(100, 200)
 mu.labs = c("\u00b5 = 1", "\u00b5 = 2", "\u00b5 = 3")
 names(mu.labs) = c(1,2,3)
+blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
+names(blank.labs) = c("0.25", "0.5", "0.75")
+scvg.labs = c("scavenging probability: 0.25", "scavenging probability: 0.50", "scavenging probability: 0.75")
+names(scvg.labs) = c("0.25", "0.5", "0.75")
 
 alldata = readr::read_csv("/scratch/ec3307/updated-recycling-Java/recycling-Java/output/joined_model_data.csv")
 alldata = alldata[alldata$size != "size",]
@@ -31,14 +39,6 @@ nodule.selection = alldata[which(alldata$flake_preference == FALSE),]
 
 rm(alldata)
 
-flake.labs = c("flake preference", "nodule preference")
-names(flake.labs) = c("TRUE", "FALSE")
-size.labs = c("size preference", "no size preference")
-names(size.labs) = c("TRUE", "FALSE")
-strict.labs = c("strict selection", "no strict selection")
-names(strict.labs) = c("TRUE", "FALSE")
-occup.labs = c("100 agents", "200 agents")
-names(occup.labs) = c(100, 200)
 
 ####OVERLAP####
 avg.two.tech = two.tech %>%
