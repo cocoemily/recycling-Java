@@ -73,6 +73,7 @@ fit1.df$odds = exp(fit1.df$estimate)
 fit1.df$lower = fit1.df$odds - exp(fit1.df$std.error)
 fit1.df$upper = fit1.df$odds + exp(fit1.df$std.error)
 
+fit1.df$signif = !(fit1.df$lower <= 1 & fit1.df$upper >= 1)
 
 
 x.labs = c(
@@ -116,7 +117,8 @@ fit1.df$term = factor(fit1.df$term,
                       ))
 
 
-odds.or = ggplot(fit1.df %>% filter(term != "(Intercept)"), aes(y = odds, x = term)) +
+odds.or = ggplot(fit1.df %>% filter(term != "(Intercept)") %>% filter(signif == T),
+                 aes(y = odds, x = term)) +
   geom_hline(aes(yintercept = 1), color = I("red"), linetype = "dashed") +
   geom_errorbar(mapping = aes(ymin = lower, ymax = upper), position = position_dodge2(width = 0.5), width = 0.2) +
   geom_point(position = position_dodge2(width = 0.5)) +
@@ -129,7 +131,7 @@ plot(odds.or)
 
 ggsave(filename = "../figures/odds-ratios-YOFD.tiff",
        odds.or,
-       dpi = 300, width = 8, height = 4)
+       dpi = 300, width = 8, height = 3)
 
 
 

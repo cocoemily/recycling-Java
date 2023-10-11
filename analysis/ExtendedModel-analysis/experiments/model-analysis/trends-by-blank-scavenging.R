@@ -31,20 +31,20 @@ plot(ssp1 + ylim(0, 0.3))
 plot(ssp2 + ylim(0, 30))
 
 
-rgrid = ggarrange(mplot1 + ylim(0, 0.3), 
-                  mplot2 + ylim(0, 30),
+rgrid = ggarrange(mplot1 + ylim(0, 0.3) + labs(color = ""), 
+                  mplot2 + ylim(0, 30) + labs(color = ""),
                   ncol = 2, common.legend = T, labels = "AUTO")
 plot(rgrid)
 ggsave(filename = "../figures/recycling-trends_by-probs-mu.tiff", rgrid,
        dpi = 300, width = 12, height = 6)
 
 
-srgrid = ggarrange(splot1 + ylim(0, 0.3), 
-                  splot2 + ylim(0, 30),
-                  ssplot1 + ylim(0, 0.3), 
-                  ssplot2 + ylim(0, 30),
-                  ssp1 + ylim(0, 0.3), 
-                  ssp2 + ylim(0, 30),
+srgrid = ggarrange(splot1 + ylim(0, 0.3)+ labs(color = ""), 
+                  splot2 + ylim(0, 30)+ labs(color = ""),
+                  ssplot1 + ylim(0, 0.3)+ labs(color = ""), 
+                  ssplot2 + ylim(0, 30)+ labs(color = ""),
+                  ssp1 + ylim(0, 0.3)+ labs(color = ""), 
+                  ssp2 + ylim(0, 30)+ labs(color = ""),
                   ncol = 2, nrow = 3, legend = "bottom", labels = "AUTO")
 plot(srgrid)
 ggsave(filename = "../figures/supplementary-figures/recycling-trends_by-probs-selection.tiff", srgrid,

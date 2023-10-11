@@ -80,6 +80,7 @@ names(cor.labs) = c("ri.num.disc.cor", "ri.num.scvg.cor", "ri.num.enct.cor", "ri
 
 avg.cor = ggplot(cor.long, aes(x = correlation, y = value, group = correlation, fill = correlation)) +
   geom_boxplot() +
+  #geom_violin() +
   geom_hline(aes(yintercept = 0), color = "red") +
   labs(y = "correlation coefficient") +
   scale_x_discrete(labels = cor.labs) +
@@ -129,8 +130,8 @@ plot_recycling_correlations = function(data, correlation) {
                                    size_preference = size.labs, 
                                    strict_selection = strict.labs, 
                                    overlap = tech.labs)) +
-    labs(y = cor_dict[correlation], x = "strict selection") +
-    scale_color_colorblind() +
+    labs(y = cor_dict[correlation], x = "strict selection", color = "") +
+    scale_color_colorblind(labels = strict.labs) +
     theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
           legend.title = element_text(size = 10))
   
@@ -140,7 +141,7 @@ endgrid = ggarrange(plot_recycling_correlations(layer.cor, cor.names[4]),
                     plot_recycling_correlations(layer.cor, cor.names[5]),
                     plot_recycling_correlations(layer.cor, cor.names[6]),
                     plot_recycling_correlations(layer.cor, cor.names[7]), 
-                     ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
+                    ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
 plot(endgrid)
 
 ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-selection.tiff",
@@ -175,12 +176,23 @@ plot_recycling_correlations_MU = function(data, correlation) {
   
   data$mu = factor(data$mu, levels = c(1, 2, 3))
   
-  ggplot(data) +
-    geom_boxplot(aes_string(x = "mu", y = correlation, group = "mu", color = "mu")) +
+  stat.test <- data %>%
+    group_by(num_agents, overlap) %>%
+    wilcox_test(as.formula(paste0(correlation, "~ mu"))) %>%
+    adjust_pvalue(method = "bonferroni") %>%
+    add_significance() %>%
+    add_xy_position(x = "mu")
+  
+  # ggplot(data) +
+  #   geom_boxplot(aes_string(x = "mu", y = correlation, group = "mu", color = "mu")) +
+  ggboxplot(data, x = "mu", y = correlation, color = "mu", 
+            facet.by = c("overlap", "num_agents"), panel.labs = list(overlap = tech.labs, num_agents = occup.labs)) +
+    stat_pvalue_manual(stat.test, label = "p.adj.signif", tip.length = 0.01, label.size = 2.75, 
+                       hide.ns = T, vjust = 1) +
     geom_hline(aes(yintercept = 0), color = "red") +
-    facet_grid(overlap ~ num_agents, 
-               labeller = labeller(overlap = tech.labs, 
-                                   num_agents = occup.labs)) +
+    # facet_grid(overlap ~ num_agents, 
+    #            labeller = labeller(overlap = tech.labs, 
+    #                                num_agents = occup.labs)) +
     labs(y = cor_dict[correlation], x = "\u00b5", color = "") +
     scale_color_colorblind(labels = mu.labs) +
     theme(axis.title = element_text(size = 10), strip.text = element_text(size = 8), 
@@ -193,9 +205,9 @@ endgrid = ggarrange(plot_recycling_correlations_MU(layer.cor, cor.names[4]),
                     plot_recycling_correlations_MU(layer.cor, cor.names[6]),
                     plot_recycling_correlations_MU(layer.cor, cor.names[7]), 
                     ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
-plot(endgrid)
+#plot(endgrid)
 ggsave(filename = "../figures/RI-correlations_by-movement.tiff", 
-       endgrid, dpi = 300, width = 10, height = 8)
+       endgrid, dpi = 300, width = 8, height = 10)
 
 plot_recycling_correlations_probs = function(data, correlation) {
   blank.labs = c("blank probability: 0.25", "blank probability: 0.50", "blank probability: 0.75")
@@ -232,10 +244,10 @@ plot_recycling_correlations_probs = function(data, correlation) {
 }
 
 endgrid3 = ggarrange(plot_recycling_correlations_probs(layer.cor, cor.names[4]),
-                    plot_recycling_correlations_probs(layer.cor, cor.names[5]),
-                    plot_recycling_correlations_probs(layer.cor, cor.names[6]),
-                    plot_recycling_correlations_probs(layer.cor, cor.names[7]), 
-                    ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
+                     plot_recycling_correlations_probs(layer.cor, cor.names[5]),
+                     plot_recycling_correlations_probs(layer.cor, cor.names[6]),
+                     plot_recycling_correlations_probs(layer.cor, cor.names[7]), 
+                     ncol = 2, nrow = 2, common.legend = T, legend = "bottom", labels = "AUTO")
 plot(endgrid3)
 ggsave(filename = "../figures/supplementary-figures/RI-correlations_by-probs.tiff", 
        endgrid3, dpi = 300, width = 12, height = 10)

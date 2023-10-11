@@ -513,7 +513,7 @@ p2 = ggplot(cr.df) +
                blank_prob = blank.labs, 
                scavenge_prob = scvg.labs
              )) + 
-  labs(y = "Cortex Ratio COV") +
+  labs(y = "Cortex Ratio COV", x = "\u00b5") +
   scale_color_colorblind(labels = mu.labs) +
   theme(legend.title = element_blank())
 plot(p2)

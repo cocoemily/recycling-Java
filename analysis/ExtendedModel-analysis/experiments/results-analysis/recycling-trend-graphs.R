@@ -7,26 +7,32 @@ theme_set(theme_bw())
 
 load("../results/graph-objects/ri-mu.rdata")
 ri.mplot = mplot +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  labs(color = "")
 load("../results/graph-objects/ri-overlap.rdata")
 ri.oplot = oplot +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  labs(color = "")
 load("../results/graph-objects/ri-selection.rdata")
 ri.splot = splot +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  labs(color = "")
 
 load("../results/graph-objects/recycling-events-mu.rdata")
 re.mplot = mplot +
   ylim(0, 10) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  labs(color = "")
 load("../results/graph-objects/recycling-events-overlap.rdata")
 re.oplot = oplot +
   ylim(0, 10) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  labs(color = "")
 load("../results/graph-objects/recycling-events-selection.rdata")
 re.splot = splot +
   ylim(0, 10) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  labs(color = "")
 
 # plot(ri.mplot)
 # plot(ri.oplot)

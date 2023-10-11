@@ -58,6 +58,16 @@ plot1 = ggplot(ri.ci) +
   scale_y_continuous(limits = c(0, 60))
 plot(plot1)
 
+# plot1.a = ggplot(ri.ci) +
+#   geom_violin(aes(y = mean, x = as.factor(scavenge_prob))) +
+#   geom_hline(data = mu1, aes(yintercept = grp.mean, color = as.factor(scavenge_prob)), linetype = "dashed") +
+#   facet_grid(overlap~blank_prob, scales = "free", labeller = labeller(
+#     overlap = tech.labs, 
+#     blank_prob = blank.labs
+#   )) 
+# 
+# plot(plot1.a)
+
 ggsave(
   filename = "../figures/average-recycling-intensity_by-probs.tiff", 
   plot1, 

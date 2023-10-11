@@ -7,43 +7,55 @@ theme_set(theme_bw())
 
 load("../results/graph-objects/blanks-mu.rdata")
 blank.mplot = mplot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/blanks-overlap.rdata")
 blank.oplot = oplot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/blanks-selection.rdata")
 blank.splot = splot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 
 load("../results/graph-objects/discard-mu.rdata")
 discard.mplot = mplot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/discard-overlap.rdata")
 discard.oplot = oplot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/discard-selection.rdata")
 discard.splot = splot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 
 load("../results/graph-objects/retouch-mu.rdata")
 retouch.mplot = mplot  +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/retouch-overlap.rdata")
 retouch.oplot = oplot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/retouch-selection.rdata")
 retouch.splot = splot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 
 load("../results/graph-objects/scavenge-mu.rdata")
 scavenge.mplot = mplot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/scavenge-overlap.rdata")
 scavenge.oplot = oplot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 load("../results/graph-objects/scavenge-selection.rdata")
 scavenge.splot = splot +
-  ylim(0, 50)
+  ylim(0, 50) +
+  labs(color = "")
 
 mu.plot = ggarrange(
   blank.mplot, discard.mplot, scavenge.mplot, retouch.mplot, 

@@ -38,29 +38,41 @@ plotNormalHistogram(ri.var$recycling.intensity.cv)
 
 
 stat.test <- ri.var %>%
-  group_by(blank_prob, overlap) %>%
+  group_by(blank_prob, num_agents) %>%
   wilcox_test(recycling.intensity.cv ~ scavenge_prob) %>%
   adjust_pvalue(method = "bonferroni") %>%
-  add_significance()
+  add_significance() %>%
+  add_xy_position(x = "scavenge_prob")
 
 
-plot1 = ggplot(ri.var) +
-  geom_boxplot(aes(x = as.factor(scavenge_prob), y = recycling.intensity.cv, 
-                   fill = as.factor(scavenge_prob), group = as.factor(scavenge_prob))) +
-  facet_grid(num_agents~blank_prob, labeller = labeller(
-    num_agents = occup.labs, 
-    blank_prob = blank.labs
-  )) +
+# plot1 = ggplot(ri.var) +
+#   geom_boxplot(aes(x = as.factor(scavenge_prob), y = recycling.intensity.cv, 
+#                    fill = as.factor(scavenge_prob), group = as.factor(scavenge_prob))) +
+#   facet_grid(num_agents~blank_prob, labeller = labeller(
+#     num_agents = occup.labs, 
+#     blank_prob = blank.labs
+#   )) +
+#   scale_fill_brewer(palette = "Set2") +
+#   labs(x = "scavenging probability", y = "recycling incidence COV", 
+#        fill = "scavenging probability") +
+#   theme(legend.position = "bottom") +
+#   stat_pvalue_manual(stat.test, label = "p.adj.signif", tip.length = 0.01)
+# plot(plot1)
+
+plot1 = ggboxplot(ri.var, x = "scavenge_prob", y = "recycling.intensity.cv", fill = "scavenge_prob", 
+                  facet.by = c("num_agents", "blank_prob"), 
+                  panel.labs = list(blank_prob = blank.labs, num_agents = occup.labs)) +
+  stat_pvalue_manual(stat.test, label = "p.adj.signif", tip.length = 0.01) +
   scale_fill_brewer(palette = "Set2") +
   labs(x = "scavenging probability", y = "recycling incidence COV", 
        fill = "scavenging probability") +
   theme(legend.position = "bottom")
-plot(plot1)
+  
 
 ggsave(
   filename = "../figures/recycling-intensity-variation_by-probs.tiff", 
   plot1, 
-  dpi = 300, width = 8, height = 4.5
+  dpi = 300, width = 8, height = 6.5
 )
 
 plot2 = ggplot(layer.var) +
